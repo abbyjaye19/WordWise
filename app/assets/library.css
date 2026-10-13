@@ -1,0 +1,93 @@
+/* Accounts, library, save/export bar, and print — uses tokens from style.css */
+
+/* ---------- Header account menu ---------- */
+.account-slot { display:flex; align-items:center; }
+.account-menu { position:relative; }
+.account-menu > summary { list-style:none; display:inline-flex; gap:8px; }
+.account-menu > summary::-webkit-details-marker { display:none; }
+.avatar-dot { color:var(--brass-500); font-size:12px; }
+.account-pop { position:absolute; right:0; top:calc(100% + 8px); min-width:180px; background:var(--cream-50); border:1px solid var(--cream-300); border-radius:var(--radius); box-shadow:0 8px 24px rgba(15,31,61,.2); padding:6px; z-index:40; display:flex; flex-direction:column; }
+.account-link { display:flex; align-items:center; min-height:44px; padding:0 12px; border-radius:8px; color:var(--navy-900); text-decoration:none; font-weight:700; }
+.account-link:hover { background:var(--navy-100); }
+
+/* ---------- Sign in / create account ---------- */
+.auth-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
+.field { display:flex; flex-direction:column; gap:4px; margin-bottom:14px; }
+.field label { font-weight:700; font-size:.95rem; }
+.field .text-input { min-height:44px; font-size:1rem; }
+.form-msg { margin-top:12px; }
+.small { font-size:.85rem; }
+
+/* ---------- Library ---------- */
+.library { display:grid; grid-template-columns:300px minmax(0, 1fr); gap:24px; align-items:start; padding-top:32px; }
+.folder-panel h2 { font-size:1.3rem; }
+.folder-list { display:flex; flex-direction:column; gap:4px; margin-bottom:16px; }
+.folder-list .dash-options-list-option { display:flex; align-items:center; gap:8px; min-height:44px; padding:6px 10px; border-radius:8px; cursor:pointer; border:2px solid transparent; }
+.folder-list .dash-options-list-option:hover { background:var(--bg); }
+.folder-list .dash-options-list-option:has(input:checked) { background:var(--navy-100); border-color:var(--navy-700); color:var(--navy-900); font-weight:700; }
+.new-folder { display:flex; gap:8px; margin-bottom:12px; }
+.btn-danger { color:var(--brick-600); border-color:var(--brick-600); }
+.btn-danger:hover { background:var(--brick-600); color:var(--cream-50); }
+html[data-theme="dark"] .btn-danger { color:#F0A89D; border-color:#F0A89D; }
+.library-head { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:8px; }
+.library-head h2 { margin:0; }
+.reading-list { display:flex; flex-direction:column; gap:12px; margin-top:12px; }
+.reading-card { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; padding:18px 20px; }
+.reading-card h3 { margin:6px 0 2px; }
+.reading-card p { margin:0; }
+.reading-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.move-to { display:flex; align-items:center; gap:6px; }
+.move-dropdown { width:240px; color:var(--navy-900); font-size:.9rem; }
+
+/* ---------- Save / download bar in the studio ---------- */
+.doc-actions { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; margin-bottom:16px; font-size:15px; letter-spacing:0; word-spacing:0; line-height:1.4; }
+.doc-actions-row { display:flex; flex-wrap:wrap; gap:10px 24px; align-items:center; }
+.action-group { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.save-folder { width:200px; color:var(--navy-900); }
+.doc-actions .muted { margin:8px 0 0; }
+#save-status p { margin-top:8px; }
+
+@media (max-width: 900px) {
+  .auth-grid, .library { grid-template-columns:1fr; }
+}
+
+/* ---------- Print / Save as PDF: only the reading, with highlights ---------- */
+@media print {
+  .site-header, .site-footer, .skip-link, .settings-panel, .studio-head, .intake, .studio-toolbar,
+  .doc-actions, .help-panel, .reader-empty, #ww-ruler, .doc-title .tag { display:none !important; }
+  body { background:#fff; }
+  .studio-main { display:block; padding:0; }
+  .container-wide { padding:0; max-width:none; }
+  .reader { border:none; box-shadow:none; padding:0; background:transparent; }
+  .r-p { opacity:1 !important; background:none !important; box-shadow:none !important; }
+  .w-speaking, .w-active { background:none !important; outline:none !important; }
+  * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}
+
+/* ---------- Folder tree, colors, subfolders ---------- */
+.folder-list .dash-options-list-option { padding:4px 8px; min-height:40px; }
+.folder-list .dash-options-list-option-wrapper { display:none; }  /* the highlighted row shows the selection */
+.folder-label { display:flex; align-items:center; gap:8px; width:100%; line-height:1.3; letter-spacing:0; word-spacing:0; }
+.folder-branch { color:var(--muted); font-size:.85rem; }
+.folder-dot { display:inline-block; width:12px; height:12px; border-radius:50%; flex:none; box-shadow:0 0 0 2px var(--bg); }
+.folder-icon { width:12px; text-align:center; color:var(--muted); flex:none; }
+.folder-name { flex:1; min-width:0; overflow-wrap:anywhere; }
+.folder-count { font-size:.75rem; font-weight:700; background:var(--bg); border:1px solid var(--border); border-radius:999px; padding:0 8px; color:var(--muted); }
+.folder-tools, .new-folder-box { border-top:1px solid var(--border); padding-top:14px; margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+.folder-tools h3, .new-folder-box h3 { font-family:var(--font-body); font-size:.95rem; margin:0; }
+.mini-label { font-size:.8rem; font-weight:700; color:var(--muted); }
+.move-dropdown.wide { width:100%; }
+.new-folder-box .btn, .folder-tools .btn { align-self:flex-start; }
+.swatch-row { display:flex; flex-wrap:wrap; gap:6px; }
+.swatch-row .dash-options-list-option { padding:0; border:none; background:none; min-height:0; cursor:pointer; }
+.swatch-row .dash-options-list-option-wrapper { position:absolute; opacity:0; pointer-events:none; }
+.swatch-dot { display:block; width:28px; height:28px; border-radius:50%; border:3px solid var(--bg); box-shadow:0 0 0 1px var(--border); }
+.swatch-row .dash-options-list-option:has(input:checked) .swatch-dot { box-shadow:0 0 0 3px var(--navy-900); }
+.swatch-row .dash-options-list-option:has(input:focus-visible) .swatch-dot { outline:3px solid var(--brass-500); outline-offset:2px; }
+.lib-title { display:inline-flex; align-items:center; gap:10px; }
+.lib-title .folder-dot { width:16px; height:16px; }
+.subfolder-chips { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:8px 0 4px; }
+.subfolder-chips:empty { display:none; }
+.folder-chip { display:inline-flex; align-items:center; gap:8px; min-height:40px; padding:4px 14px; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--text); font:inherit; font-size:.9rem; cursor:pointer; }
+.folder-chip:hover { border-color:var(--navy-500); }
+.reading-card .muted .folder-dot { width:10px; height:10px; margin:0 4px 0 2px; vertical-align:middle; }

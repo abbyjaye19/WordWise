@@ -1,0 +1,131 @@
+{
+  "checked": "2026-10-12",
+  "sources": {
+    "nichd-reading":   {"org": "NIH · NICHD", "kind": "Government health", "title": "Reading disorders: condition information", "url": "https://www.nichd.nih.gov/health/topics/reading/conditioninfo", "audience": ["parents", "adults", "educators"], "blurb": "The U.S. National Institutes of Health's overview of reading disorders."},
+    "nichd-symptoms":  {"org": "NIH · NICHD", "kind": "Government health", "title": "What are the symptoms of reading disorders?", "url": "https://www.nichd.nih.gov/health/topics/reading/conditioninfo/symptoms", "audience": ["parents", "adults", "educators"], "blurb": "A short list of common signs, like slow reading and trouble sounding out words."},
+    "nichd-diagnosis": {"org": "NIH · NICHD", "kind": "Government health", "title": "How are reading disorders diagnosed?", "url": "https://www.nichd.nih.gov/health/topics/reading/conditioninfo/diagnosed", "audience": ["parents", "adults", "educators"], "blurb": "What an evaluation usually tests: memory, spelling, visual perception, and reading."},
+    "nichd-treatment": {"org": "NIH · NICHD", "kind": "Government health", "title": "What are the treatments for reading disorders?", "url": "https://www.nichd.nih.gov/health/topics/reading/conditioninfo/treatment", "audience": ["parents", "adults", "educators"], "blurb": "Why trained teachers and early help make the biggest difference."},
+    "nih-news":        {"org": "NIH News in Health", "kind": "Government health", "title": "Decoding dyslexia: helping kids who struggle with reading", "url": "https://newsinhealth.nih.gov/2024/02/decoding-dyslexia", "audience": ["parents", "students"], "blurb": "An easy-to-read NIH article on how reading develops and how dyslexia affects it."},
+    "nhs":             {"org": "NHS (UK)", "kind": "Government health", "title": "Dyslexia", "url": "https://www.nhs.uk/conditions/dyslexia/", "audience": ["parents", "adults"], "blurb": "The UK health service's guide to signs in children and adults, and how to get assessed."},
+    "cleveland":       {"org": "Cleveland Clinic", "kind": "Medical center", "title": "Dyslexia: what it is, symptoms, treatment and types", "url": "https://my.clevelandclinic.org/health/diseases/6005-dyslexia", "audience": ["parents", "adults", "students"], "blurb": "A nonprofit academic medical center's full overview, for children and adults."},
+    "kh-kids":         {"org": "Nemours KidsHealth", "kind": "Medical center", "title": "Understanding dyslexia (for kids)", "url": "https://kidshealth.org/en/kids/dyslexia.html", "audience": ["students"], "blurb": "Written for kids, reviewed by a children's health system."},
+    "kh-teens":        {"org": "Nemours KidsHealth", "kind": "Medical center", "title": "Understanding dyslexia (for teens)", "url": "https://kidshealth.org/en/teens/dyslexia.html", "audience": ["students"], "blurb": "The same trusted information, written for teens."},
+    "kh-parents":      {"org": "Nemours KidsHealth", "kind": "Medical center", "title": "Dyslexia (for parents)", "url": "https://kidshealth.org/en/parents/dyslexia.html", "audience": ["parents"], "blurb": "What parents can do at home and at school."},
+    "aap":             {"org": "American Academy of Pediatrics · HealthyChildren.org", "kind": "Medical organization", "title": "Types of learning problems", "url": "https://www.healthychildren.org/English/health-issues/conditions/learning-disabilities/Pages/Types-of-Learning-Problems.aspx", "audience": ["parents"], "blurb": "Pediatricians explain dyslexia and other learning differences."},
+    "yale-what":       {"org": "Yale Center for Dyslexia & Creativity", "kind": "University", "title": "What is dyslexia?", "url": "https://dyslexia.yale.edu/dyslexia/what-is-dyslexia/", "audience": ["students", "parents", "adults", "educators"], "blurb": "A clear explanation from one of the leading dyslexia research centers."},
+    "yale-faq":        {"org": "Yale Center for Dyslexia & Creativity", "kind": "University", "title": "Dyslexia FAQ", "url": "https://dyslexia.yale.edu/dyslexia/dyslexia-faq/", "audience": ["students", "parents", "adults", "educators"], "blurb": "Answers to common questions and myths, like seeing letters backwards."},
+    "yale-signs":      {"org": "Yale Center for Dyslexia & Creativity", "kind": "University", "title": "Signs of dyslexia", "url": "https://dyslexia.yale.edu/dyslexia/signs-of-dyslexia/", "audience": ["parents", "adults", "educators"], "blurb": "Signs to look for from preschool through adulthood."},
+    "ida-basics":      {"org": "International Dyslexia Association", "kind": "Nonprofit", "title": "Dyslexia basics", "url": "https://dyslexiaida.org/dyslexia-basics/", "audience": ["parents", "adults", "educators"], "blurb": "The leading dyslexia nonprofit's fact sheet on causes and support."},
+    "ida-glance":      {"org": "International Dyslexia Association", "kind": "Nonprofit", "title": "Dyslexia at a glance", "url": "https://dyslexiaida.org/dyslexia-at-a-glance/", "audience": ["parents"], "blurb": "A hopeful starting point for families after a diagnosis."},
+    "ida-assessment":  {"org": "International Dyslexia Association", "kind": "Nonprofit", "title": "Dyslexia assessment: what is it and how can it help?", "url": "https://dyslexiaida.org/dyslexia-assessment-what-is-it-and-how-can-it-help/", "audience": ["parents", "educators"], "blurb": "What a good assessment looks at and why early testing matters."},
+    "ida-accom":       {"org": "International Dyslexia Association", "kind": "Nonprofit", "title": "Accommodations for students with dyslexia", "url": "https://dyslexiaida.org/accommodations-for-students-with-dyslexia/", "audience": ["students", "parents", "educators"], "blurb": "What accommodations are, with classroom and testing examples."},
+    "ida-handbook":    {"org": "International Dyslexia Association", "kind": "Nonprofit", "title": "Dyslexia handbook", "url": "https://dyslexiaida.org/ida-dyslexia-handbook/", "audience": ["parents", "adults", "educators"], "blurb": "IDA's handbook for families, educators, and adults."},
+    "und-adults":      {"org": "Understood.org", "kind": "Nonprofit", "title": "Dyslexia in adults", "url": "https://www.understood.org/en/articles/dyslexia-in-adults", "audience": ["adults"], "blurb": "Signs in adults, getting tested, and support at work."},
+    "und-iep504":      {"org": "Understood.org", "kind": "Nonprofit", "title": "The difference between IEPs and 504 plans", "url": "https://www.understood.org/en/articles/the-difference-between-ieps-and-504-plans", "audience": ["parents", "students", "educators"], "blurb": "A side-by-side comparison of the two main school support plans."},
+    "und-at":          {"org": "Understood.org", "kind": "Nonprofit", "title": "Assistive technology for reading", "url": "https://www.understood.org/en/articles/assistive-technology-for-reading", "audience": ["students", "parents", "adults", "educators"], "blurb": "Text-to-speech, audiobooks, and low-tech tools, and how to choose."},
+    "ed-504":          {"org": "U.S. Department of Education", "kind": "Government", "title": "Section 504", "url": "https://www.ed.gov/laws-and-policy/individuals-disabilities/section-504", "audience": ["parents", "students", "educators"], "blurb": "The civil rights law that gives students with disabilities equal access to education."},
+    "idea":            {"org": "U.S. Department of Education", "kind": "Government", "title": "Individuals with Disabilities Education Act (IDEA)", "url": "https://sites.ed.gov/idea/", "audience": ["parents", "educators"], "blurb": "The federal special education law behind IEPs."},
+    "idea-parents":    {"org": "U.S. Department of Education", "kind": "Government", "title": "IDEA: for parents and families", "url": "https://sites.ed.gov/idea/parents-families/", "audience": ["parents"], "blurb": "The Department of Education's starting page for families."},
+    "cpir-eval":       {"org": "Center for Parent Information and Resources", "kind": "Government-funded", "title": "Evaluating school-aged children for disability", "url": "https://www.parentcenterhub.org/evaluation/", "audience": ["parents", "educators"], "blurb": "Step by step: how a school evaluation works under IDEA."},
+    "cpir-find":       {"org": "Center for Parent Information and Resources", "kind": "Government-funded", "title": "Find your Parent Center", "url": "https://www.parentcenterhub.org/find-your-center/", "audience": ["parents"], "blurb": "A map of the nearly 100 Parent Centers in the U.S. that help families."},
+    "ada-testing":     {"org": "ADA.gov · U.S. Department of Justice", "kind": "Government", "title": "Testing accommodations", "url": "https://www.ada.gov/resources/testing-accommodations/", "audience": ["students", "adults"], "blurb": "Your rights to accommodations on standardized and licensing exams."},
+    "ada-intro":       {"org": "ADA.gov · U.S. Department of Justice", "kind": "Government", "title": "Introduction to the Americans with Disabilities Act", "url": "https://www.ada.gov/topics/intro-to-ada/", "audience": ["adults"], "blurb": "A plain introduction to the ADA's protections."},
+    "eeoc":            {"org": "U.S. Equal Employment Opportunity Commission", "kind": "Government", "title": "Disability-related resources", "url": "https://www.eeoc.gov/disability-discrimination", "audience": ["adults"], "blurb": "Your rights at work, and how to ask for accommodations."},
+    "collegeboard":    {"org": "College Board", "kind": "Testing organization", "title": "Accommodations on College Board exams", "url": "https://accommodations.collegeboard.org/", "audience": ["students", "parents"], "blurb": "How to request accommodations for the PSAT, SAT, and AP exams."},
+    "act":             {"org": "ACT", "kind": "Testing organization", "title": "ACT accommodations", "url": "https://www.act.org/content/act/en/products-and-services/the-act/registration/accommodations.html", "audience": ["students", "parents"], "blurb": "How to request accommodations for the ACT."},
+    "nls":             {"org": "Library of Congress · NLS", "kind": "Government", "title": "Who is eligible for NLS talking books", "url": "https://www.loc.gov/nls/about/eligibility-for-nls-services/", "audience": ["students", "parents", "adults"], "blurb": "Free audiobooks and braille for people with a reading disability."},
+    "bookshare":       {"org": "Bookshare (Benetech)", "kind": "Nonprofit", "title": "Who qualifies for Bookshare?", "url": "https://www.bookshare.org/cms/bookshare-me/who-qualifies", "audience": ["students", "parents", "educators"], "blurb": "Accessible ebooks with read-aloud and highlighting; supported by the U.S. Department of Education."},
+    "learningally":    {"org": "Learning Ally", "kind": "Nonprofit", "title": "Audiobooks for dyslexia and reading differences", "url": "https://learningally.org/", "audience": ["students", "parents", "educators"], "blurb": "Human-narrated audiobooks for students with dyslexia."}
+  },
+  "topics": [
+    {
+      "id": "understanding",
+      "title": "Understanding dyslexia",
+      "icon": "Aa",
+      "audience": ["students", "parents", "adults", "educators"],
+      "intro": "What dyslexia is, what it is not, and why it has nothing to do with being smart.",
+      "points": [
+        {"text": "Dyslexia makes it hard to connect letters to the sounds they make. That makes reading and spelling harder.", "src": ["nih-news", "yale-what", "ida-basics"]},
+        {"text": "Dyslexia has nothing to do with how smart you are.", "src": ["yale-what", "nhs", "ida-basics"]},
+        {"text": "It is common. Estimates range from about 5 in 100 people to as many as 1 in 5.", "src": ["und-adults", "yale-faq"]},
+        {"text": "Dyslexia is lifelong, but with the right teaching and support, people learn to read and do well in school and work.", "src": ["yale-faq", "nichd-treatment", "cleveland"]},
+        {"text": "Myth: people with dyslexia see letters backwards. Many young children flip letters while learning to write. Most children with dyslexia do not.", "src": ["yale-faq"]},
+        {"text": "Dyslexia is about the sounds of language, not eyesight. Special fonts or glasses are not a treatment. WordWise's font and color settings are there for comfort only.", "src": ["yale-faq"]}
+      ],
+      "links": ["kh-kids", "kh-teens", "nih-news", "yale-what", "yale-faq", "nichd-reading", "cleveland", "nhs", "ida-basics"]
+    },
+    {
+      "id": "evaluation",
+      "title": "Signs and getting an evaluation",
+      "icon": "?",
+      "audience": ["parents", "adults", "educators"],
+      "intro": "What to look for, and how a professional evaluation works. WordWise cannot diagnose dyslexia.",
+      "points": [
+        {"text": "Common signs include trouble sounding out words, linking sounds to letters, and spelling, plus slow reading and trouble understanding what was read.", "src": ["nichd-symptoms"]},
+        {"text": "Signs can show up as early as preschool. Dyslexia often runs in families.", "src": ["yale-signs"]},
+        {"text": "An evaluation is usually a set of tests of memory, spelling, visual perception, and reading. Family history and how the child responds to teaching count too.", "src": ["nichd-diagnosis"]},
+        {"text": "In U.S. public schools, a full evaluation comes before special education services, and parents must give consent first.", "src": ["cpir-eval"]},
+        {"text": "Getting help early leads to better results, but adults can be tested too. It's never too late.", "src": ["nichd-treatment", "und-adults"]}
+      ],
+      "links": ["nichd-symptoms", "nichd-diagnosis", "yale-signs", "ida-assessment", "cpir-eval", "und-adults"]
+    },
+    {
+      "id": "accommodations",
+      "title": "School and work accommodations",
+      "icon": "✓",
+      "audience": ["students", "parents", "adults", "educators"],
+      "intro": "Extra time, audiobooks, and other changes that let you show what you know.",
+      "points": [
+        {"text": "Accommodations change how you learn or show what you know. They don't lower expectations or give an unfair advantage.", "src": ["ida-accom"]},
+        {"text": "Examples include extra time on tests, large print, and listening to text in audio form.", "src": ["ida-accom"]},
+        {"text": "In U.S. schools, an IEP gives special teaching and services, and a 504 plan removes barriers in regular classes.", "src": ["und-iep504", "ed-504", "idea"]},
+        {"text": "For the PSAT, SAT, and AP exams, accommodations must be requested and approved ahead of time, and it's best to ask through your school.", "src": ["collegeboard"]},
+        {"text": "The ADA requires testing organizations to make exams accessible, and it protects people with disabilities at work.", "src": ["ada-testing", "eeoc"]}
+      ],
+      "links": ["ida-accom", "und-iep504", "ed-504", "idea", "collegeboard", "act", "ada-testing", "eeoc"]
+    },
+    {
+      "id": "technology",
+      "title": "Helpful technology",
+      "icon": "♪",
+      "audience": ["students", "parents", "adults", "educators"],
+      "intro": "Tools that read aloud, highlight along, and open up books.",
+      "points": [
+        {"text": "If you don't know where to start, try text-to-speech, which reads text out loud. WordWise has it built in.", "src": ["und-at"]},
+        {"text": "Using assistive technology doesn't keep people from learning to read.", "src": ["und-at"]},
+        {"text": "The Library of Congress runs a free audiobook library for people with a reading disability that makes print hard to read.", "src": ["nls"]},
+        {"text": "Bookshare offers accessible ebooks with read-aloud and highlighting for people with qualifying print disabilities, including learning disabilities.", "src": ["bookshare"]},
+        {"text": "Learning Ally, a nonprofit, offers human-narrated audiobooks for students with dyslexia.", "src": ["learningally"]}
+      ],
+      "links": ["und-at", "nls", "bookshare", "learningally"]
+    },
+    {
+      "id": "parents",
+      "title": "For parents and families",
+      "icon": "♥",
+      "audience": ["parents"],
+      "intro": "How to support a child who finds reading hard, and where to get help.",
+      "points": [
+        {"text": "Children with dyslexia can get frustrated. Some act out, and some become quiet or withdrawn, at school and at home.", "src": ["nhs"]},
+        {"text": "If you're worried, talk to your child's teacher. You can ask the school about an evaluation.", "src": ["cpir-eval", "nhs"]},
+        {"text": "The U.S. has nearly 100 Parent Centers that help families of children with disabilities, from birth to age 26.", "src": ["cpir-find"]},
+        {"text": "With the right teaching, almost all people with dyslexia can learn to read.", "src": ["ida-glance"]}
+      ],
+      "links": ["kh-parents", "aap", "nih-news", "ida-glance", "cpir-find", "idea-parents", "yale-signs"]
+    },
+    {
+      "id": "adults",
+      "title": "For adult learners",
+      "icon": "→",
+      "audience": ["adults"],
+      "intro": "It's never too late to get answers and support.",
+      "points": [
+        {"text": "Dyslexia lasts your whole life. If you are diagnosed as an adult, you had it as a child too. It just wasn't noticed.", "src": ["und-adults"]},
+        {"text": "Adults can get tested, and a diagnosis can help you get the right support at work.", "src": ["und-adults"]},
+        {"text": "Tools like apps that read text aloud, plus using your strengths, help adults manage dyslexia.", "src": ["und-adults"]},
+        {"text": "The ADA protects people with disabilities at work, and the EEOC explains how to ask for accommodations.", "src": ["ada-intro", "eeoc"]}
+      ],
+      "links": ["und-adults", "nhs", "cleveland", "ida-handbook", "ada-intro", "eeoc", "nls"]
+    }
+  ]
+}

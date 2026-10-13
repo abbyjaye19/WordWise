@@ -1,0 +1,104 @@
+# WordWise
+
+An AI reading-support website for people with dyslexia and other reading challenges: adjustable reading tools, "explain it my way" help on hard passages, and a guide to resources and tutors.
+
+> 🚧 In development. The Reading Studio works end to end; the tutor directory, resources, and accounts come next.
+
+**Who it's for:** students aged about 5 to 30 reading books (for school or fun), class materials, and lecture slides, especially readers with dyslexia. The focus is easier reading **and** better comprehension.
+
+## Run it locally
+
+You need Python 3.10 or newer.
+
+1. Clone this repo and open a terminal in the project folder.
+2. Put a `.env` file containing `PORTKEY_API_KEY=...` in this folder **or** the folder one level up. See `.env.example`. Without a key the site still runs and every non-AI reading tool still works; only the AI help buttons show a message.
+3. Install the dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Start the site:
+   ```bash
+   python app/main.py
+   ```
+5. Open **http://127.0.0.1:8050** in your browser.
+6. To stop the site, press `Ctrl+C` in the terminal.
+
+## What works now
+
+- **Reading Studio** (Reading Assistant in the menu):
+  - Bring in a reading: upload a PDF, PowerPoint (`.pptx`), Word (`.docx`), or `.txt` file, paste text, or pick one of 4 samples (ages 5–8 up to college).
+  - Read aloud with each word highlighted as it's spoken, with slow/normal/fast speeds. This uses the browser's built-in voices, so it's free and needs no key.
+  - Tap a word to look it up, highlight it (3 marker colors), or start reading aloud from there. There's also a reading ruler and a one-paragraph focus mode.
+  - AI help at the reader's level (ages 5–8, 9–12, 13–17, 18+):
+    - **Word Coach:** meaning in this sentence, syllables, how to say it, synonyms, and an example.
+    - **Explainer:** simpler words, an example, or step-by-step for a selected passage.
+    - **Comprehension Coach:** big idea, key points, words to know, and "check yourself" questions with answers you tap to reveal.
+  - AI answers are always labeled and shown beside the original text, and each has a 🔊 Listen button.
+- **Accounts:** create an account with a username, email, and password, then sign in with either the username or the email.
+- **Library** (My Dashboard): saved readings keep their highlights and stay saved through refreshes and across visits. You can:
+  - make color-coded folders (7 colors) and subfolders up to 3 levels deep
+  - move readings between folders
+  - open a saved reading back in the studio
+  - delete readings or folders (deleting a folder keeps its readings)
+- **Reading goals** (My Dashboard):
+  - Pick a daily minutes goal, and see today's progress, your streak, this week's total, and a 7-day chart.
+  - Keep a checklist of your own goals with optional due dates.
+  - Reading time is counted only while a reading is open in the studio, the tab is visible, and you're active (or read-aloud is playing).
+  - The server caps each time report.
+- **My words:**
+  - Press **☆ Save word** on any Word Coach answer to add it to your word bank, along with its meaning, syllables, synonyms, example, and the reading it came from.
+  - Review your words on My Dashboard. You can search them, filter by "Still learning" or "I know it", use quiz mode to hide meanings, or listen to each one.
+- **Download** a reading the way you set it up, with your highlights, font, size, spacing, and background: **Word (.docx)**, **Web page (.html)**, or **Print / Save as PDF**. Downloading doesn't need an account.
+- **Resources:** 6 plain-language topics, each with a 🔊 Listen button and an audience filter (students, parents, adults, teachers). The topics are understanding dyslexia, signs and evaluation, accommodations, technology, parents, and adults. Every fact links to its source. The 35 sources are all from government health or education agencies, medical centers, a university research center, or established nonprofits. The content lives in `data/resources.json`, with the date the links were last checked.
+- **AI Tutor** (`/ai-tutor`, plus the floating "Ask the AI Tutor" button on every page): a free chat tutor at the student's reading level.
+  - It can see the reading that's open in the studio.
+  - Press Enter to send, and each answer has a 🔊 Listen button.
+  - It guides students through homework rather than doing it for them, and points to 988 or a trusted adult if a student says they're unsafe.
+  - Chats survive refreshes within the browser tab.
+- **Tutor Directory:** 15 legitimate places to find a tutor yourself, filterable by age, format, and cost:
+  - official certified-specialist directories (IDA, CERI, Wilson, ALTA, Barton, ASHA)
+  - free or low-cost programs (Children's Dyslexia Centers, New Haven Reads, Reading Partners, ProLiteracy)
+  - Lindamood-Bell
+  - general tutoring sites
+  - Khan Academy
+
+  It also has a "before you choose a tutor" checklist based on IDA guidance. WordWise doesn't list or check individual tutors. The data is in `data/tutoring_sites.json`.
+- **Reading settings** (top right on every page): text size, spacing, font, and background. These are saved in your browser.
+- The other sections are placeholders for now.
+
+## Test data
+
+`data/sample/passages.json` holds 4 short original passages for quick testing. Any PDF, slides, or Word file can be uploaded for real use (limits: 15 MB, 60 pages/slides).
+
+## Accounts and saved data
+
+- Accounts, folders, and saved readings are stored in a local SQLite file, `data/wordwise.db`. It's created automatically on first run and is **not** committed to git, so a fresh clone starts with no accounts.
+- Passwords are stored only as salted scrypt hashes. The login cookie is signed, HttpOnly, and SameSite=Lax, and lasts 30 days. The signing key is generated once into `data/.secret_key` (also not committed); you can set `WORDWISE_SECRET_KEY` to override it.
+- Every library query is limited to the signed-in user. Sign-in pauses for 5 minutes after 5 wrong passwords.
+- Students under 13 are asked to create an account with a parent or guardian.
+
+## AI cost and safety (so far)
+
+- The only model used is `gpt-6-luna` via Portkey (`app/services/ai.py`). The app checks the model name on every reply.
+- Every call is logged to `output/usage_log.jsonl` with input, cached, and output tokens and its cost (prices are in `data/prices.json`).
+- **Daily spending cap:** `$2.00` by default. Change it with the environment variable `WORDWISE_DAILY_BUDGET_USD`. After the cap, the AI buttons pause and all the reading tools keep working.
+- Repeat questions are answered from a cache, so they cost nothing.
+- Uploaded text is wrapped in `<reading>` tags, and the prompts tell the model to treat it as content, never as instructions. Selections are capped at 3,000 characters and summaries at 40,000.
+
+## Project layout
+
+| Path | Purpose |
+|---|---|
+| `app/main.py` | Starts the website; holds the shared layout and callbacks |
+| `app/config.py` | Paths, `.env` loading (this folder, then one folder up), and the model name |
+| `app/pages/` | One file per page. A new file with `dash.register_page` becomes a new page |
+| `app/components/` | Header, footer, settings panel, and shared building blocks |
+| `app/services/` | `ai.py` (AI helpers, logging, budget), `documents.py` (file reading), `schemas.py` (AI answer shapes), `db.py` / `accounts.py` / `library.py` (accounts and saved readings), `export.py` (Word/HTML downloads) |
+| `app/assets/` | `style.css` (design system), `studio.css` and `studio.js` (Reading Studio tools), `library.css` (accounts, library, print layout), `skyline.svg` (campus line art) |
+| `prompts/` | System prompts: `shared_rules.md` plus one per AI helper |
+| `data/sample/` | Small test dataset |
+| `output/` | Token/cost logs and run traces |
+| `tests/` | Tests, including safety checks |
+| `deliverables/` | `report.html`, `slides.html`, and screenshots |
+| `AI_prompts.md` | Log of every prompt given to the vibe coder |
+| `PROJECT_REQUIREMENTS.md` | Course requirements checklist |

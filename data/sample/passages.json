@@ -1,0 +1,48 @@
+[
+  {
+    "id": "fox-and-crow",
+    "title": "The Fox and the Crow",
+    "level": "Ages 5–8 · story",
+    "paragraphs": [
+      "A crow found a piece of cheese. She flew up to a high branch to eat it.",
+      "A hungry fox saw the crow. He wanted the cheese very much. He sat under the tree and looked up.",
+      "\"Good morning, Crow!\" said the fox. \"Your feathers are so shiny. I bet your voice is lovely too. Will you sing for me?\"",
+      "The crow felt proud. She opened her beak to sing. Caw! The cheese fell down, and the fox caught it.",
+      "\"Thank you,\" said the fox. \"Next time, be careful when someone says nice things just to get what they want.\""
+    ]
+  },
+  {
+    "id": "photosynthesis",
+    "title": "How Plants Make Food",
+    "level": "Ages 9–12 · science",
+    "paragraphs": [
+      "Every green plant is a tiny food factory. Plants do not eat the way animals do. Instead, they make their own food through a process called photosynthesis.",
+      "Photosynthesis happens mostly in the leaves. Inside each leaf are millions of chloroplasts. Chloroplasts contain chlorophyll, the green pigment that captures energy from sunlight.",
+      "The plant also needs two ingredients. Roots absorb water from the soil, and tiny openings in the leaves, called stomata, take in carbon dioxide from the air.",
+      "Using the sun's energy, the plant combines water and carbon dioxide to make glucose, a type of sugar. The plant uses glucose for energy and to grow.",
+      "Photosynthesis also produces oxygen, which the plant releases into the air. Almost every breath you take contains oxygen that came from a plant."
+    ]
+  },
+  {
+    "id": "industrial-revolution",
+    "title": "The Industrial Revolution",
+    "level": "Ages 13–17 · history",
+    "paragraphs": [
+      "Beginning in Britain in the late 1700s, the Industrial Revolution transformed how goods were produced. Work that had been done by hand in homes and small workshops increasingly moved into factories powered by machines.",
+      "Several factors made Britain the starting point. It had large deposits of coal and iron, a growing network of canals and later railways, and merchants with capital to invest. New inventions, such as the improved steam engine, allowed factories to be built away from rivers.",
+      "The changes brought both progress and hardship. Manufactured goods became cheaper and more widely available, and cities grew rapidly. However, factory workers, including many children, often labored long hours in dangerous conditions for low wages.",
+      "Over time, these conditions prompted reforms. Laws gradually limited child labor and working hours, and workers organized into unions to bargain for better pay and safety."
+    ]
+  },
+  {
+    "id": "opportunity-cost",
+    "title": "Lecture Notes: Opportunity Cost",
+    "level": "Ages 18+ · college lecture",
+    "paragraphs": [
+      "Opportunity cost is the value of the next-best alternative forgone when a decision is made. Because resources such as time, money, and attention are scarce, every choice implies a trade-off.",
+      "Consider a student deciding whether to work a paid shift or attend an optional review session. If the student attends the session, the opportunity cost is the wages not earned; if the student works, the opportunity cost is the expected improvement in exam performance.",
+      "Importantly, opportunity cost includes implicit costs that do not appear as cash expenditures. A firm that uses its own building rather than renting it out incurs an opportunity cost equal to the rent it could have collected.",
+      "Rational decision-making therefore compares marginal benefits with marginal costs, where costs are measured in terms of opportunities forgone rather than only in terms of money spent."
+    ]
+  }
+]

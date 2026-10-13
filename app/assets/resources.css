@@ -1,0 +1,72 @@
+/* Resources page — uses tokens from style.css */
+
+.trust-note { display:flex; gap:20px; align-items:flex-start; border-left:5px solid var(--brass-500); }
+.trust-note h2 { font-size:1.25rem; }
+.trust-note p:last-child { margin-bottom:0; }
+.trust-mark { color:var(--brass-500); font-size:1.4rem; line-height:1; margin-top:4px; }
+
+.resource-filter { margin:32px 0 12px; }
+.filter-title { font-size:1.1rem; font-family:var(--font-body); margin-bottom:10px; }
+
+.topic-jump { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 24px; }
+.jump-link { display:inline-flex; align-items:center; min-height:40px; padding:4px 14px; border-radius:999px; background:var(--navy-100); color:var(--navy-900); text-decoration:none; font-weight:700; font-size:.9rem; }
+.jump-link:hover { background:var(--navy-700); color:var(--cream-50); }
+
+.topics { display:flex; flex-direction:column; gap:24px; }
+.topic { scroll-margin-top:100px; }
+.topic-head { display:grid; grid-template-columns:auto 1fr auto; gap:16px; align-items:start; margin-bottom:8px; }
+.topic-head .feature-icon { margin:0; }
+.topic-head h2 { margin-bottom:.2em; }
+.topic-intro { color:var(--muted); margin:0; }
+.topic h3 { font-family:var(--font-body); font-size:1rem; color:var(--heading); margin:20px 0 8px; }
+
+.fact-list { margin:0; padding-left:1.2em; }
+.fact-list li { margin-bottom:12px; max-width:75ch; }
+.cite-row { display:block; font-size:.8rem; color:var(--muted); margin-top:2px; }
+.cite-label { font-weight:700; }
+.cite { color:var(--heading); }
+
+.link-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:12px; }
+.link-card { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:6px; }
+.link-card p { margin:0; font-size:.9rem; }
+.link-meta { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.link-org { font-size:.8rem; color:var(--muted); font-weight:700; }
+.link-title { font-weight:700; color:var(--heading); text-underline-offset:3px; line-height:1.35; }
+.kind { font-size:.7rem; font-weight:700; padding:1px 8px; border-radius:999px; color:var(--navy-900); }
+.kind-gov { background:var(--navy-100); }
+.kind-med { background:#CFE3D3; }
+.kind-uni { background:#F1DFB5; }
+.kind-npo { background:var(--cream-300); }
+
+@media (max-width: 700px) {
+  .topic-head { grid-template-columns:auto 1fr; }
+  .topic-head .speak-btn { grid-column:1 / -1; justify-self:start; }
+}
+
+/* ---------- Tutor Directory ---------- */
+.tutor-ai-callout { margin-bottom:20px; }
+.tutor-filters { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:16px; margin:28px 0 8px; }
+.tutor-filter h3 { font-family:var(--font-body); font-size:1rem; margin-bottom:8px; }
+.tutor-group { margin-top:28px; }
+.tutor-group h2 { font-size:1.4rem; margin-bottom:.2em; }
+.site-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:14px; margin-top:14px; }
+/* Directory cards stay compact even when wide reading spacing is on: they are for scanning, not long reading. */
+.site-card, .link-card { line-height:1.4; letter-spacing:.005em; word-spacing:0; }
+.site-card { display:flex; flex-direction:column; gap:8px; padding:18px 20px; font-size:.9rem; }
+.site-card p { margin:0; }
+.site-card .btn { align-self:flex-start; margin-top:auto; }
+.site-head { display:flex; flex-direction:column; gap:4px; align-items:flex-start; }
+.site-head h3 { margin:0; font-size:1.05rem; line-height:1.3; }
+.site-head .link-org { font-size:.78rem; }
+.site-tags { display:flex; flex-wrap:wrap; gap:6px; }
+.mini-tag { font-size:.75rem; font-weight:700; padding:2px 9px; border-radius:999px; background:var(--navy-100); color:var(--navy-900); }
+.mini-tag-place { background:var(--cream-300); }
+.site-how { color:var(--text); }
+.site-note { font-size:.8rem; }
+.checklist { margin-top:36px; border-left:5px solid var(--brass-500); }
+.check-list { padding-left:1.3em; }
+.check-list li { margin-bottom:8px; max-width:75ch; }
+
+@media (max-width: 900px) {
+  .tutor-filters { grid-template-columns:1fr; }
+}

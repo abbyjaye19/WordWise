@@ -1,0 +1,47 @@
+/* AI Tutor chat + floating "Ask the AI Tutor" button — tokens from style.css */
+
+.tutor-layout { display:grid; grid-template-columns:minmax(0, 1fr) 340px; gap:24px; align-items:start; padding-top:16px; padding-bottom:24px; }
+.chat-card { display:flex; flex-direction:column; padding:0; overflow:hidden; }
+.chat-messages { height:min(62vh, 640px); overflow-y:auto; padding:24px; display:flex; flex-direction:column; gap:14px; background:var(--bg); }
+.chat-empty { margin:auto; text-align:center; max-width:420px; }
+.chat-empty .feature-icon { margin:0 auto 12px; }
+.chat-empty p { margin:0 auto; }
+
+.bubble { max-width:82%; border-radius:16px; padding:12px 16px; }
+.bubble p:last-child { margin-bottom:0; }
+.bubble-user { align-self:flex-end; background:var(--navy-700); color:var(--cream-50); border-bottom-right-radius:4px; }
+.bubble-user p { color:var(--cream-50); white-space:pre-wrap; }
+.bubble-tutor { align-self:flex-start; border-bottom-left-radius:4px; }
+.bubble-tutor .ai-answer-head { margin-bottom:4px; }
+.bubble-tutor .ai-label { margin:0; }
+.bubble-tutor .speak-btn { background:var(--cream-50); color:var(--navy-900); border-color:var(--navy-500); min-height:34px; font-size:13px; }
+.bubble-md, .bubble-md p, .bubble-md li { color:var(--navy-900); }
+.bubble-md p { margin:0 0 .6em; }
+.bubble-md ul, .bubble-md ol { margin:0 0 .6em; padding-left:1.3em; }
+.bubble-md em { font-style:normal; font-weight:700; }
+.bubble-error { align-self:stretch; }
+
+.chat-typing { display:flex; align-items:center; gap:8px; padding:8px 24px; color:var(--muted); font-size:.9rem; background:var(--bg); }
+.typing-dots { display:inline-flex; gap:4px; }
+.typing-dots i { width:7px; height:7px; border-radius:50%; background:var(--navy-500); animation:ww-bounce 1s infinite ease-in-out; }
+.typing-dots i:nth-child(2) { animation-delay:.15s; }
+.typing-dots i:nth-child(3) { animation-delay:.3s; }
+@keyframes ww-bounce { 0%, 80%, 100% { transform:translateY(0); opacity:.4; } 40% { transform:translateY(-5px); opacity:1; } }
+
+.chat-input-row { display:flex; gap:10px; padding:14px 16px; border-top:1px solid var(--border); background:var(--surface); align-items:flex-end; }
+.chat-input { flex:1; min-height:52px; max-height:180px; resize:vertical; border:1px solid var(--border); border-radius:10px; padding:12px; font:inherit; background:var(--bg); color:var(--text); }
+.chat-disclaimer { padding:0 16px 12px; margin:0; background:var(--surface); }
+.tutor-side .help-block:last-of-type { border-bottom:none; }
+.starter-list { display:flex; flex-direction:column; gap:6px; }
+.tutor-human { margin-top:16px; }
+
+/* Floating button on every page */
+.tutor-fab { position:fixed; right:22px; bottom:22px; z-index:30; display:inline-flex; align-items:center; gap:8px; min-height:52px; padding:0 20px; border-radius:999px; background:var(--navy-700); color:var(--cream-50); text-decoration:none; font-weight:700; box-shadow:0 6px 20px rgba(15,31,61,.3); border:2px solid var(--brass-500); font-size:16px; letter-spacing:0; word-spacing:0; }
+.tutor-fab:hover { background:var(--navy-500); }
+.tutor-fab-dot { width:10px; height:10px; border-radius:50%; background:var(--brass-500); }
+
+@media (max-width: 1000px) {
+  .tutor-layout { grid-template-columns:1fr; }
+  .bubble { max-width:94%; }
+}
+@media print { .tutor-fab { display:none !important; } }

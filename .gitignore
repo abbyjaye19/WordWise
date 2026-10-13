@@ -1,0 +1,15 @@
+.env
+*.env
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+venv/
+.claude/*
+!.claude/skills/
+~$*.docx
+# Personal planning docs in the project root (not part of the app)
+/*.docx
+# Local user data: accounts, saved readings, and the session signing key
+data/wordwise.db
+data/.secret_key

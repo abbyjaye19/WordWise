@@ -1,0 +1,147 @@
+{
+  "checked": "2026-10-12",
+  "groups": [
+    {"id": "certified", "title": "Directories of certified reading specialists", "intro": "Search these official lists to find people trained in proven methods for dyslexia, such as Structured Literacy and Orton-Gillingham. Each provider sets their own prices."},
+    {"id": "programs", "title": "Free and low-cost tutoring programs", "intro": "Nonprofit programs that tutor students for free or at minimal cost. Some have waitlists or only serve certain areas."},
+    {"id": "centers", "title": "Learning centers and online programs", "intro": "Paid programs with their own teaching methods, in person or online."},
+    {"id": "marketplaces", "title": "General tutoring sites", "intro": "Large sites where you browse and hire tutors yourself. Tutors are not checked for dyslexia training, so use the checklist below."},
+    {"id": "selfstudy", "title": "Free practice on your own", "intro": "Free lessons you can use any time, alongside a tutor or on your own."}
+  ],
+  "sites": [
+    {
+      "id": "ida-directory", "group": "certified", "name": "IDA Provider Directory",
+      "org": "International Dyslexia Association", "url": "https://dyslexialibrary.org/find-a-provider/",
+      "what": "A directory of IDA member professionals who offer tutoring, reading instruction, assessment, educational therapy, speech-language therapy, advocacy, and more.",
+      "how": "Search by service and location, then contact providers directly.",
+      "ages": ["kids", "teens", "adults"], "format": ["online", "in-person"], "cost": "search-free",
+      "cost_label": "Free to search · providers set fees",
+      "note": "IDA says listings are not an endorsement, so check credentials yourself."
+    },
+    {
+      "id": "ceri", "group": "certified", "name": "CERI: Find a Structured Literacy Professional",
+      "org": "Center for Effective Reading Instruction (linked from IDA)", "url": "https://effectivereading.org/provider-listings/",
+      "what": "A directory of professionals certified in Structured Literacy, the teaching approach IDA recommends for dyslexia.",
+      "how": "Find a certified professional near you or online, then contact them directly.",
+      "ages": ["kids", "teens", "adults"], "format": ["online", "in-person"], "cost": "search-free",
+      "cost_label": "Free to search · providers set fees"
+    },
+    {
+      "id": "wilson", "group": "certified", "name": "Wilson Reading System: Find a Certified Instructor",
+      "org": "Wilson Language Training", "url": "https://www.wilsonlanguage.com/wilson-works/find-a-certified-instructor/",
+      "what": "A map of currently credentialed Wilson Dyslexia Practitioners and Therapists.",
+      "how": "Click your area on the map to see certified instructors.",
+      "ages": ["kids", "teens", "adults"], "format": ["online", "in-person"], "cost": "search-free",
+      "cost_label": "Free to search · instructors set fees",
+      "note": "Wilson lists only people whose credentials are current."
+    },
+    {
+      "id": "alta", "group": "certified", "name": "ALTA: Certified Academic Language Therapists",
+      "org": "Academic Language Therapy Association", "url": "https://www.altaread.org/",
+      "what": "ALTA certifies academic language therapists who provide evidence-based dyslexia therapy.",
+      "how": "Use ALTA's site to find a certified therapist near you.",
+      "ages": ["kids", "teens", "adults"], "format": ["online", "in-person"], "cost": "search-free",
+      "cost_label": "Free to search · therapists set fees"
+    },
+    {
+      "id": "barton", "group": "certified", "name": "Barton Reading & Spelling: Tutors",
+      "org": "Barton Reading & Spelling System", "url": "https://bartonreading.com/tutors/",
+      "what": "Find a Certified Barton Tutor locally or online, or have a trusted adult (like a relative) pass Barton's tutor screening and tutor at home with the program.",
+      "how": "Look up certified tutors in your area, or follow the steps to tutor your own student.",
+      "ages": ["kids", "teens", "adults"], "format": ["online", "in-person"], "cost": "paid",
+      "cost_label": "Tutors set fees · program materials sold separately"
+    },
+    {
+      "id": "asha", "group": "certified", "name": "ASHA ProFind",
+      "org": "American Speech-Language-Hearing Association", "url": "https://www.asha.org/profind/",
+      "what": "Find from over 20,000 ASHA-certified speech-language pathologists who are accepting referrals. They can help with spoken and written language difficulties.",
+      "how": "Search by location and specialty.",
+      "ages": ["kids", "teens", "adults"], "format": ["online", "in-person"], "cost": "search-free",
+      "cost_label": "Free to search · providers set fees"
+    },
+    {
+      "id": "cdc", "group": "programs", "name": "Children's Dyslexia Centers",
+      "org": "Scottish Rite Freemasonry (nonprofit)", "url": "https://childrensdyslexiacenters.org/centers/",
+      "what": "One-on-one tutoring for grades 1–12, twice a week after school (about 55 minutes), using a structured language approach. More than 40 centers in 13 states.",
+      "how": "Find a center in your state and contact it to apply.",
+      "ages": ["kids", "teens"], "format": ["in-person"], "cost": "free",
+      "cost_label": "Minimal or no cost"
+    },
+    {
+      "id": "nhr", "group": "programs", "name": "New Haven Reads",
+      "org": "Nonprofit · New Haven, CT", "url": "https://newhavenreads.org/programs/tutoring",
+      "what": "Free one-on-one literacy tutoring for any student struggling with reading in grades 1–12, at least one hour a week, at four New Haven locations.",
+      "how": "Fill out the waitlist application on their site (also available in Spanish).",
+      "ages": ["kids", "teens"], "format": ["in-person"], "cost": "free",
+      "cost_label": "Free", "local": "Greater New Haven, Connecticut"
+    },
+    {
+      "id": "reading-partners", "group": "programs", "name": "Reading Partners",
+      "org": "National nonprofit", "url": "https://readingpartners.org/",
+      "what": "Twice-weekly one-on-one reading tutoring for elementary students in partner schools, using a phonics-based approach.",
+      "how": "Ask your child's school if it partners with Reading Partners.",
+      "ages": ["kids"], "format": ["in-person"], "cost": "free",
+      "cost_label": "Offered through partner schools"
+    },
+    {
+      "id": "proliteracy", "group": "programs", "name": "ProLiteracy",
+      "org": "Adult literacy nonprofit", "url": "https://www.proliteracy.org/",
+      "what": "A leading adult literacy organization that supports reading programs for adults across the U.S.",
+      "how": "Use their site to find adult literacy programs and resources.",
+      "ages": ["adults"], "format": ["in-person", "online"], "cost": "paid",
+      "cost_label": "Varies by local program"
+    },
+    {
+      "id": "lindamood-bell", "group": "centers", "name": "Lindamood-Bell Learning Centers",
+      "org": "Lindamood-Bell", "url": "https://lindamoodbell.com/learning-centers",
+      "what": "Reading and comprehension instruction at learning centers and through an online academy. It starts with a learning ability evaluation.",
+      "how": "Find a center near you, or ask about the online academy.",
+      "ages": ["kids", "teens", "adults"], "format": ["in-person", "online"], "cost": "paid",
+      "cost_label": "Paid"
+    },
+    {
+      "id": "wyzant", "group": "marketplaces", "name": "Wyzant",
+      "org": "Tutoring marketplace", "url": "https://www.wyzant.com/",
+      "what": "Browse private tutors in 300+ subjects and compare ratings.",
+      "how": "Search for “reading” or “dyslexia,” then interview tutors using the checklist below.",
+      "ages": ["kids", "teens", "adults"], "format": ["online", "in-person"], "cost": "paid",
+      "cost_label": "Paid · each tutor sets a rate"
+    },
+    {
+      "id": "varsity", "group": "marketplaces", "name": "Varsity Tutors",
+      "org": "Tutoring marketplace", "url": "https://www.varsitytutors.com/",
+      "what": "Private and group tutoring, classes, and test prep online in 3,000+ subjects.",
+      "how": "Request a reading tutor and ask about their training with dyslexia.",
+      "ages": ["kids", "teens", "adults"], "format": ["online"], "cost": "paid",
+      "cost_label": "Paid"
+    },
+    {
+      "id": "outschool", "group": "marketplaces", "name": "Outschool",
+      "org": "Online class marketplace", "url": "https://outschool.com/",
+      "what": "Live online classes for kids ages 3–18 in a huge range of subjects.",
+      "how": "Search for reading or dyslexia classes and read the teacher's profile.",
+      "ages": ["kids", "teens"], "format": ["online"], "cost": "paid",
+      "cost_label": "Paid · per class"
+    },
+    {
+      "id": "khan", "group": "selfstudy", "name": "Khan Academy",
+      "org": "Nonprofit", "url": "https://www.khanacademy.org/",
+      "what": "Free online lessons and practice in many school subjects.",
+      "how": "Create a free account and pick a course at your level.",
+      "ages": ["kids", "teens", "adults"], "format": ["online"], "cost": "free",
+      "cost_label": "Free"
+    }
+  ],
+  "checklist": {
+    "source": {"org": "International Dyslexia Association", "title": "Evaluating professionals", "url": "https://dyslexiaida.org/evaluating-professionals-fact-sheet/"},
+    "directory_source": {"title": "IDA provider directories", "url": "https://dyslexiaida.org/provider-directories/"},
+    "items": [
+      "Ask about their training in methods made for dyslexia, like Structured Literacy or Orton-Gillingham.",
+      "Ask which program certified them, what level they finished, and when.",
+      "Ask for references from other parents, students, or professionals.",
+      "Ask how they set goals and measure progress.",
+      "Meet first. Make sure the tutor is a good fit, and that they work with your age group.",
+      "Ask to see their background check and child abuse clearance.",
+      "Remember: being listed in a directory doesn't mean a tutor is recommended. You make the final choice."
+    ]
+  }
+}

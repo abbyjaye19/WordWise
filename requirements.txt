@@ -1,0 +1,7 @@
+dash>=4.0
+python-dotenv
+openai>=2.0
+pydantic>=2.0
+pypdf
+python-pptx
+python-docx

@@ -1,0 +1,47 @@
+/* Cartoon library touches: a bookshelf above the footer, book stacks in page headers,
+   and an open book in empty states and callouts. Decorative only (aria-hidden / alt=""),
+   never placed behind text. Illustrations: scripts/make_books.py */
+
+/* Bookshelf strip on every page, sitting on top of the footer */
+.bookshelf {
+  height:120px;
+  margin-top:48px;
+  background:url("/assets/bookshelf.svg") repeat-x left bottom / auto 120px;
+}
+.site-footer { margin-top:0; }
+
+/* Book stack at the right of each page header band */
+.page-header { position:relative; overflow:hidden; }
+.page-header-inner { position:relative; }
+.page-header-inner > .header-books {
+  position:absolute; right:24px; bottom:12px;
+  width:150px; height:auto; padding:0; background:none;
+}
+.page-header .lead { max-width:min(68ch, calc(100% - 190px)); }
+
+/* Reading Studio + AI Tutor headers get a smaller stack */
+.studio-head .container-wide { position:relative; }
+.studio-head .container-wide::after {
+  content:""; position:absolute; right:24px; bottom:-6px; width:120px; height:106px;
+  background:url("/assets/book-stack.svg") center / contain no-repeat;
+}
+.studio-head .lead { max-width:min(68ch, calc(100% - 160px)); }
+
+/* Open book in empty states */
+.reader-empty-inner::before {
+  content:""; display:block; width:96px; height:64px; margin:0 auto 10px;
+  background:url("/assets/open-book.svg") center / contain no-repeat;
+}
+
+/* Callouts: the open book replaces the dotted circle */
+.callout-shape {
+  width:150px; height:100px; border-radius:0;
+  background:url("/assets/open-book.svg") center / contain no-repeat !important;
+}
+
+@media (max-width: 900px) {
+  .page-header-inner > .header-books, .studio-head .container-wide::after { display:none; }
+  .page-header .lead, .studio-head .lead { max-width:68ch; }
+  .bookshelf { height:90px; background-size:auto 90px; }
+}
+@media print { .bookshelf, .header-books { display:none !important; } }

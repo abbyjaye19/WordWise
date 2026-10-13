@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 220" fill="none" stroke="#FBF8F1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Line drawing of a college campus skyline">
+  <!-- Original collegiate line art inspired by a gothic campus: gate, tower, library. Not an official logo. -->
+  <!-- ground -->
+  <path d="M10 205 H630"/>
+
+  <!-- Gate building (left) -->
+  <path d="M30 205 V120 H170 V205"/>
+  <path d="M30 120 v-10 h12 v10 m10 0 v-10 h12 v10 m10 0 v-10 h12 v10 m10 0 v-10 h12 v10 m10 0 v-10 h12 v10 m10 0 v-10 h12 v10"/>
+  <path d="M22 205 V95 H44 V205 M156 205 V95 H178 V205"/>
+  <path d="M22 95 l11 -16 l11 16 M156 95 l11 -16 l11 16"/>
+  <path d="M80 205 V165 Q100 135 120 165 V205"/>
+  <path d="M55 140 v14 M145 140 v14"/>
+
+  <!-- Tall tower (center) -->
+  <path d="M265 205 V110 H335 V205"/>
+  <path d="M273 110 V70 H327 V110"/>
+  <path d="M281 70 V40 H319 V70"/>
+  <path d="M289 40 V22 H311 V40"/>
+  <path d="M300 22 V6"/>
+  <path d="M265 110 l-6 -14 M335 110 l6 -14 M273 70 l-5 -12 M327 70 l5 -12 M281 40 l-4 -10 M319 40 l4 -10"/>
+  <path d="M290 205 V180 Q300 166 310 180 V205"/>
+  <path d="M282 150 V128 Q286 120 290 128 V150 M310 150 V128 Q314 120 318 128 V150"/>
+  <path d="M292 100 V84 Q300 74 308 84 V100"/>
+  <circle cx="300" cy="55" r="7"/>
+
+  <!-- Library (right) -->
+  <path d="M380 205 V150 L420 128 H560 L600 150 V205"/>
+  <path d="M465 205 V95 H515 V205"/>
+  <path d="M465 95 L490 62 L515 95"/>
+  <path d="M490 62 V50"/>
+  <circle cx="490" cy="120" r="12"/>
+  <path d="M478 120 H502 M490 108 V132"/>
+  <path d="M398 190 V162 Q404 152 410 162 V190 M425 190 V162 Q431 152 437 162 V190 M543 190 V162 Q549 152 555 162 V190 M570 190 V162 Q576 152 582 162 V190"/>
+  <path d="M480 205 V172 Q490 158 500 172 V205"/>
+
+  <!-- Trees -->
+  <path d="M215 205 V185"/>
+  <circle cx="215" cy="172" r="15"/>
+  <path d="M232 205 V190"/>
+  <circle cx="232" cy="181" r="10"/>
+  <path d="M362 205 V188"/>
+  <circle cx="362" cy="176" r="13"/>
+  <path d="M618 205 V190"/>
+  <circle cx="618" cy="180" r="11"/>
+
+  <!-- Brass accents -->
+  <g stroke="#B08D57">
+    <path d="M300 2 l3 4 l-3 4 l-3 -4 z" fill="#B08D57"/>
+    <path d="M490 46 l3 4 l-3 4 l-3 -4 z" fill="#B08D57"/>
+    <circle cx="590" cy="40" r="14"/>
+  </g>
+</svg>

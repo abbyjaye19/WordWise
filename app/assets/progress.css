@@ -1,0 +1,95 @@
+/* Reading goals + My words (My Dashboard), and the "Today" meter in the Reading Studio.
+   Chart colors validated with the dataviz palette checker against each theme surface:
+   light/blue: bars #1B3366, goal line #8A6630 · dark: bars #7F9FDB, goal line #F2C46B. */
+
+:root { --bar:#1B3366; --goal-line:#8A6630; --grid:#E6DCC6; }
+html[data-theme="blue"] { --grid:#C9D3E5; }
+html[data-theme="dark"] { --bar:#7F9FDB; --goal-line:#F2C46B; --grid:#2E4370; }
+
+.progress-section { padding-top:8px; padding-bottom:24px; }
+.section-head { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+.section-head h2 { margin-bottom:.15em; }
+.section-head .muted { margin:0; }
+.goal-pick { display:flex; flex-direction:column; gap:4px; }
+
+/* ---------- Stat tiles ---------- */
+.stat-row { display:grid; grid-template-columns:1.4fr repeat(3, 1fr); gap:12px; margin-bottom:20px; }
+.stat-tile { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; line-height:1.3; letter-spacing:0; word-spacing:0; }
+.stat-tile p { margin:0; }
+.stat-label { font-size:.8rem; font-weight:700; color:var(--muted); margin-bottom:4px !important; }
+.stat-value { font-size:2rem; font-weight:700; color:var(--heading); font-variant-numeric:tabular-nums; }
+.stat-hero .stat-value { font-size:3rem; }
+.stat-unit { font-size:.95rem; color:var(--muted); font-weight:700; }
+.stat-note { font-size:.8rem; color:var(--muted); margin-top:4px !important; }
+.meter { height:10px; border-radius:999px; background:var(--navy-100); margin-top:8px; overflow:hidden; }
+html[data-theme="dark"] .meter { background:#2E4370; }
+.meter-fill { height:100%; background:var(--bar); border-radius:999px; }
+
+/* ---------- 7-day chart (single series + goal line) ---------- */
+.week-chart-wrap h3 { font-family:var(--font-body); font-size:1rem; margin-bottom:10px; }
+.week-chart { position:relative; display:grid; grid-template-columns:repeat(7, 1fr); gap:2px; height:220px; padding:0 70px 0 0; border-bottom:1px solid var(--grid); margin-bottom:6px; letter-spacing:0; word-spacing:0; }
+.wk-col { display:flex; flex-direction:column; align-items:center; height:100%; }
+.wk-plot { flex:1; width:100%; display:flex; align-items:flex-end; justify-content:center; }
+.wk-bar { position:relative; width:min(24px, 70%); background:var(--bar); border-radius:4px 4px 0 0; outline-offset:3px; cursor:default; }
+.wk-bar:hover, .wk-bar:focus-visible { filter:brightness(1.25); }
+.wk-value { position:absolute; bottom:calc(100% + 4px); left:50%; transform:translateX(-50%); font-size:.8rem; font-weight:700; color:var(--text); white-space:nowrap; }
+.wk-bar[data-tip]:hover::after, .wk-bar[data-tip]:focus-visible::after { content:attr(data-tip); position:absolute; bottom:calc(100% + 24px); left:50%; transform:translateX(-50%); background:var(--navy-900); color:var(--cream-50); font-size:.75rem; padding:4px 8px; border-radius:6px; white-space:nowrap; z-index:5; }
+.wk-day { position:absolute; bottom:-26px; font-size:.78rem; color:var(--muted); }
+.wk-col { position:relative; }
+.wk-today .wk-day { font-weight:700; color:var(--text); }
+.wk-met { position:absolute; bottom:-44px; font-size:.8rem; font-weight:700; color:var(--sage-600); }
+html[data-theme="dark"] .wk-met { color:#9CCBA6; }
+.wk-goal { position:absolute; left:0; right:0; height:0; border-top:2px solid var(--goal-line); z-index:2; pointer-events:none; }
+.wk-goal-label { position:absolute; right:0; top:-10px; font-size:.75rem; font-weight:700; color:var(--text); background:var(--surface); padding:0 4px; }
+.week-chart-wrap { margin-bottom:52px; }
+
+/* ---------- Personal goals ---------- */
+.personal-goals { border-top:1px solid var(--border); padding-top:16px; }
+.personal-goals h3 { font-family:var(--font-body); font-size:1.05rem; margin-bottom:2px; }
+.goal-add { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:10px 0; }
+.goal-add .text-input { flex:1 1 260px; min-height:44px; }
+.goal-date .SingleDatePickerInput { border-radius:8px; border:1px solid var(--border); overflow:hidden; }
+.goal-date .DateInput_input { font:inherit; font-size:.9rem; padding:9px 10px; }
+.goal-list { list-style:none; margin:8px 0 0; padding:0; display:flex; flex-direction:column; gap:6px; }
+.goal-item { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:4px 12px; line-height:1.35; letter-spacing:0; word-spacing:0; }
+.goal-item.done .goal-check .dash-options-list-option-text { text-decoration:line-through; color:var(--muted); }
+.goal-check { flex:1; }
+.goal-check .dash-options-list-option { display:flex; align-items:center; gap:10px; min-height:40px; cursor:pointer; }
+.goal-due { font-size:.78rem; font-weight:700; color:var(--muted); }
+.goal-due.soon { color:var(--heading); }
+.goal-due.overdue { color:var(--brick-600); }
+html[data-theme="dark"] .goal-due.overdue { color:#F0A89D; }
+.goal-empty { padding:8px 0; }
+.link-btn { background:none; border:none; color:var(--muted); font:inherit; font-size:.82rem; text-decoration:underline; cursor:pointer; min-height:36px; padding:0 4px; }
+.link-btn:hover { color:var(--brick-600); }
+
+/* ---------- My words ---------- */
+.word-counts { display:flex; gap:6px; flex-wrap:wrap; }
+.word-controls { display:flex; flex-wrap:wrap; gap:12px 20px; align-items:center; margin-bottom:16px; }
+.word-controls .text-input { flex:0 1 260px; min-height:44px; }
+.word-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px; }
+.word-card { background:var(--bg); border:1px solid var(--border); border-left:5px solid var(--bar); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:6px; font-size:.92rem; line-height:1.4; letter-spacing:.005em; word-spacing:0; }
+.word-card.known { border-left-color:var(--sage-600); }
+.word-card p { margin:0; }
+.word-card-head { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+.word-card h3 { margin:0; font-size:1.25rem; }
+.word-sound { font-size:.82rem; color:var(--muted); }
+.word-meaning { color:var(--text); }
+.word-example, .word-source { font-size:.82rem; color:var(--muted); }
+.word-reveal summary { cursor:pointer; font-weight:700; color:var(--heading); min-height:32px; }
+.word-actions { display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:4px; }
+.icon-btn { min-width:40px; padding:4px 8px; }
+
+/* ---------- Studio: save word + today meter ---------- */
+.word-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.ai-answer .word-head .btn { background:var(--cream-50); color:var(--navy-900); border-color:var(--navy-500); }
+#save-word-status p { margin:4px 0 0; }
+.today-reading { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:8px; font-size:.85rem; }
+.mini-meter { width:120px; height:8px; border-radius:999px; background:var(--navy-100); overflow:hidden; }
+.mini-meter-fill { height:100%; background:var(--bar); }
+
+@media (max-width: 900px) {
+  .stat-row { grid-template-columns:1fr 1fr; }
+  .week-chart { padding-right:0; }
+  .wk-goal-label { top:-18px; }
+}
