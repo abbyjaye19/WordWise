@@ -139,4 +139,8 @@ The first prompt asked for "real tutors," which would have meant listing individ
 
 > i delted notes from the folder, make sure steps 1-3 are done before it is pushed, then it cna be pushed to GitHub
 
+**Prompt 2:**
+
+> i created it and should be all set so please push
+
 ---
