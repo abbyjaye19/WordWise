@@ -160,3 +160,11 @@ The first prompt asked for "real tutors," which would have meant listing individ
 > please start with the dry run from a fresh clone
 
 ---
+
+## Phase 14: Demo Account Script
+
+**Prompt 1:**
+
+> push it and then make the demo account script
+
+---

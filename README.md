@@ -38,6 +38,22 @@ You need Python 3.10 or newer. Setup takes about 2 minutes; it was tested from a
 6. Open **http://127.0.0.1:8050** in your browser. On first run the app creates its own local database (`data/wordwise.db`), so start by making an account with **Sign in → Create an account**.
 7. To stop the site, press `Ctrl+C` in the terminal.
 
+### Optional: load a demo account (recommended for graders)
+
+To explore the library, folders, saved words, and reading goals without setting anything up, run this once (no API key needed, no AI calls):
+
+```bash
+python scripts/seed_demo.py
+```
+
+Then sign in with username **`demo`** and password **`wordwise-demo`**. You'll find:
+- color-coded folders and subfolders holding the 4 sample readings, with highlights
+- 7 saved words
+- a week of reading time with a 3-day streak
+- personal goals with due dates
+
+Run `python scripts/seed_demo.py --reset` to start the demo account over. Other accounts are never touched.
+
 If port 8050 is already in use, pick another one: `WORDWISE_PORT=8060 python app/main.py` (Mac/Linux), or on Windows run `set WORDWISE_PORT=8060` first.
 
 ## What works now
