@@ -168,3 +168,11 @@ The first prompt asked for "real tutors," which would have meant listing individ
 > push it and then make the demo account script
 
 ---
+
+## Phase 15: Tokenomics
+
+**Prompt 1:**
+
+> push it and then start the tokenomics work
+
+---

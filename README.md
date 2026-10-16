@@ -110,6 +110,22 @@ If port 8050 is already in use, pick another one: `WORDWISE_PORT=8060 python app
 - Every library query is limited to the signed-in user. Sign-in pauses for 5 minutes after 5 wrong passwords.
 - Students under 13 are asked to create an account with a parent or guardian.
 
+## Tokenomics (measured)
+
+The numbers come from real calls; see `output/tokenomics/projections.md`. To reproduce them (needs a key, costs about $0.01):
+
+```bash
+python scripts/measure_tokenomics.py
+python scripts/project_costs.py
+python scripts/quality_check.py
+```
+
+- One study session is 16 AI calls (8 word lookups, 3 explains, 1 summary, 4 tutor messages). It costs **$0.00137**.
+- That's **29% less** than before (**$0.00194**). Every helper now starts with the same reader-level guide (`prompts/reading_levels.md`), which pushes the fixed instructions past the 1,024-token minimum for prompt caching. About 89% of input tokens are then billed at the cached rate, which is 10x cheaper. A quality check found no loss, so this saving is free.
+- When a classmate makes the exact same request, Portkey replays the stored answer for **$0**. The app reads `x-portkey-cache-status` and logs those calls as free.
+- Reasoning effort "low" is used because "medium" costs 93% more per word lookup and is 65% slower.
+- A typical student (12 sessions a month) costs about **$0.017/month**. That's **$1.65/month for 100 students** and **$165/month for 10,000** (AI only).
+
 ## AI cost and safety (so far)
 
 - The only model used is `gpt-6-luna` via Portkey (`app/services/ai.py`). The app checks the model name on every reply.

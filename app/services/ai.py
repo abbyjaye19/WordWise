@@ -51,11 +51,29 @@ def _client() -> OpenAI:
     return OpenAI(api_key=PORTKEY_API_KEY, base_url=PORTKEY_BASE_URL, timeout=60, max_retries=2)
 
 
-@lru_cache(maxsize=None)
+# Cost settings (measured in scripts/measure_tokenomics.py):
+#  - USE_LEVEL_GUIDE: every helper's instructions start with the same ~1,300-token block
+#    (shared rules + reader-level guide). The provider only caches a repeated prefix of
+#    1,024+ tokens, and cached input costs 10x less, so this shared block is billed at the
+#    cached rate on almost every call. Without it, prompts were ~650 tokens and never cached.
+#  - REASONING_EFFORT: "low" keeps hidden reasoning tokens (billed as output) small.
+USE_LEVEL_GUIDE = True
+REASONING_EFFORT = "low"
+
+
 def _instructions(role: str) -> str:
-    """Static system prompt (shared rules + role). Identical every call, so it can be cached."""
-    shared = (PROMPTS_DIR / "shared_rules.md").read_text(encoding="utf-8")
-    return shared + "\n\n" + (PROMPTS_DIR / f"{role}.md").read_text(encoding="utf-8")
+    """Static system prompt. The shared part comes first and is identical for every helper,
+    so one cached prefix serves the Word Coach, Explainer, Comprehension Coach, and AI Tutor."""
+    return _instructions_cached(role, USE_LEVEL_GUIDE)
+
+
+@lru_cache(maxsize=None)
+def _instructions_cached(role: str, level_guide: bool) -> str:
+    parts = [(PROMPTS_DIR / "shared_rules.md").read_text(encoding="utf-8")]
+    if level_guide:
+        parts.append((PROMPTS_DIR / "reading_levels.md").read_text(encoding="utf-8"))
+    parts.append((PROMPTS_DIR / f"{role}.md").read_text(encoding="utf-8"))
+    return "\n\n".join(parts)
 
 
 # ---------- spending guard + logging ----------
@@ -87,13 +105,22 @@ def _cost(inp: int, cached: int, written: int, out: int) -> float:
     ) / 1e6
 
 
-def _log(feature: str, resp, seconds: float) -> None:
+LOG_EXTRA: dict = {}  # extra fields added to every log record (the measurement script tags its runs)
+# Extra request headers. The measurement script sets {"x-portkey-cache-force-refresh": "true"}
+# so it measures the model rather than Portkey's replay cache.
+EXTRA_HEADERS: dict = {}
+
+
+def _log(feature: str, resp, seconds: float, gateway_cache: str | None = None) -> None:
+    """gateway_cache is Portkey's x-portkey-cache-status. On a HIT, Portkey replays a stored answer
+    for an identical earlier request and the model is not called, so the call costs $0."""
     u = resp.usage
     details = u.input_tokens_details
     cached = getattr(details, "cached_tokens", 0) or 0
     written = getattr(details, "cache_write_tokens", 0) or 0
     reasoning = getattr(u.output_tokens_details, "reasoning_tokens", 0) or 0
-    cost = _cost(u.input_tokens, cached, written, u.output_tokens)
+    hit = (gateway_cache or "").upper() == "HIT"
+    cost = 0.0 if hit else _cost(u.input_tokens, cached, written, u.output_tokens)
     rec = {
         "time": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "feature": feature,
@@ -105,9 +132,11 @@ def _log(feature: str, resp, seconds: float) -> None:
         "reasoning_tokens": reasoning,
         "cost_usd": round(cost, 8),
         "seconds": round(seconds, 2),
+        "gateway_cache": gateway_cache or "",
+        **LOG_EXTRA,
     }
     with _lock:
-        OUTPUT_DIR.mkdir(exist_ok=True)
+        USAGE_LOG.parent.mkdir(parents=True, exist_ok=True)
         with USAGE_LOG.open("a", encoding="utf-8") as f:
             f.write(json.dumps(rec) + "\n")
         _spent_today()
@@ -115,32 +144,34 @@ def _log(feature: str, resp, seconds: float) -> None:
 
 
 def _guarded(feature: str, request):
-    """Run one model request with the budget check, model check, and usage log."""
+    """Run one model request with the budget check, model check, and usage log.
+    `request(client)` must return a raw response (client.responses.with_raw_response.*)."""
     if _spent_today() >= DAILY_BUDGET_USD:
         raise AIError("WordWise has reached today's AI limit. Reading tools still work. AI help will be back tomorrow.")
     start = time.perf_counter()
     try:
-        resp = request(_client())
+        raw = request(_client().with_options(default_headers=EXTRA_HEADERS) if EXTRA_HEADERS else _client())
+        resp = raw.parse()
     except AIError:
         raise
     except Exception as exc:  # noqa: BLE001 - network/API problems become a friendly message
         raise AIError("We couldn't reach the AI helper just now. Please try again in a moment.") from exc
     if not (resp.model or "").startswith(MODEL_NAME):
         raise AIError("An unexpected AI model answered, so we stopped.")
-    _log(feature, resp, time.perf_counter() - start)
+    _log(feature, resp, time.perf_counter() - start, raw.headers.get("x-portkey-cache-status"))
     return resp
 
 
 def _call(feature: str, role: str, user_input: str, schema: type[BaseModel], max_tokens: int) -> BaseModel:
     resp = _guarded(
         feature,
-        lambda c: c.responses.parse(
+        lambda c: c.responses.with_raw_response.parse(
             model=MODEL_NAME,
             instructions=_instructions(role),
             input=user_input,
             text_format=schema,
             max_output_tokens=max_tokens,
-            reasoning={"effort": "low"},
+            reasoning={"effort": REASONING_EFFORT},
         ),
     )
     if resp.output_parsed is None:
@@ -202,12 +233,12 @@ def tutor_reply(history: list[dict], level: str, reading: str | None = None) -> 
     ]
     resp = _guarded(
         "tutor_chat",
-        lambda c: c.responses.create(
+        lambda c: c.responses.with_raw_response.create(
             model=MODEL_NAME,
             instructions=_instructions("ai_tutor"),
             input=messages,
             max_output_tokens=1200,
-            reasoning={"effort": "low"},
+            reasoning={"effort": REASONING_EFFORT},
         ),
     )
     text = (resp.output_text or "").strip()
