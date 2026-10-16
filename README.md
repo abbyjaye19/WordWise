@@ -8,20 +8,37 @@ An AI reading-support website for people with dyslexia and other reading challen
 
 ## Run it locally
 
-You need Python 3.10 or newer.
+You need Python 3.10 or newer. Setup takes about 2 minutes; it was tested from a fresh clone on 2026-10-15.
 
-1. Clone this repo and open a terminal in the project folder.
+1. Clone this repo and open a terminal in the project folder:
+   ```bash
+   git clone https://github.com/abbyjaye19/WordWise.git
+   cd WordWise
+   ```
 2. Put a `.env` file containing `PORTKEY_API_KEY=...` in this folder **or** the folder one level up. See `.env.example`. Without a key the site still runs and every non-AI reading tool still works; only the AI help buttons show a message.
-3. Install the dependencies:
+3. (Recommended) Make a clean virtual environment so other packages on your computer can't interfere:
+   - Windows:
+     ```bash
+     python -m venv .venv
+     .venv\Scripts\activate
+     ```
+   - Mac or Linux:
+     ```bash
+     python3 -m venv .venv
+     source .venv/bin/activate
+     ```
+4. Install the dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-4. Start the site:
+5. Start the site. On Mac or Linux without a virtual environment, use `python3` instead of `python`:
    ```bash
    python app/main.py
    ```
-5. Open **http://127.0.0.1:8050** in your browser.
-6. To stop the site, press `Ctrl+C` in the terminal.
+6. Open **http://127.0.0.1:8050** in your browser. On first run the app creates its own local database (`data/wordwise.db`), so start by making an account with **Sign in → Create an account**.
+7. To stop the site, press `Ctrl+C` in the terminal.
+
+If port 8050 is already in use, pick another one: `WORDWISE_PORT=8060 python app/main.py` (Mac/Linux), or on Windows run `set WORDWISE_PORT=8060` first.
 
 ## What works now
 

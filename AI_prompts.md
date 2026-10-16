@@ -144,3 +144,19 @@ The first prompt asked for "real tutors," which would have meant listing individ
 > i created it and should be all set so please push
 
 ---
+
+## Phase 12: Next Steps
+
+**Prompt 1:**
+
+> what is the next step for the project, what is missing
+
+---
+
+## Phase 13: Fresh-Clone Dry Run
+
+**Prompt 1:**
+
+> please start with the dry run from a fresh clone
+
+---
