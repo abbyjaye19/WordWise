@@ -218,4 +218,10 @@ The first prompt asked for "real tutors," which would have meant listing individ
 
 The earlier slide request didn't name the audience, so the first deck used the app's student-friendly tone; this prompt clarified the audience is the professor and TAs.
 
+**Follow-up prompt:**
+
+> I need the slides to look more like consulting slides, not just a few bullt points, diagrams, different designsa and slide layouts, i need more
+
+The redesign was more professional but still mostly bullets and tables; this prompt asked for a consulting-style deck with varied layouts and visual exhibits.
+
 ---
