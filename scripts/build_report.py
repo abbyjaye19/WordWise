@@ -117,7 +117,7 @@ def sec_motivation() -> str:
 <section>
 <h2>1. Motivation</h2>
 <h3>Who has the problem</h3>
-<p>Students from about age 5 to 30 who find reading hard, especially students with dyslexia. Dyslexia is common: the Yale Center for Dyslexia &amp; Creativity estimates it affects about 20 percent of people,<sup><a href="#s1">1</a></sup> and Understood.org cites estimates of 5 to 17.5 percent of people in the United States.<sup><a href="#s2">2</a></sup> Sources disagree on the exact number, but even the low end means several students in a typical class.</p>
+<p>Students from about age 5 to 30 who find reading hard, especially students with dyslexia. Prevalence depends on the definition used. The International Dyslexia Association reports that 6–7% of U.S. students are classified as having a learning disability and that about 85% of them have a primary disability in reading and language processing, which implies roughly 5–6% of students are formally identified; it adds that "perhaps as many as 15–20%" of the population have some symptoms of dyslexia, most of whom never qualify for special education.<sup><a href="#s12">12</a></sup> Other estimates fall in the same range (5–17.5% per Understood.org; up to 20% per the Yale Center for Dyslexia &amp; Creativity).<sup><a href="#s1">1</a>,<a href="#s2">2</a></sup> The gap between the identified and symptomatic populations is the core opportunity: most struggling readers receive no formal support.</p>
 <p>Dyslexia makes it hard to connect letters to the sounds they make, so reading is slow and effortful. It has nothing to do with intelligence.<sup><a href="#s1">1</a>,<a href="#s3">3</a></sup> The National Institutes of Health lists common signs as trouble sounding out words, spelling mistakes, slow reading, and trouble understanding what was just read.<sup><a href="#s4">4</a></sup> That last one matters most for school: when decoding takes all of a student's effort, comprehension suffers.</p>
 <h3>How they handle it today</h3>
 <ul>
@@ -310,7 +310,7 @@ def sec_impact() -> str:
 <section>
 <h2>6. Impact</h2>
 <h3>Reach</h3>
-<p>If dyslexia affects 5 to 20 percent of people,<sup><a href="#s1">1</a>,<a href="#s2">2</a></sup> a school of 1,000 students has roughly 50 to 200 students who could benefit, plus many more who simply find reading hard. Because the reading tools need no AI and the AI costs about {money(typ_after['1'], 3)} per typical student per month, a whole school of 1,000 typical users would cost about {money(typ_after['1'] * 1000, 0)} a month in AI.</p>
+<p>Using the IDA figures,<sup><a href="#s12">12</a></sup> a school of 1,000 students has roughly 50–60 formally identified students and up to 150–200 with some symptoms of dyslexia, most of whom receive no formal support. Because the reading tools need no AI and the AI costs about {money(typ_after['1'], 3)} per typical student per month, a whole school of 1,000 typical users would cost about {money(typ_after['1'] * 1000, 0)} a month in AI.</p>
 <h3>Money</h3>
 <p>Specialized instruction is effective but expensive and hard to find.<sup><a href="#s5">5</a>,<a href="#s6">6</a></sup> WordWise doesn't replace a trained tutor. It makes the hours between tutoring sessions more productive, and its Tutor Directory points families to free and low-cost options, such as Children's Dyslexia Centers ("minimal or no cost") and New Haven Reads (free one-on-one tutoring, grades 1–12).<sup><a href="#s9">9</a>,<a href="#s10">10</a></sup></p>
 <h3>Time and quality</h3>
@@ -358,6 +358,7 @@ SOURCES = [
     ("Children's Dyslexia Centers, “Services”", "https://childrensdyslexiacenters.org/get-help/services/"),
     ("New Haven Reads, “Tutoring”", "https://newhavenreads.org/programs/tutoring"),
     ("International Dyslexia Association, “Dyslexia assessment: what is it and how can it help?”", "https://dyslexiaida.org/dyslexia-assessment-what-is-it-and-how-can-it-help/"),
+    ("International Dyslexia Association, “Dyslexia basics”", "https://dyslexiaida.org/dyslexia-basics/"),
 ]
 
 

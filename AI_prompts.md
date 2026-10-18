@@ -203,4 +203,19 @@ The first prompt asked for "real tutors," which would have meant listing individ
 
 > I will do the tetsing later, but move to the next steps
 
+**Prompt 2:**
+
+> show me the slides and report
+
+---
+
+## Phase 19: Slide Redesign for the Course Audience
+
+**Prompt 1:**
+
+> these slides are for my professor/TAs, to explaint he project, not to explain it to the customer (let me know if i am misunderstandiong, that.  the slides are way too simple. The slides look a bit messy, I don’t like the format and how things are shoved together and cut off (if this is due to the slide format being designed ina way for people with dyslexia, then note that in the first slide).  Also 20% of people having dyslexia seems very high,
+>  alot of thw wording seems like it is meant to be read by little kids (such as slide two the first bullet point)
+
+The earlier slide request didn't name the audience, so the first deck used the app's student-friendly tone; this prompt clarified the audience is the professor and TAs.
+
 ---
