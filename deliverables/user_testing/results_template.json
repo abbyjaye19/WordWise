@@ -1,0 +1,32 @@
+{
+  "_how_to_use": "Copy this file to deliverables/user_testing.json, replace the example tester with real results (one object per tester), then run: python scripts/build_report.py and python scripts/build_slides.py",
+  "dates": "October 2026",
+  "testers": [
+    {
+      "id": "Tester 1",
+      "who": "EXAMPLE ONLY: student, age 15, has dyslexia",
+      "passage_without": "A",
+      "passage_with": "B",
+      "time_without_s": 300,
+      "time_with_s": 270,
+      "score_without": 1.5,
+      "score_with": 2.5,
+      "reader_level": "13-17",
+      "tools_used": ["Read aloud", "Tap a word", "Sum it up", "Check yourself"],
+      "survey": {
+        "easy_to_use": 5,
+        "right_level": 4,
+        "helped_understand": 5,
+        "less_tiring": 4,
+        "ai_help_distinct": 5,
+        "would_use": 5
+      },
+      "most_helpful": "EXAMPLE: read aloud",
+      "confusing": "EXAMPLE: didn't notice the Sum it up button at first",
+      "one_sentence": "EXAMPLE: It reads to you and explains the hard parts.",
+      "quotes": ["EXAMPLE quote in the tester's own words"],
+      "problems": ["EXAMPLE: bug or confusion observed"],
+      "needed_help": "EXAMPLE: asked where the read-aloud button was"
+    }
+  ]
+}

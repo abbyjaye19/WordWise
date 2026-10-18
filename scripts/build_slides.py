@@ -54,6 +54,16 @@ st = summary["settings"]
 before, after = st["before"]["run2"]["session_cost_usd"], st["after"]["run2"]["session_cost_usd"]
 typ = proj["monthly_usd"]["After (shared guide, cached)"]["typical"]
 passed = sum(r["passed"] for r in safety)
+UT = ROOT / "deliverables" / "user_testing.json"
+if UT.exists():
+    _ts = json.loads(UT.read_text(encoding="utf-8"))["testers"]
+    _n = len(_ts)
+    _tw, _tn = sum(t["time_with_s"] for t in _ts) / _n, sum(t["time_without_s"] for t in _ts) / _n
+    _sw, _sn = sum(t["score_with"] for t in _ts) / _n, sum(t["score_without"] for t in _ts) / _n
+    REAL_USERS = (f"<strong>Real users ({_n}):</strong> comprehension {_sn:.1f} → <strong>{_sw:.1f} / 3</strong>, "
+                  f"reading time {(_tw - _tn) / _tn:+.0%} with WordWise")
+else:
+    REAL_USERS = "<strong>Real users:</strong> testing with students and families (results in the report)"
 skyline = svg_data_uri(ROOT / "app" / "assets" / "skyline.svg")
 books = svg_data_uri(ROOT / "app" / "assets" / "book-stack.svg")
 shelf = svg_data_uri(ROOT / "app" / "assets" / "bookshelf.svg")
@@ -140,7 +150,7 @@ SLIDES = f"""
     <li><strong>Reach:</strong> roughly 50–200 students in a school of 1,000 could benefit</li>
     <li><strong>Money:</strong> about <strong>${typ['1'] * 1000:,.0f} a month</strong> in AI for 1,000 typical students; points families to free tutoring</li>
     <li><strong>Time:</strong> answers in about 2–5 seconds, right next to the text</li>
-    <li class="pending-li"><strong>Real users:</strong> testing with students and families (results in the report)</li>
+    <li>{REAL_USERS}</li>
   </ul>
 </section>
 

@@ -188,3 +188,11 @@ The first prompt asked for "real tutors," which would have meant listing individ
 > yes push it
 
 ---
+
+## Phase 17: User Testing Setup
+
+**Prompt 1:**
+
+> my name is correct, help me set up the user testing
+
+---

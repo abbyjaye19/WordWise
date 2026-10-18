@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WordWise · User testing kit</title>
+<style>
+:root { --navy:#0F1F3D; --navy7:#1B3366; --navy5:#3C5A8F; --navy1:#DCE3F0; --cream:#FBF8F1; --cream1:#F4EEE1; --cream3:#E6DCC6; --brass:#B08D57; --muted:#4A5874; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--cream); color:var(--navy); font-family:"Atkinson Hyperlegible", Verdana, sans-serif; font-size:12pt; line-height:1.55; }
+main { max-width:8.5in; margin:0 auto; padding:0.6in 0.75in; }
+h1, h2, h3 { font-family:"Libre Baskerville", Georgia, serif; color:var(--navy7); line-height:1.25; }
+h1 { font-size:26pt; margin:0 0 4px; }
+h2 { font-size:17pt; margin:26px 0 8px; padding-bottom:6px; border-bottom:2px solid var(--brass); }
+h3 { font-size:13pt; margin:16px 0 6px; }
+.eyebrow { color:var(--brass); font-weight:700; margin:0; font-size:10pt; }
+.who { font-size:9.5pt; font-weight:700; color:var(--brass); text-transform:none; margin:0 0 4px; }
+.box { background:var(--cream1); border:1px solid var(--cream3); border-radius:10px; padding:12px 16px; margin:10px 0; }
+.say { background:var(--navy1); border-left:5px solid var(--navy5); border-radius:8px; padding:10px 14px; margin:10px 0; }
+table { width:100%; border-collapse:collapse; margin:8px 0 12px; font-size:11pt; }
+th { background:var(--navy7); color:var(--cream); text-align:left; padding:6px 8px; }
+td { border:1px solid var(--cream3); padding:7px 8px; vertical-align:top; }
+.line { border-bottom:1px solid var(--muted); height:30px; }
+.lines-3 .line { height:34px; }
+.likert td { text-align:center; width:11%; } .likert td:first-child { text-align:left; width:45%; }
+.check { display:inline-block; width:15px; height:15px; border:1.5px solid var(--navy); border-radius:3px; margin-right:6px; vertical-align:-2px; }
+.answer { color:var(--navy7); }
+.tester-page { font-size:14pt; line-height:1.7; }
+.tester-page h2 { font-size:20pt; }
+.small { font-size:10pt; color:var(--muted); }
+code { background:var(--cream1); padding:1px 5px; border-radius:4px; font-size:.9em; }
+.page { break-before:page; }
+@page { size:letter; margin:0.55in; }
+@media print { body { background:#fff; } main { padding:0; } .box, .say { break-inside:avoid; } table { break-inside:avoid; } * { -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+</style>
+</head>
+<body><main>
+
+<p class="eyebrow">WordWise · MGT 409 final project</p>
+<h1>User testing kit</h1>
+<p>About <strong>25–30 minutes per person</strong>. Test with <strong>1 to 3 people</strong>. Pages marked <em>Facilitator</em> are for you; pages marked <em>Tester</em> are printed or shown to the person testing.</p>
+
+<h2>1. What we want to learn</h2>
+<ol>
+  <li><strong>Time:</strong> Does reading take more or less time with WordWise?</li>
+  <li><strong>Understanding:</strong> Do testers answer comprehension questions better with WordWise?</li>
+  <li><strong>Experience:</strong> Is it easy to use? Which tools help most? What is confusing?</li>
+</ol>
+<p class="small">With only 1–3 people this is a small, honest pilot, not a scientific study. The report will say so.</p>
+
+<h2>2. Who to ask</h2>
+<table>
+<tr><th>Good testers (any 1–3)</th><th>Why</th></tr>
+<tr><td>A student who finds reading hard (ideally someone with dyslexia), age 9 or older</td><td>The main audience: the most important tester</td></tr>
+<tr><td>A parent of a student who struggles with reading</td><td>Can judge whether they'd use it at home</td></tr>
+<tr><td>A teacher, tutor, or reading specialist</td><td>Can judge whether the help is accurate and useful</td></tr>
+<tr><td>A classmate or friend (fallback)</td><td>Still finds usability problems</td></tr>
+</table>
+<p><strong>Privacy:</strong> don't record full names. Use "Tester 1, 2, 3" and only general details (for example "student, age 15" or "parent"). No photos or video of faces.</p>
+
+<h2>3. Before the session (Facilitator)</h2>
+<div class="box">
+<span class="check"></span>Start WordWise: in the project folder run <code>python app/main.py</code> and open <code>http://127.0.0.1:8050</code>.<br>
+<span class="check"></span>Create a fresh account for the tester (for example <code>tester1</code>) so their saved words and reading time are their own.<br>
+<span class="check"></span>Have both reading files ready to upload: <code>passage_A_leaves.txt</code> and <code>passage_B_volcanoes.txt</code> (in <code>deliverables/user_testing/</code>).<br>
+<span class="check"></span>Print or open the <strong>plain</strong> version of the "without WordWise" passage (just the text file in Notepad, or printed on paper).<br>
+<span class="check"></span>A stopwatch (a phone is fine), this kit, and a pen.<br>
+<span class="check"></span>Turn the computer's sound on (read-aloud).
+</div>
+
+<h2>4. Consent (Facilitator reads aloud)</h2>
+<div class="say"><strong>Say:</strong> "I'm testing a reading website I built for a class project. I'm testing the website, not you, so there are no wrong answers. You'll read two short passages and answer three questions about each. It takes about 25 minutes. I'll take notes but won't write down your name. You can stop or skip anything at any time. Is that OK?"</div>
+<div class="say"><strong>If the tester is under 18:</strong> ask a parent or guardian first and have them stay nearby. Say the same thing to the student in simple words.</div>
+<p>Record: consent given <span class="check"></span> yes &nbsp;&nbsp; parent/guardian consent (if under 18) <span class="check"></span> yes</p>
+
+<h2>5. Which passage goes where</h2>
+<p>Swap the order between testers so one passage being easier doesn't decide the result. (Passage A is about grade 6 reading level and passage B about grade 7.)</p>
+<table>
+<tr><th>Tester</th><th>Part 1: WITHOUT WordWise</th><th>Part 2: WITH WordWise</th></tr>
+<tr><td>Tester 1</td><td>Passage A (Leaves)</td><td>Passage B (Volcanoes)</td></tr>
+<tr><td>Tester 2</td><td>Passage B (Volcanoes)</td><td>Passage A (Leaves)</td></tr>
+<tr><td>Tester 3</td><td>Passage A (Leaves)</td><td>Passage B (Volcanoes)</td></tr>
+</table>
+
+<h2>6. Session steps (Facilitator)</h2>
+<ol>
+<li><strong>Warm-up (2 min).</strong> Ask: "How do you usually read things for school? Do you use any tools?" Note the answer.</li>
+<li><strong>Part 1: without WordWise (about 6 min).</strong> Give the plain passage. Say: <em>"Read this the way you normally would. You can use anything you usually use, like a dictionary. Tell me when you're done."</em> Start the stopwatch; stop it when they say done. <strong>Record the time.</strong> Then give the matching question sheet (with the passage taken away) and let them answer. Don't time the questions.</li>
+<li><strong>Quick tour (3 min).</strong> Show WordWise once: Reading settings, Read aloud, tap a word, select text and "Make it simpler," and "Sum it up" with "Check yourself." Don't show anything else. Then upload the Part 2 passage.</li>
+<li><strong>Part 2: with WordWise (about 8 min).</strong> Say: <em>"Now read this one in WordWise. Use any tools that help you. Tell me when you're done."</em> Time it the same way. Watch quietly and tick the tools they use on the observer sheet. If they're stuck for more than a minute, you may help, but note it. Then give the matching question sheet (WordWise closed).</li>
+<li><strong>Survey (4 min).</strong> Hand over the survey page.</li>
+<li><strong>Wrap-up (2 min).</strong> Ask: "What was the most helpful part? What was the most annoying part? If you could change one thing, what would it be?" Write down their exact words.</li>
+</ol>
+
+<h2>7. Answer key and scoring (Facilitator only)</h2>
+<p>Score each answer <strong>1</strong> (correct), <strong>½</strong> (partly right), or <strong>0</strong>. Maximum 3 per passage. Score both parts the same way.</p>
+<h3>Passage A: Why Leaves Change Color</h3>
+<table>
+<tr><th>Question</th><th>Full-credit answer</th></tr>
+<tr><td>1. What pigment makes leaves green, and what does it do?</td><td class="answer">Chlorophyll; it helps the tree turn sunlight into food. (½ if only one part.)</td></tr>
+<tr><td>2. Why do yellow and orange colors show up in autumn?</td><td class="answer">Shorter days make the tree stop making chlorophyll; as the green fades, the yellow/orange carotenoids that were there all along show through. (½ for "the green goes away" without why.)</td></tr>
+<tr><td>3. Why might one autumn be more colorful than another?</td><td class="answer">Sunny days and cool nights help trees make more anthocyanin (red/purple). (½ for "the weather" without detail.)</td></tr>
+</table>
+<h3>Passage B: How Volcanoes Form</h3>
+<table>
+<tr><th>Question</th><th>Full-credit answer</th></tr>
+<tr><td>1. What is magma, and what is it called when it reaches the surface?</td><td class="answer">Melted rock underground; it's called lava at the surface. (½ if only one part.)</td></tr>
+<tr><td>2. What causes a volcano to erupt?</td><td class="answer">Gases trapped in the magma build up pressure in the magma chamber; when the pressure is too great, magma bursts through cracks. (½ for "pressure" without gas or chamber.)</td></tr>
+<tr><td>3. Why do many volcanoes form where tectonic plates meet?</td><td class="answer">Plates pushing together or pulling apart create places where magma can escape more easily. (½ for "the plates move" without the escape idea.)</td></tr>
+</table>
+
+<!-- ======================= TESTER PAGES ======================= -->
+
+<section class="page tester-page">
+<p class="who">Tester · Questions</p>
+<h2>Why Leaves Change Color</h2>
+<p>Answer in your own words. Short answers are fine. You can say your answers out loud and the facilitator will write them down.</p>
+<p><strong>1. What pigment makes leaves green, and what does it do?</strong></p><div class="lines-3"><div class="line"></div><div class="line"></div></div>
+<p><strong>2. Why do yellow and orange colors show up in autumn?</strong></p><div class="lines-3"><div class="line"></div><div class="line"></div></div>
+<p><strong>3. Why might one autumn be more colorful than another?</strong></p><div class="lines-3"><div class="line"></div><div class="line"></div></div>
+</section>
+
+<section class="page tester-page">
+<p class="who">Tester · Questions</p>
+<h2>How Volcanoes Form</h2>
+<p>Answer in your own words. Short answers are fine. You can say your answers out loud and the facilitator will write them down.</p>
+<p><strong>1. What is magma, and what is it called when it reaches the surface?</strong></p><div class="lines-3"><div class="line"></div><div class="line"></div></div>
+<p><strong>2. What causes a volcano to erupt?</strong></p><div class="lines-3"><div class="line"></div><div class="line"></div></div>
+<p><strong>3. Why do many volcanoes form where tectonic plates meet?</strong></p><div class="lines-3"><div class="line"></div><div class="line"></div></div>
+</section>
+
+<section class="page tester-page">
+<p class="who">Tester · Survey</p>
+<h2>What did you think of WordWise?</h2>
+<p>Circle one number for each line. 1 = strongly disagree, 5 = strongly agree.</p>
+<table class="likert">
+<tr><th>Statement</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>
+<tr><td>WordWise was easy to use.</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+<tr><td>The explanations were at the right level for me.</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+<tr><td>WordWise helped me understand the reading.</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+<tr><td>Reading felt less tiring with WordWise.</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+<tr><td>I could tell the AI help apart from the reading.</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+<tr><td>I would use WordWise for my own reading.</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+</table>
+<p><strong>Which tool helped you most?</strong></p><div class="line"></div>
+<p><strong>What was confusing or annoying?</strong></p><div class="line"></div><div class="line"></div>
+<p><strong>Describe WordWise to a friend in one sentence.</strong></p><div class="line"></div><div class="line"></div>
+</section>
+
+<!-- ======================= FACILITATOR NOTES ======================= -->
+
+<section class="page">
+<p class="who">Facilitator · Notes sheet (one per tester)</p>
+<h2>Tester ___</h2>
+<table>
+<tr><td style="width:40%"><strong>Who</strong> (e.g. "student, 15, has dyslexia" / "parent" / "tutor")</td><td></td></tr>
+<tr><td><strong>How they usually read</strong> (warm-up answer)</td><td></td></tr>
+<tr><td><strong>Part 1 passage</strong> (A or B) and <strong>time without WordWise</strong> (min:sec)</td><td></td></tr>
+<tr><td><strong>Part 1 score</strong> (out of 3)</td><td></td></tr>
+<tr><td><strong>Part 2 passage</strong> and <strong>time with WordWise</strong> (min:sec)</td><td></td></tr>
+<tr><td><strong>Part 2 score</strong> (out of 3)</td><td></td></tr>
+<tr><td><strong>Reader level they picked</strong> in WordWise</td><td></td></tr>
+<tr><td><strong>Help needed?</strong> (what and when)</td><td></td></tr>
+</table>
+<h3>Tools they used in Part 2 (tick all)</h3>
+<p>
+<span class="check"></span>Reading settings (size / spacing / font / background) &nbsp;
+<span class="check"></span>Read aloud &nbsp;
+<span class="check"></span>Highlighter &nbsp;
+<span class="check"></span>Reading ruler &nbsp;
+<span class="check"></span>One-paragraph focus<br>
+<span class="check"></span>Tap a word (Word Coach) &nbsp;
+<span class="check"></span>Make it simpler / example / steps &nbsp;
+<span class="check"></span>Sum it up &nbsp;
+<span class="check"></span>Check yourself questions &nbsp;
+<span class="check"></span>AI Tutor &nbsp;
+<span class="check"></span>Saved a word
+</p>
+<h3>Problems or bugs you saw</h3><div class="line"></div><div class="line"></div><div class="line"></div>
+<h3>Exact quotes (write down their words)</h3><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+<h3>Wrap-up answers: most helpful · most annoying · one change</h3><div class="line"></div><div class="line"></div><div class="line"></div>
+</section>
+
+<section class="page">
+<p class="who">Facilitator · After all sessions</p>
+<h2>Send the results</h2>
+<p>For each tester, send these to your coding assistant (a photo of the notes sheet works, or type them out):</p>
+<ul>
+<li>Who they are (general description only), passage order, both times, both scores, reader level</li>
+<li>Survey numbers (6 ratings) and the three written answers</li>
+<li>Tools used, problems seen, and exact quotes</li>
+</ul>
+<p>They will go into <code>deliverables/user_testing.json</code>, and the report's Impact section will be rebuilt with a results table (average time and score with vs. without WordWise, survey averages, and quotes).</p>
+<p class="small">Tip: if a tester finds a bug, write down exactly what they clicked, so it can be fixed before submission.</p>
+</section>
+
+</main></body></html>
