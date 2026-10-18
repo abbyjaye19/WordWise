@@ -122,11 +122,11 @@ def sec_motivation() -> str:
 <h3>How they handle it today</h3>
 <ul>
   <li><strong>Specialized tutoring.</strong> The most effective help is intensive instruction from specially trained teachers.<sup><a href="#s5">5</a></sup> The International Dyslexia Association notes that "specialized instruction is expensive" and that many families can't find it.<sup><a href="#s6">6</a></sup></li>
-  <li><strong>School accommodations</strong> such as extra time and audio text, through an IEP or 504 plan.<sup><a href="#s7">7</a></sup> These help on tests, but not at home on a Tuesday night with a chapter to read.</li>
+  <li><strong>School accommodations</strong> such as extra time and audio text, through an IEP or 504 plan.<sup><a href="#s7">7</a></sup> These mostly apply at school, not at home on a Tuesday night with a chapter to read.</li>
   <li><strong>Separate tools</strong>: a text-to-speech app, an online dictionary, a general chatbot, a search engine for resources. Each solves one piece, and a struggling reader has to juggle all of them.</li>
 </ul>
 <h3>What it costs them</h3>
-<p>The cost is time and confidence. A student who reads slowly spends far longer on the same assignment, and without help in the moment they may finish the reading without understanding it. Families pay for tutoring if they can, and students without that support fall further behind as reading demands grow.<sup><a href="#s6">6</a></sup> Adults are affected too: dyslexia is lifelong, and many adults were never diagnosed.<sup><a href="#s2">2</a></sup></p>
+<p>The cost is time and confidence. A student who reads slowly spends far longer on the same assignment, and without help in the moment they may finish the reading without understanding it. Families pay for tutoring if they can, and reading difficulties can grow more serious as schoolwork gets harder.<sup><a href="#s11">11</a></sup> Adults are affected too: dyslexia is lifelong, and many adults were never diagnosed.<sup><a href="#s2">2</a></sup></p>
 </section>"""
 
 
@@ -134,7 +134,7 @@ def sec_new() -> str:
     return f"""
 <section>
 <h2>2. What is new</h2>
-<p>Pieces of WordWise exist elsewhere: browsers can read text aloud, dictionaries define words, accessible-book libraries like Bookshare and the Library of Congress provide audiobooks,<sup><a href="#s8">8</a></sup> and general chatbots can explain things. What is new is putting the pieces together around the student's own reading and around <em>understanding</em>, not just decoding:</p>
+<p>Pieces of WordWise exist elsewhere: browsers can read text aloud, dictionaries define words, accessible-book libraries like Bookshare and the Library of Congress provide accessible ebooks and audiobooks,<sup><a href="#s8">8</a></sup> and general chatbots can explain things. What is new is putting the pieces together around the student's own reading and around <em>understanding</em>, not just decoding:</p>
 <table>
 <thead><tr><th>Typical alternative</th><th>What WordWise does differently</th><th>Why it matters</th></tr></thead>
 <tbody>
@@ -197,7 +197,7 @@ def sec_tokenomics() -> str:
     return f"""
 <section>
 <h2>4. Tokenomics</h2>
-<p>All numbers below are measured from real calls by <code>scripts/measure_tokenomics.py</code> (raw data in <code>output/tokenomics/</code>). Prices for <code>gpt-6-luna</code> per million tokens: input ${prices['input_per_1m']}, cached input ${prices['cached_input_per_1m']}, cache write ${prices['cache_write_per_1m']}, output ${prices['output_per_1m']}.</p>
+<p>All numbers below are measured from real calls by <code>scripts/measure_tokenomics.py</code> (raw data in <code>output/tokenomics/</code>). Prices for <code>gpt-6-luna</code> per million tokens: input ${prices['input_per_1m']:.2f}, cached input ${prices['cached_input_per_1m']:.2f}, cache write ${prices['cache_write_per_1m']:.3f}, output ${prices['output_per_1m']:.2f}.</p>
 <p>A <strong>study session</strong> is what a student does in one sitting: 8 word lookups, 3 explain requests, 1 summary, and 4 AI Tutor messages (16 model calls).</p>
 <h3>Per run and per session</h3>
 <table>
@@ -216,10 +216,10 @@ def sec_tokenomics() -> str:
 <table>
 <thead><tr><th>Prompts</th><th>Usage</th><th>1 user / month</th><th>100 users</th><th>10,000 users</th></tr></thead>
 <tbody>{m_rows}</tbody></table>
-<p>A typical student costs about <strong>{money(typ_after['1'], 3)} a month</strong>, so 10,000 typical students cost about <strong>{money(typ_after['10000'], 0)} a month</strong>. Even heavy use stays well under a dollar per student per year at small scale.</p>
+<p>A typical student costs about <strong>{money(typ_after['1'], 3)} a month</strong>, so 10,000 typical students cost about <strong>{money(typ_after['10000'], 0)} a month</strong>. Even a heavy user (30 sessions a month) costs about {money(monthly["After (shared guide, cached)"]["heavy"]["1"] * 12, 2)} a year.</p>
 <h3>Cost-cutting steps, with evidence</h3>
 <ol>
-<li><strong>Make the fixed prompt cacheable.</strong> The first logs showed 0 cached tokens on every call. A test found why: the provider only caches a repeated prompt start of 1,024 tokens or more, and our prompts were about 650. Every helper now starts with the same reader-level guide (<code>prompts/reading_levels.md</code>), which pushes the fixed part past the minimum. Input tokens doubled, but {cached_share:.0%} of them are now billed at the cached rate (10× cheaper), so a session costs <strong>{saving:.0%} less</strong> ({money(before['session_cost_usd'])} → {money(after['session_cost_usd'])}).</li>
+<li><strong>Make the fixed prompt cacheable.</strong> The first logs showed 0 cached tokens on every call. A test found why: with the same instructions sent repeatedly, prompts of about 720 tokens were never cached, while prompts of about 1,900 tokens were cached from the second call on, consistent with the documented 1,024-token minimum. Our prompts were about 650 tokens. Every helper now starts with the same reader-level guide (<code>prompts/reading_levels.md</code>), which pushes the fixed part past the minimum. Input tokens doubled, but {cached_share:.0%} of them are now billed at the cached rate (10× cheaper), so a session costs <strong>{saving:.0%} less</strong> ({money(before['session_cost_usd'])} → {money(after['session_cost_usd'])}).</li>
 <li><strong>Count Portkey's replay cache.</strong> The course gateway replays identical requests from its cache without calling the model (response header <code>x-portkey-cache-status: HIT</code>). When a classmate looked up the same words in the same reading, all {klass['calls']} calls were replayed for $0. The app reads that header and logs replays as free, which matters for classes reading the same assignment.</li>
 <li><strong>Low reasoning effort.</strong> Medium effort made a word lookup {100 * (wm['avg_cost_usd'] / wl['avg_cost_usd'] - 1):.0f}% more expensive ({money(wl['avg_cost_usd'], 6)} → {money(wm['avg_cost_usd'], 6)}) and slower.</li>
 <li><strong>No AI where it isn't needed</strong>, an in-app answer cache for repeat clicks, input caps (3,000 characters per selection, 40,000 per summary, last 12 chat turns), and a daily spending cap.</li>
@@ -314,7 +314,7 @@ def sec_impact() -> str:
 <h3>Money</h3>
 <p>Specialized instruction is effective but expensive and hard to find.<sup><a href="#s5">5</a>,<a href="#s6">6</a></sup> WordWise doesn't replace a trained tutor. It makes the hours between tutoring sessions more productive, and its Tutor Directory points families to free and low-cost options, such as Children's Dyslexia Centers ("minimal or no cost") and New Haven Reads (free one-on-one tutoring, grades 1–12).<sup><a href="#s9">9</a>,<a href="#s10">10</a></sup></p>
 <h3>Time and quality</h3>
-<p>Measured in the app: an answer arrives in about {wl['avg_seconds']} seconds for a word and {after['per_feature']['summarize']['avg_seconds']} seconds for a full summary with questions. That is faster than switching to a dictionary or search engine, and the answer matches the student's sentence and age level. Read-aloud with word highlighting starts instantly and is free.</p>
+<p>Measured in the app: an answer arrives in about {wl['avg_seconds']} seconds for a word and {after['per_feature']['summarize']['avg_seconds']} seconds for a full summary with questions. The student never leaves the page, and the answer matches their sentence and age level. Read-aloud with word highlighting starts instantly and is free.</p>
 {testing}
 <h3>Honest limits on these claims</h3>
 <p>{"The user test is a small pilot: with so few people, the differences above could be chance, and a short passage can't show long-term reading gains." if user_testing else "Time savings for real students are not yet measured, and reading gains would need a much longer study."} The reach estimate depends on prevalence figures that experts disagree on.</p>
@@ -357,6 +357,7 @@ SOURCES = [
     ("Library of Congress NLS, “Eligibility”", "https://www.loc.gov/nls/about/eligibility-for-nls-services/"),
     ("Children's Dyslexia Centers, “Services”", "https://childrensdyslexiacenters.org/get-help/services/"),
     ("New Haven Reads, “Tutoring”", "https://newhavenreads.org/programs/tutoring"),
+    ("International Dyslexia Association, “Dyslexia assessment: what is it and how can it help?”", "https://dyslexiaida.org/dyslexia-assessment-what-is-it-and-how-can-it-help/"),
 ]
 
 

@@ -7,13 +7,13 @@ Source: https://zlisto.github.io/mgt_409_fa26/project_requirements.html (reviewe
 
 ## Deliverables
 
-- [ ] **GitHub repo** — public, or private with `zlisto` added as collaborator
-  - [ ] All code needed to run the app
-  - [ ] `README.md` with step-by-step run instructions (or online link)
-  - [ ] `.env.example` with key names only
-  - [ ] No real `.env` / `PORTKEY_API_KEY` committed
-- [ ] **`report.html`** — single self-contained file, 10–15 printed letter pages, images embedded
-- [ ] **`slides.html`** — single self-contained reveal.js deck, max 10 slides, images embedded
+- [x] **GitHub repo** — public: https://github.com/abbyjaye19/WordWise
+  - [x] All code needed to run the app
+  - [x] `README.md` with step-by-step run instructions (tested from a fresh clone 2026-10-15)
+  - [x] `.env.example` with key names only
+  - [x] No real `.env` / `PORTKEY_API_KEY` committed (scanned before first push)
+- [x] **`report.html`** — 14 printed letter pages, images embedded (`scripts/build_report.py`) · ⏳ add user-testing results
+- [x] **`slides.html`** — 10 slides, reveal.js embedded, works offline (`scripts/build_slides.py`)
 - [ ] **Demo video** (optional) — 2–3 min screen recording
 
 Both HTML files must open by double-click on any computer with all screenshots visible.
@@ -57,7 +57,15 @@ Title/pitch · Problem · What's new · Agent diagram · Demo screenshots · Cos
 
 ## Evidence to collect as we build
 
-- [ ] Token logs per run (`output/`)
-- [ ] Screenshots: good runs, bad runs, defenses firing (`deliverables/screenshots/`)
-- [ ] Real-user feedback (someone with dyslexia / a tutor / a parent)
-- [ ] Sourced statistics on dyslexia prevalence and tutoring costs
+- [x] Token logs per run (`output/usage_log.jsonl`, `output/tokenomics/`)
+- [x] Screenshots: traced run + 8 defenses (`deliverables/screenshots/`)
+- [ ] ⏳ Real-user feedback: kit ready in `deliverables/user_testing/testing_kit.html`
+- [x] Sourced statistics on dyslexia prevalence and the cost/availability of specialized instruction (no sourced dollar figure for tutoring)
+
+## Remaining before submission (as of 2026-10-17)
+
+- [ ] Run 1–3 user tests, add results to `deliverables/user_testing.json`, rebuild report + slides
+- [ ] Proofread report and slides
+- [ ] Optional demo video
+- [ ] Final fresh-clone dry run on the submitted commit
+- [ ] Submit on Canvas: repo link, `report.html`, `slides.html` (and video if made)
