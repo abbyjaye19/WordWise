@@ -143,6 +143,31 @@ def _log(feature: str, resp, seconds: float, gateway_cache: str | None = None) -
         _spent["usd"] += cost
 
 
+CONTENT_FILTER_MESSAGE = (
+    "WordWise's safety filter stopped this request. The text may contain instructions aimed at the AI "
+    "or content that isn't safe. Try a different part of the reading, or ask a teacher for help."
+)
+
+
+def _is_content_filter(exc: Exception) -> bool:
+    """Azure OpenAI (behind Portkey) rejects prompts its content filter flags, including jailbreak attempts."""
+    body = getattr(exc, "body", None) or {}
+    code = (body.get("code") if isinstance(body, dict) else None) or getattr(exc, "code", None)
+    return code == "content_filter" or "content_filter" in str(exc)
+
+
+def _log_blocked(feature: str, seconds: float) -> None:
+    """Record a request the provider's content filter refused (no tokens billed)."""
+    rec = {"time": time.strftime("%Y-%m-%dT%H:%M:%S"), "feature": feature, "model": MODEL_NAME,
+           "input_tokens": 0, "cached_input_tokens": 0, "cache_write_tokens": 0, "output_tokens": 0,
+           "reasoning_tokens": 0, "cost_usd": 0.0, "seconds": round(seconds, 2), "gateway_cache": "",
+           "blocked": "content_filter", **LOG_EXTRA}
+    with _lock:
+        USAGE_LOG.parent.mkdir(parents=True, exist_ok=True)
+        with USAGE_LOG.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(rec) + "\n")
+
+
 def _guarded(feature: str, request):
     """Run one model request with the budget check, model check, and usage log.
     `request(client)` must return a raw response (client.responses.with_raw_response.*)."""
@@ -155,6 +180,9 @@ def _guarded(feature: str, request):
     except AIError:
         raise
     except Exception as exc:  # noqa: BLE001 - network/API problems become a friendly message
+        if _is_content_filter(exc):
+            _log_blocked(feature, time.perf_counter() - start)
+            raise AIError(CONTENT_FILTER_MESSAGE) from exc
         raise AIError("We couldn't reach the AI helper just now. Please try again in a moment.") from exc
     if not (resp.model or "").startswith(MODEL_NAME):
         raise AIError("An unexpected AI model answered, so we stopped.")
