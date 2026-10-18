@@ -196,3 +196,11 @@ The first prompt asked for "real tutors," which would have meant listing individ
 > my name is correct, help me set up the user testing
 
 ---
+
+## Phase 18: Final Checks
+
+**Prompt 1:**
+
+> I will do the tetsing later, but move to the next steps
+
+---
