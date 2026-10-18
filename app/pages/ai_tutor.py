@@ -1,14 +1,16 @@
 """AI Tutor — a free, fast chat tutor at the student's level, optionally about their current reading."""
 
 import dash
-from dash import ALL, Input, Output, State, callback, dcc, html, no_update
+from dash import ALL, Input, Output, State, callback, ctx, dcc, html, no_update
 
-from services import ai, documents
+from services import accounts, ai, documents, preferences, progress
 
 dash.register_page(__name__, path="/ai-tutor", name="AI Tutor", order=7)
 
 LEVEL_OPTIONS = [{"label": label, "value": value} for value, label in ai.LEVELS.items()]
+PREF_KEYS = list(preferences.SETTINGS)
 STARTERS = [
+    "Help me find my best reading settings.",
     "What is this reading mostly about?",
     "Quiz me on my reading with 3 questions.",
     "Explain a hard word to me.",
@@ -192,13 +194,14 @@ dash.clientside_callback(
     State("tutor-level", "value"),
     State("tutor-use-reading", "value"),
     State("doc-store", "data"),
+    State("a11y-prefs", "data"),
     prevent_initial_call=True,
     running=[
         (Output("chat-typing", "hidden"), False, True),
         (Output("chat-send", "disabled"), True, False),
     ],
 )
-def answer(pending, history, level, use_reading, doc):
+def answer(pending, history, level, use_reading, doc, prefs):
     history = list(history or [])
     if not pending or not history or history[-1].get("role") != "user":
         return no_update
@@ -206,12 +209,71 @@ def answer(pending, history, level, use_reading, doc):
         history.append({"role": "assistant", "content": "This chat is getting long. Press “Start a new chat” to keep going.", "error": True})
         return history
     reading = documents.section_text(doc) if (doc and use_reading and "yes" in use_reading) else None
+    user = accounts.current_user()
+    profile, usage = "", ""
+    if user:
+        uid = user["id"]
+        profile = preferences.profile_context(preferences.load_profile(uid), progress.recent_comprehension(uid))
+        usage = _usage(uid)
+        progress.log_tool(uid, "tutor")
     try:
-        reply = ai.tutor_reply(history, level or "13-17", reading)
-        history.append({"role": "assistant", "content": reply})
+        out = ai.tutor_reply(history, level or "13-17", reading, profile, prefs, usage)
+        msg = {"role": "assistant", "content": out.reply}
+        if out.suggestions:
+            msg["suggestions"] = [s.model_dump() for s in out.suggestions]
+            msg["applied"] = {}
+        history.append(msg)
     except ai.AIError as exc:
         history.append({"role": "assistant", "content": str(exc), "error": True})
     return history
+
+
+def _usage(uid: int) -> str:
+    """Recent activity the tutor can use when suggesting settings."""
+    parts = []
+    tools = progress.tool_counts(uid)[:5]
+    if tools:
+        parts.append("Most-used tools (30 days): " + ", ".join(f"{t['label']} ({t['count']})" for t in tools) + ".")
+    hard = progress.hard_reason_counts(uid)[:3]
+    if hard:
+        parts.append("Often hard in their check-ins: " + ", ".join(f"{h.lower()} ({n})" for h, n in hard) + ".")
+    return ("Recent activity: " + " ".join(parts)) if parts else ""
+
+
+# 2b) Apply (or undo) a setting the tutor suggested. Changing the setting controls saves it like any other choice.
+@callback(
+    [Output(f"pref-{k}", "value", allow_duplicate=True) for k in PREF_KEYS] + [Output("chat-history", "data", allow_duplicate=True)],
+    Input({"type": "sugg-apply", "m": ALL, "k": ALL}, "n_clicks"),
+    Input({"type": "sugg-undo", "m": ALL, "k": ALL}, "n_clicks"),
+    Input({"type": "sugg-all", "m": ALL}, "n_clicks"),
+    State("chat-history", "data"),
+    State("a11y-prefs", "data"),
+    prevent_initial_call=True,
+)
+def apply_suggestion(_apply, _undo, _all, history, prefs):
+    trig = ctx.triggered_id
+    if not trig or not ctx.triggered[0]["value"] or not history:
+        return [no_update] * (len(PREF_KEYS) + 1)
+    history = [dict(m) for m in history]
+    i = trig["m"]
+    if not (0 <= i < len(history)) or not history[i].get("suggestions"):
+        return [no_update] * (len(PREF_KEYS) + 1)
+    msg = history[i]
+    current = preferences.clean(prefs)
+    applied = dict(msg.get("applied") or {})
+    changes = {}
+    if trig["type"] == "sugg-undo":
+        key = trig["k"]
+        if key in applied:
+            changes[key] = applied.pop(key)
+    else:
+        keys = [trig["k"]] if trig["type"] == "sugg-apply" else [s["setting"] for s in msg["suggestions"]]
+        for s in msg["suggestions"]:
+            if s["setting"] in keys and s["setting"] not in applied and s["value"] in preferences.ALLOWED.get(s["setting"], ()):
+                applied[s["setting"]] = current[s["setting"]]  # remember the old value for Undo
+                changes[s["setting"]] = s["value"]
+    msg["applied"] = applied
+    return [changes.get(k, no_update) for k in PREF_KEYS] + [history]
 
 
 # 3) Draw the conversation.
@@ -227,7 +289,7 @@ def render(history):
             ],
         )
     bubbles = []
-    for m in history:
+    for i, m in enumerate(history):
         if m["role"] == "user":
             bubbles.append(html.Div(html.P(m["content"]), className="bubble bubble-user"))
         elif m.get("error"):
@@ -245,10 +307,53 @@ def render(history):
                             ],
                         ),
                         dcc.Markdown(m["content"], className="bubble-md"),
+                        _suggestion_card(i, m) if m.get("suggestions") else None,
                     ],
                 )
             )
     return bubbles
+
+
+def _suggestion_card(i: int, m: dict) -> html.Div:
+    """Setting changes the tutor suggested, each with Apply / Undo."""
+    applied = m.get("applied") or {}
+    rows = []
+    for s in m["suggestions"]:
+        key = s["setting"]
+        if key not in preferences.SETTINGS:
+            continue
+        label = preferences.SETTINGS[key][0]
+        new = preferences.label_of(key, s["value"])
+        if key in applied:
+            action = html.Span(
+                [
+                    html.Span("✓ Applied", className="sugg-done"),
+                    html.Button("Undo", id={"type": "sugg-undo", "m": i, "k": key}, className="link-btn", n_clicks=0,
+                                title=f"Go back to {preferences.label_of(key, applied[key])}"),
+                ]
+            )
+        else:
+            action = html.Button("Apply", id={"type": "sugg-apply", "m": i, "k": key}, className="btn btn-primary btn-small", n_clicks=0)
+        rows.append(
+            html.Li(
+                className="sugg-row",
+                children=[
+                    html.Div([html.Strong(f"{label}: {new}"), html.Span(s["reason"], className="sugg-reason")], className="sugg-text"),
+                    action,
+                ],
+            )
+        )
+    pending = [s for s in m["suggestions"] if s["setting"] not in applied]
+    return html.Div(
+        className="sugg-card",
+        children=[
+            html.P("Settings to try", className="ai-label"),
+            html.Ul(rows, className="sugg-list"),
+            html.Button("Apply all", id={"type": "sugg-all", "m": i}, className="btn btn-secondary btn-small", n_clicks=0)
+            if len(pending) > 1 else None,
+            html.P("You can change these any time in Reading settings (Aa).", className="muted small"),
+        ],
+    )
 
 
 @callback(Output("tutor-reading-info", "children"), Input("doc-store", "data"))

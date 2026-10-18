@@ -100,7 +100,7 @@ def delete_word(user_id: int, word_id: int) -> None:
 
 # ---------- reading time ----------
 
-def log_reading(user_id: int, day: str, seconds: int) -> None:
+def log_reading(user_id: int, day: str, seconds: int, title: str = "") -> None:
     """Add active reading time reported by the browser (capped, and only for today or yesterday)."""
     if not DAY_RE.match(day or ""):
         return
@@ -108,12 +108,111 @@ def log_reading(user_id: int, day: str, seconds: int) -> None:
     reported = date.fromisoformat(day)
     if abs((reported - date.today()).days) > 1 or not seconds:
         return
+    title = (" ".join(str(title or "").split()) or "Untitled reading")[:120]
     with connect() as conn:
         conn.execute(
             "INSERT INTO reading_log (user_id, day, seconds) VALUES (?, ?, ?) "
             "ON CONFLICT(user_id, day) DO UPDATE SET seconds = seconds + excluded.seconds",
             (user_id, day, seconds),
         )
+        conn.execute(
+            "INSERT INTO reading_sessions (user_id, day, title, seconds) VALUES (?, ?, ?, ?) "
+            "ON CONFLICT(user_id, day, title) DO UPDATE SET seconds = seconds + excluded.seconds",
+            (user_id, day, title, seconds),
+        )
+
+
+def session_summary(user_id: int, days: int = 30) -> dict:
+    """Reading sessions (one per reading per day) in the last `days` days."""
+    since = (date.today() - timedelta(days=days - 1)).isoformat()
+    with connect() as conn:
+        n, seconds, titles = conn.execute(
+            "SELECT COUNT(*), COALESCE(SUM(seconds), 0), COUNT(DISTINCT title) FROM reading_sessions WHERE user_id = ? AND day >= ?",
+            (user_id, since),
+        ).fetchone()
+    return {"sessions": n, "minutes": round(seconds / 60), "readings": titles}
+
+
+def recent_sessions(user_id: int, limit: int = 8) -> list[dict]:
+    with connect() as conn:
+        rows = conn.execute(
+            "SELECT day, title, seconds FROM reading_sessions WHERE user_id = ? ORDER BY day DESC, seconds DESC LIMIT ?",
+            (user_id, limit),
+        ).fetchall()
+    return [{"day": r["day"], "title": r["title"], "minutes": max(1, round(r["seconds"] / 60))} for r in rows]
+
+
+# ---------- tool usage ----------
+
+TOOLS = {  # event key -> label shown on the dashboard
+    "read_aloud": "Read aloud", "replay": "Replay sentence", "highlighter": "Highlighter", "ruler": "Reading ruler",
+    "focus": "One-paragraph focus", "settings": "Reading settings", "word_help": "Word Coach", "explain": "Explainer",
+    "summary": "Sum it up", "simplified_view": "Simplified view", "detailed_view": "Detailed view",
+    "tutor": "AI Tutor", "save_word": "Save word", "check_in": "Comprehension check-in",
+}
+
+
+def log_tool(user_id: int, tool: str, count: int = 1) -> None:
+    if tool not in TOOLS:
+        return
+    with connect() as conn:
+        conn.execute(
+            "INSERT INTO tool_events (user_id, day, tool, count) VALUES (?, ?, ?, ?) "
+            "ON CONFLICT(user_id, day, tool) DO UPDATE SET count = count + excluded.count",
+            (user_id, date.today().isoformat(), tool, max(1, min(int(count), 50))),
+        )
+
+
+def tool_counts(user_id: int, days: int = 30) -> list[dict]:
+    since = (date.today() - timedelta(days=days - 1)).isoformat()
+    with connect() as conn:
+        rows = conn.execute(
+            "SELECT tool, SUM(count) AS n FROM tool_events WHERE user_id = ? AND day >= ? GROUP BY tool ORDER BY n DESC",
+            (user_id, since),
+        ).fetchall()
+    return [{"tool": r["tool"], "label": TOOLS.get(r["tool"], r["tool"]), "count": r["n"]} for r in rows]
+
+
+# ---------- comprehension check-ins ----------
+
+HARD_REASONS = {
+    "words": "Hard words", "long_sentences": "Long sentences", "main_idea": "Finding the main idea",
+    "remembering": "Remembering it", "listening": "Following the read-aloud", "focus": "Staying focused",
+}
+RATING_LABELS = {1: "Not at all", 2: "A little", 3: "Mostly", 4: "Well", 5: "Very well"}
+
+
+def add_check(user_id: int, title: str, rating: int, hard: list[str]) -> None:
+    if int(rating) not in RATING_LABELS:
+        raise ProgressError("Please pick how well you understood it.")
+    hard = [h for h in (hard or []) if h in HARD_REASONS]
+    with connect() as conn:
+        conn.execute(
+            "INSERT INTO comprehension_checks (user_id, day, title, rating, hard_json) VALUES (?, ?, ?, ?, ?)",
+            (user_id, date.today().isoformat(), (title or "Untitled reading")[:120], int(rating), json.dumps(hard)),
+        )
+
+
+def checks(user_id: int, limit: int = 10) -> list[dict]:
+    with connect() as conn:
+        rows = conn.execute(
+            "SELECT day, title, rating, hard_json FROM comprehension_checks WHERE user_id = ? ORDER BY id DESC LIMIT ?",
+            (user_id, limit),
+        ).fetchall()
+    return [{"day": r["day"], "title": r["title"], "rating": r["rating"], "hard": json.loads(r["hard_json"])} for r in rows]
+
+
+def recent_comprehension(user_id: int, n: int = 5) -> float | None:
+    rs = [c["rating"] for c in checks(user_id, n)]
+    return sum(rs) / len(rs) if rs else None
+
+
+def hard_reason_counts(user_id: int, limit: int = 30) -> list[tuple[str, int]]:
+    counts: dict[str, int] = {}
+    for c in checks(user_id, limit):
+        for h in c["hard"]:
+            counts[h] = counts.get(h, 0) + 1
+    return sorted(((HARD_REASONS[k], v) for k, v in counts.items()), key=lambda kv: -kv[1])
 
 
 def minutes_by_day(user_id: int, end: date, days: int = 7) -> list[dict]:

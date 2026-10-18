@@ -12,7 +12,7 @@ from datetime import date
 import dash
 from dash import ALL, Input, Output, State, callback, ctx, dcc, html, no_update
 
-from services import accounts, ai, documents, export, library, progress
+from services import accounts, ai, documents, export, library, preferences, progress
 
 dash.register_page(__name__, path="/reading-assistant", name="Reading Assistant", order=1)
 
@@ -104,20 +104,21 @@ def _toolbar() -> html.Div:
                     _tool_btn("▶ Read aloud", "tts-play", extra="tool-primary"),
                     _tool_btn("❚❚ Pause", "tts-pause"),
                     _tool_btn("■ Stop", "tts-stop"),
-                    html.Label(
-                        [
-                            html.Span("Speed", className="sr-only"),
-                            html.Select(
-                                id="tts-rate",
-                                className="tool-select",
-                                children=[
-                                    html.Option("Slow", value="0.75"),
-                                    html.Option("Normal", value="1", selected=True),
-                                    html.Option("Fast", value="1.25"),
-                                ],
-                            ),
-                        ]
+                    html.Button("⏮", id="tts-back", className="tool-btn tool-icon", type="button", title="Back one sentence", **{"aria-label": "Back one sentence"}),
+                    html.Button("⟲ Replay", id="tts-replay", className="tool-btn", type="button", title="Replay this sentence"),
+                    html.Button("⏭", id="tts-next", className="tool-btn tool-icon", type="button", title="Next sentence", **{"aria-label": "Next sentence"}),
+                    html.Span(
+                        className="speed-ctl",
+                        role="group",
+                        **{"aria-label": "Read-aloud speed"},
+                        children=[
+                            html.Button("−", id="tts-slower", className="tool-btn tool-icon", type="button", title="Slower", **{"aria-label": "Slower"}),
+                            html.Span("Normal · 1×", id="tts-speed-label", className="speed-label", **{"aria-live": "polite"}),
+                            html.Button("+", id="tts-faster", className="tool-btn tool-icon", type="button", title="Faster", **{"aria-label": "Faster"}),
+                        ],
                     ),
+                    html.Button("Highlight: Both", id="tts-readalong", className="tool-btn", type="button",
+                                title="What is highlighted while reading aloud: word, sentence, or both"),
                 ],
             ),
             html.Div(
@@ -148,6 +149,30 @@ def _toolbar() -> html.Div:
                     _tool_btn("Aa Text settings", "studio-settings"),
                 ],
             ),
+        ],
+    )
+
+
+def _level_bar() -> html.Div:
+    """Reading Levels: switch the whole reading between the original and AI versions."""
+    return html.Div(
+        id="level-bar",
+        className="level-bar",
+        hidden=True,
+        children=[
+            html.Span("Reading level", className="tool-label"),
+            html.Div(
+                className="segmented",
+                role="group",
+                **{"aria-label": "Reading level"},
+                children=[
+                    _tool_btn("Original", "view-original", pressed=True),
+                    _tool_btn("Simplified wording", "view-simplified", pressed=False),
+                    _tool_btn("Detailed explanation", "view-detailed", pressed=False),
+                ],
+            ),
+            html.Button("Show original too", id="view-showorig", className="tool-btn", type="button", hidden=True, **{"aria-pressed": "false"}),
+            html.Span(id="view-status", className="view-status", role="status"),
         ],
     )
 
@@ -210,6 +235,32 @@ def _help_panel() -> html.Aside:
                     html.P("Get the big idea, key points, and questions to check yourself.", className="muted"),
                     dcc.Dropdown(id="summary-scope", clearable=False, searchable=False, className="scope-dropdown"),
                     html.Button("Summarize", id="summarize-btn", className="btn btn-primary btn-small", n_clicks=0, disabled=True),
+                ],
+            ),
+            html.Div(
+                className="help-block",
+                id="checkin",
+                children=[
+                    html.H3("How did it go?"),
+                    html.P("After reading, tell us how well you understood it. It shows on your dashboard.", className="muted"),
+                    dcc.RadioItems(
+                        id="check-rating",
+                        options=[{"label": f"{n} · {lab}", "value": n} for n, lab in progress.RATING_LABELS.items()],
+                        className="choice-row compact",
+                        inputClassName="choice-input",
+                        labelClassName="choice-label",
+                    ),
+                    html.P("What made it hard? (optional)", className="muted small check-hard-label"),
+                    dcc.Checklist(
+                        id="check-hard",
+                        options=[{"label": lab, "value": key} for key, lab in progress.HARD_REASONS.items()],
+                        value=[],
+                        className="choice-row compact",
+                        inputClassName="choice-input",
+                        labelClassName="choice-label",
+                    ),
+                    html.Button("Save check-in", id="check-save", className="btn btn-secondary btn-small", n_clicks=0),
+                    html.Div(id="check-status", role="status"),
                 ],
             ),
             html.Div(
@@ -298,8 +349,12 @@ def _layout(user, store_kwargs, bad_link: bool):
         dcc.Store(id="selection-store"),
         dcc.Store(id="highlights-store"),
         dcc.Store(id="reading-beat"),
+        dcc.Store(id="tool-beat"),
+        dcc.Store(id="view-store", storage_type="session"),
         dcc.Download(id="download"),
         html.Div(id="reader-sink", hidden=True),
+        html.Div(id="view-sink", hidden=True),
+        html.Div(id="tool-sink", hidden=True),
         html.Div(
             className="container-wide",
             children=html.P(
@@ -334,6 +389,7 @@ def _layout(user, store_kwargs, bad_link: bool):
                         _toolbar(),
                         html.Div(id="doc-title", className="doc-title"),
                         _doc_actions(user),
+                        _level_bar(),
                         html.Div(
                             id="reader-empty",
                             className="reader-empty dots",
@@ -407,11 +463,12 @@ def _status(text: str, ok: bool) -> html.P:
     Output("doc-actions", "hidden"),
     Output("save-btn", "children"),
     Output("save-folder", "value"),
+    Output("level-bar", "hidden"),
     Input("doc-store", "data"),
 )
 def on_document(doc):
     if not doc:
-        return [{"label": "Whole reading", "value": "all"}], "all", True, False, None, True, True, "Save to my library", "none"
+        return [{"label": "Whole reading", "value": "all"}], "all", True, False, None, True, True, "Save to my library", "none", True
     options = [{"label": "Whole reading", "value": "all"}]
     if len(doc["sections"]) > 1:
         options += [{"label": s["label"], "value": str(i)} for i, s in enumerate(doc["sections"])]
@@ -419,7 +476,7 @@ def on_document(doc):
     tag = "Saved in your library" if saved else "Now reading"
     title = html.Div([html.Span(tag, className="tag"), html.H2(doc["title"])])
     folder = str(doc["folder_id"]) if doc.get("folder_id") else "none"
-    return options, "all", False, True, title, False, False, "Save changes" if saved else "Save to my library", folder
+    return options, "all", False, True, title, False, False, "Save changes" if saved else "Save to my library", folder, False
 
 
 # ---------- callbacks: save + export ----------
@@ -468,10 +525,109 @@ def download(_docx, _html, doc, highlights, prefs):
 
 
 dash.clientside_callback(
-    "function (doc) { if (window.WW) { window.WW.render(doc); } return ''; }",
+    "function (doc, view) { if (window.WW) { window.WW.render(doc, view); } return ''; }",
     Output("reader-sink", "children"),
     Input("doc-store", "data"),
+    Input("view-store", "data"),
 )
+
+# Show the saved speed / highlight style on the toolbar as soon as the page opens.
+dash.clientside_callback(
+    "function (_id, _prefs) { if (window.WW && window.WW.refreshTools) { setTimeout(window.WW.refreshTools, 0); } return ''; }",
+    Output("tool-sink", "children"),
+    Input("studio-toolbar", "id"),
+    Input("a11y-prefs", "data"),
+)
+
+
+# ---------- callbacks: Reading Levels (original / simplified / detailed) ----------
+
+def _paragraphs(doc: dict) -> list[str]:
+    return [p for s in doc["sections"] for p in s["paragraphs"]]
+
+
+@callback(
+    Output("view-store", "data"),
+    Output("view-status", "children"),
+    Input("view-original", "n_clicks"),
+    Input("view-simplified", "n_clicks"),
+    Input("view-detailed", "n_clicks"),
+    Input("reader-level", "value"),
+    Input("doc-store", "data"),
+    State("view-store", "data"),
+    prevent_initial_call=True,
+    running=[
+        (Output("view-simplified", "disabled"), True, False),
+        (Output("view-detailed", "disabled"), True, False),
+        (Output("view-status", "className"), "view-status working", "view-status"),
+    ],
+)
+def change_view(_o, _s, _d, level, doc, view):
+    trig = ctx.triggered_id
+    if not doc:
+        return None, ""
+    paras = _paragraphs(doc)
+    fits = bool(view) and view.get("title") == doc["title"] and view.get("count") == len(paras)
+    if trig == "doc-store":  # a new reading starts in its original wording (saving keeps the view)
+        return (no_update, no_update) if fits else (None, "")
+    if trig == "view-original":
+        return None, ""
+    if trig == "reader-level":
+        if not fits:
+            return no_update, no_update
+        mode = view["mode"]  # same view, new reader level
+    else:
+        mode = "simplified" if trig == "view-simplified" else "detailed"
+    user = accounts.current_user()
+    try:
+        rewritten, covered = ai.rewrite(paras, mode, level or "13-17", _profile(user))
+    except ai.AIError as exc:
+        return no_update, _status(str(exc), ok=False)
+    if user:
+        progress.log_tool(user["id"], f"{mode}_view")
+    data = {"mode": mode, "level": level, "title": doc["title"], "count": len(paras), "covered": covered, "paras": rewritten}
+    return data, ""
+
+
+def _profile(user: dict | None) -> str:
+    """The student's self-reported profile, given to the AI so help adapts to them."""
+    if not user:
+        return ""
+    return preferences.profile_context(preferences.load_profile(user["id"]), progress.recent_comprehension(user["id"]))
+
+
+# ---------- callbacks: tool use + comprehension check-ins (for My Dashboard insights) ----------
+
+@callback(Output("tool-sink", "title"), Input("tool-beat", "data"), prevent_initial_call=True)
+def log_tool_use(beat):
+    user = accounts.current_user()
+    if user and beat and beat.get("tool") in ("read_aloud", "replay", "highlighter", "ruler", "focus"):
+        progress.log_tool(user["id"], beat["tool"])
+    return no_update
+
+
+@callback(
+    Output("check-status", "children"),
+    Output("check-rating", "value"),
+    Output("check-hard", "value"),
+    Input("check-save", "n_clicks"),
+    State("check-rating", "value"),
+    State("check-hard", "value"),
+    State("doc-store", "data"),
+    prevent_initial_call=True,
+)
+def save_check_in(n, rating, hard, doc):
+    if not n:
+        return no_update, no_update, no_update
+    user = accounts.current_user()
+    if not user:
+        return html.P(["Sign in to save check-ins. ", dcc.Link("Sign in", href="/account", className="text-link")], className="muted"), no_update, no_update
+    if not rating:
+        return _status("Pick how well you understood it first.", ok=False), no_update, no_update
+    progress.add_check(user["id"], (doc or {}).get("title", ""), int(rating), hard or [])
+    progress.log_tool(user["id"], "check_in")
+    msg = html.P(["✓ Saved. See it on ", dcc.Link("your dashboard", href="/dashboard#insights", className="text-link"), "."], className="status-ok")
+    return msg, None, []
 
 
 @callback(
@@ -510,28 +666,42 @@ def on_selection(sel):
 def help_me(word_req, _lb, _ls, _s, _e, _st, _sum, typed, sel, doc, level, scope):
     trig = ctx.triggered_id
     level = level or "13-17"
+    user = accounts.current_user()
+    profile = _profile(user)
+
+    def used(tool):
+        if user:
+            progress.log_tool(user["id"], tool)
+
     try:
         if trig == "word-request" and word_req:
             word = word_req.get("word", "").strip()
             if not word:
                 return no_update
             sentence = word_req.get("sentence", "")
-            return _word_card(word, ai.word_help(word, sentence, level), sentence, (doc or {}).get("title", ""))
+            card = _word_card(word, ai.word_help(word, sentence, level, profile), sentence, (doc or {}).get("title", ""))
+            used("word_help")
+            return card
         if trig in ("lookup-btn", "lookup-input"):
             word = (typed or "").strip().split(" ")[0]
             if not word:
                 return _error_card("Type a word in the box first.")
-            return _word_card(word, ai.word_help(word, "", level))
+            card = _word_card(word, ai.word_help(word, "", level, profile))
+            used("word_help")
+            return card
         if trig in ("explain-simpler", "explain-example", "explain-steps"):
             text = (sel or {}).get("text", "").strip()
             if not text:
                 return _error_card("Select some text in your reading first.")
             mode = trig.split("-")[1]
-            return _explain_card(mode, ai.explain(text, mode, level))
+            card = _explain_card(mode, ai.explain(text, mode, level, profile))
+            used("explain")
+            return card
         if trig == "summarize-btn" and doc:
             idx = None if scope in (None, "all") else int(scope)
             label = "Whole reading" if idx is None else doc["sections"][idx]["label"]
-            summary, trimmed = ai.summarize(documents.section_text(doc, idx), label, level)
+            summary, trimmed = ai.summarize(documents.section_text(doc, idx), label, level, profile)
+            used("summary")
             return _summary_card(label, summary, trimmed)
     except ai.AIError as exc:
         return _error_card(str(exc))
@@ -555,6 +725,7 @@ def save_word(n, info):
         progress.save_word(user["id"], info)
     except progress.ProgressError as exc:
         return html.P(["! ", str(exc)], className="status-error"), no_update
+    progress.log_tool(user["id"], "save_word")
     return html.P(["✓ Saved to ", dcc.Link("your word bank", href="/dashboard#words", className="text-link"), "."], className="status-ok"), "★ Saved"
 
 
@@ -568,7 +739,7 @@ def log_reading_time(beat):
     if not user:
         return None
     if beat and beat.get("seconds"):
-        progress.log_reading(user["id"], beat.get("day", ""), beat.get("seconds", 0))
+        progress.log_reading(user["id"], beat.get("day", ""), beat.get("seconds", 0), beat.get("title", ""))
     day = (beat or {}).get("day")
     today = date.fromisoformat(day) if day and progress.DAY_RE.match(day) else date.today()
     minutes = progress.minutes_by_day(user["id"], today, 1)[0]["minutes"]

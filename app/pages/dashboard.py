@@ -5,10 +5,11 @@ from datetime import date
 import dash
 from dash import ALL, Input, Output, State, callback, ctx, dcc, html, no_update
 
+from components.insights_views import adapt_list, insights_body, insights_section, profile_section
 from components.layout import page_header
 from components.progress_views import goal_item, goals_section, stat_tiles, week_chart, word_card, words_section
 from components.settings_panel import DEFAULT_PREFS, LABELS, OPTIONS
-from services import accounts, library, progress
+from services import accounts, library, preferences, progress
 
 dash.register_page(__name__, path="/dashboard", name="My Dashboard", order=5)
 
@@ -19,7 +20,10 @@ def _settings_card() -> html.Div:
         children=[
             html.H2("My reading settings"),
             html.Dl(id="dash-prefs", className="pref-list"),
-            html.P("Change these any time with Reading settings at the top of the page.", className="muted"),
+            html.P(
+                "Change these any time with Reading settings at the top of the page, or ask the AI Tutor to help you find what works.",
+                className="muted",
+            ),
         ],
     )
 
@@ -58,7 +62,16 @@ def layout(**_query):
     return html.Div(
         [
             dcc.Store(id="lib-refresh", data=0),
-            page_header("My Dashboard", f"Welcome back, {user['username']}. Here is your library.", eyebrow="You"),
+            page_header("My Dashboard", f"Welcome back, {user['username']}. Here is your library and how your reading is going.", eyebrow="You"),
+            html.Nav(
+                className="container-wide dash-jump",
+                **{"aria-label": "Jump to a section"},
+                children=[
+                    html.A(label, href=f"#{anchor}", className="chip-link")
+                    for label, anchor in (("Library", "main"), ("Insights", "insights"), ("What I want to work on", "profile"),
+                                          ("Goals", "goals"), ("My words", "words"))
+                ],
+            ),
             html.Section(
                 className="section container-wide library",
                 children=[
@@ -113,6 +126,8 @@ def layout(**_query):
                     ),
                 ],
             ),
+            insights_section(),
+            profile_section(user["id"]),
             goals_section(user["id"]),
             words_section(),
             html.Section(className="section container-wide progress-section", children=html.Div(className="grid grid-3", children=[_settings_card()])),
@@ -130,6 +145,45 @@ def show_prefs(prefs):
         nice = next((o["label"] for o in OPTIONS[key] if o["value"] == prefs[key]), prefs[key])
         items += [html.Dt(label), html.Dd(nice)]
     return items
+
+
+# ---------- reading insights + what I want to work on ----------
+
+@callback(Output("insights-body", "children"), Input("insights-load", "data"), Input("prof-status", "children"))
+def show_insights(_load, _saved):
+    user = accounts.current_user()
+    return insights_body(user["id"]) if user else None
+
+
+@callback(
+    Output("prof-status", "children"),
+    Output("prof-adapts", "children"),
+    Output({"type": "prof-rate", "k": ALL}, "value"),
+    Output("prof-priority", "value"),
+    Input("prof-save", "n_clicks"),
+    Input("prof-clear", "submit_n_clicks"),
+    State({"type": "prof-rate", "k": ALL}, "value"),
+    State("prof-priority", "value"),
+)
+def save_profile(_save, _clear, values, priority):
+    user = accounts.current_user()
+    if not user:
+        return no_update, no_update, [no_update] * len(values), no_update
+    keys = [s["id"]["k"] for s in ctx.states_list[0]]
+    trig = ctx.triggered_id
+    if trig == "prof-clear":
+        preferences.save_profile(user["id"], {}, None)
+        prof = preferences.load_profile(user["id"])
+        return _ok("Cleared."), adapt_list(prof), [0] * len(keys), None
+    if trig == "prof-save":
+        preferences.save_profile(user["id"], dict(zip(keys, values)), priority)
+        prof = preferences.load_profile(user["id"])
+        return _ok("Saved. WordWise will use this from now on."), adapt_list(prof), [no_update] * len(keys), no_update
+    return no_update, adapt_list(preferences.load_profile(user["id"])), [no_update] * len(keys), no_update
+
+
+def _ok(text: str) -> html.P:
+    return html.P(["✓ ", text], className="status-ok")
 
 
 # ---------- library ----------

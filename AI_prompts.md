@@ -224,4 +224,24 @@ The earlier slide request didn't name the audience, so the first deck used the a
 
 The redesign was more professional but still mostly bullets and tables; this prompt asked for a consulting-style deck with varied layouts and visual exhibits.
 
+**Prompt 3:**
+
+> open link to website in my browser please
+
+---
+
+## Phase 20: Personalization, Reading Levels, Read-Along, Insights, Adaptive Tutor
+
+**Prompt 1:**
+
+> To make the website more in depth, I want to add a few things:
+>
+> 1. Personalized reading mode: users can set their desired spacing, font, contrast, speed etc. - the website should rememeber the preferences and apply them throughout the website, also have a way of clearing all preferences too
+> 2. AI reading levels: this should allow the user to swtich betrween the original tezt, simplified wording and a detailed explanation without losing the meaning
+> 3. Read along with highlighting,  highlight words or sentenses as audio plays.  Allow user to pause, replay and adjust playback speed
+> 4. A reading insights dashboard: create a dashboard that show stracking reading sessiosn, frequently used tools, saved vocabular, and user-reported comprehension - also add in a reading difficulty feedback thing where a user can rank what they need to work on etc. which will then show up in the dashboard, and wirdwise can adapt future reading assitance based on those preferences
+> 5. The AI tutor - should be able to suggest/change user settings for spacing, font, etc,. Based on how the suer is doing with setting/what troubles they have and may need.  Because I wouldn’t know what exact spacing is best for me right away etc.
+>
+> Although dyslexia is a common thing, each person still has different reading/comprehension styles and levels.  For example: I am dyslexia and I heavily struggle with reading/listening comprehension.  But others with dyslexia may have more toruble with spelling, etc.
+
 ---

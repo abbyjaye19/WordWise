@@ -77,6 +77,30 @@ CREATE TABLE IF NOT EXISTS reading_goal (
     user_id       INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     daily_minutes INTEGER NOT NULL DEFAULT 15
 );
+-- Reading insights: which tools a student uses, self-reported understanding, time per reading.
+CREATE TABLE IF NOT EXISTS tool_events (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    day     TEXT NOT NULL,
+    tool    TEXT NOT NULL,
+    count   INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (user_id, day, tool)
+);
+CREATE TABLE IF NOT EXISTS comprehension_checks (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    day        TEXT NOT NULL,
+    title      TEXT NOT NULL DEFAULT '',
+    rating     INTEGER NOT NULL,          -- 1 (not at all) .. 5 (very well)
+    hard_json  TEXT NOT NULL DEFAULT '[]', -- what made it hard
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS reading_sessions (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    day     TEXT NOT NULL,
+    title   TEXT NOT NULL,
+    seconds INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (user_id, day, title)
+);
 CREATE TABLE IF NOT EXISTS personal_goals (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -125,11 +149,20 @@ def _migrate_folders(conn) -> None:
     conn.execute("PRAGMA foreign_keys = ON")
 
 
+def _add_columns(conn) -> None:
+    """Newer per-user fields: saved reading preferences and the reading profile."""
+    cols = {r["name"] for r in conn.execute("PRAGMA table_info(users)")}
+    for col in ("prefs_json", "profile_json"):
+        if col not in cols:
+            conn.execute(f"ALTER TABLE users ADD COLUMN {col} TEXT")
+
+
 def init() -> None:
     DATA_DIR.mkdir(exist_ok=True)
     with connect() as conn:
         _migrate_folders(conn)
         conn.executescript(SCHEMA)
+        _add_columns(conn)
 
 
 init()

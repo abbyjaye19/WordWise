@@ -45,3 +45,15 @@
   .bubble { max-width:94%; }
 }
 @media print { .tutor-fab { display:none !important; } }
+
+/* Settings the tutor suggests (Apply / Undo) */
+.sugg-card { margin-top:12px; padding:12px 14px; background:var(--cream-50); border:1px solid var(--navy-500); border-radius:10px; }
+.sugg-card .ai-label { margin-bottom:6px; }
+.sugg-list { list-style:none; margin:0 0 8px; padding:0; }
+.sugg-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid var(--cream-300); }
+.sugg-row:last-child { border-bottom:none; }
+.sugg-text { display:flex; flex-direction:column; gap:2px; }
+.sugg-reason { font-size:.9rem; color:#4A5874; }
+.sugg-row .btn { white-space:nowrap; flex-shrink:0; }
+.sugg-done { color:var(--sage-600); font-weight:700; margin-right:8px; white-space:nowrap; }
+.sugg-card .muted.small { margin:6px 0 0; }

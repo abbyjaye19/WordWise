@@ -1,10 +1,15 @@
 """AI helpers for the Reading Studio. Every call uses gpt-6-luna through Portkey.
 
-Four helpers ("agents"), each with its own prompt in prompts/:
+Five helpers ("agents"), each with its own prompt in prompts/:
   word_help   -> Word Coach: meaning in context, syllables, synonyms
   explain     -> Explainer: simpler / example / step-by-step for a selected passage
   summarize   -> Comprehension Coach: big idea, key points, words, check questions
-  tutor_reply -> AI Tutor: free-form chat, optionally about the current reading
+  rewrite     -> Reading Levels: the whole reading in simplified or detailed wording
+  tutor_reply -> AI Tutor: chat, optionally about the current reading, and it can
+                 suggest reading-setting changes the student applies with one tap
+
+Every helper also gets the student's self-reported profile (what they find hard) so
+answers adapt to them; see services/preferences.py.
 
 Every call is logged to output/usage_log.jsonl with input, cached input, and
 output tokens plus cost, and a daily spending cap stops runaway costs.
@@ -16,6 +21,7 @@ import json
 import os
 import time
 from datetime import date
+from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 from threading import Lock
 
@@ -23,7 +29,8 @@ from openai import OpenAI
 from pydantic import BaseModel
 
 from config import DATA_DIR, MODEL_NAME, OUTPUT_DIR, PORTKEY_API_KEY, PROJECT_ROOT
-from services.schemas import Explanation, Summary, WordHelp
+from services import preferences
+from services.schemas import Explanation, Rewrite, Summary, TutorReply, WordHelp
 
 PORTKEY_BASE_URL = "https://api.portkey.ai/v1"
 PROMPTS_DIR = PROJECT_ROOT / "prompts"
@@ -73,7 +80,18 @@ def _instructions_cached(role: str, level_guide: bool) -> str:
     if level_guide:
         parts.append((PROMPTS_DIR / "reading_levels.md").read_text(encoding="utf-8"))
     parts.append((PROMPTS_DIR / f"{role}.md").read_text(encoding="utf-8"))
+    if role == "ai_tutor":
+        parts.append(_settings_catalog())
     return "\n\n".join(parts)
+
+
+def _settings_catalog() -> str:
+    """The reading settings the tutor may suggest (the same list the settings panel uses)."""
+    lines = ["## Reading settings catalog (key: allowed values)"]
+    for key, (label, options, default, about) in preferences.SETTINGS.items():
+        values = ", ".join(f'"{v}" ({lab})' for v, lab in options)
+        lines.append(f'- `{key}`: {label} ({about}). Values: {values}. Default "{default}".')
+    return "\n".join(lines)
 
 
 # ---------- spending guard + logging ----------
@@ -212,33 +230,82 @@ def _reading(text: str) -> str:
     return "<reading>\n" + text.replace("</reading>", "") + "\n</reading>"
 
 
+def _header(level: str, profile: str) -> str:
+    """Per-request context. It goes in the input (not the instructions) so the cached prefix stays shared."""
+    head = f"Reader level: {LEVELS.get(level, LEVELS['13-17'])}\n"
+    return head + (profile[:600] + "\n" if profile else "")
+
+
 # ---------- public helpers (results cached so repeat clicks are free) ----------
 
 @lru_cache(maxsize=512)
-def word_help(word: str, sentence: str, level: str) -> WordHelp:
+def word_help(word: str, sentence: str, level: str, profile: str = "") -> WordHelp:
     prompt = (
-        f"Reader level: {LEVELS.get(level, LEVELS['13-17'])}\n"
-        f"Word: {word[:60]}\n"
+        _header(level, profile)
+        + f"Word: {word[:60]}\n"
         f"Sentence it appears in:\n{_reading(sentence[:600])}"
     )
     return _call("word_help", "word_coach", prompt, WordHelp, 1200)
 
 
 @lru_cache(maxsize=256)
-def explain(passage: str, mode: str, level: str) -> Explanation:
+def explain(passage: str, mode: str, level: str, profile: str = "") -> Explanation:
     mode = EXPLAIN_MODES.get(mode, "simpler")
     prompt = (
-        f"Reader level: {LEVELS.get(level, LEVELS['13-17'])}\n"
-        f"Mode: {mode}\n"
+        _header(level, profile)
+        + f"Mode: {mode}\n"
         f"Passage:\n{_reading(passage[:MAX_SELECTION_CHARS])}"
     )
     return _call(f"explain_{mode}", "explainer", prompt, Explanation, 1600)
 
 
-def summarize(text: str, scope_label: str, level: str) -> tuple[Summary, bool]:
+def summarize(text: str, scope_label: str, level: str, profile: str = "") -> tuple[Summary, bool]:
     """Returns (summary, was_trimmed)."""
     trimmed = len(text) > MAX_SUMMARY_CHARS
-    return _summarize_cached(text[:MAX_SUMMARY_CHARS], scope_label, level), trimmed
+    return _summarize_cached(text[:MAX_SUMMARY_CHARS], scope_label, level, profile), trimmed
+
+
+# ---------- Reading Levels: the whole reading, simplified or explained in more detail ----------
+
+REWRITE_MODES = ("simplified", "detailed")
+MAX_REWRITE_CHARS = 12_000  # about 2,000 words; later paragraphs stay in the original wording
+REWRITE_CHUNK_CHARS = 3_000  # chunks run in parallel, so a long reading isn't 4x slower
+
+
+def rewrite(paragraphs: list[str], mode: str, level: str, profile: str = "") -> tuple[list[str], int]:
+    """Rewrite paragraphs in order. Returns (rewritten, how many paragraphs were covered).
+    A paragraph the model skipped keeps its original wording, so no meaning is lost."""
+    if mode not in REWRITE_MODES:
+        raise AIError("Pick Simplified or Detailed.")
+    covered, total = [], 0
+    for p in paragraphs:
+        if covered and total + len(p) > MAX_REWRITE_CHARS:
+            break
+        covered.append(p[:MAX_SELECTION_CHARS])
+        total += len(covered[-1])
+    chunks, cur, size = [], [], 0
+    for p in covered:
+        if cur and size + len(p) > REWRITE_CHUNK_CHARS:
+            chunks.append(tuple(cur))
+            cur, size = [], 0
+        cur.append(p)
+        size += len(p)
+    if cur:
+        chunks.append(tuple(cur))
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        parts = list(pool.map(lambda c: _rewrite_chunk(c, mode, level, profile), chunks))
+    return [t for part in parts for t in part], len(covered)
+
+
+@lru_cache(maxsize=128)
+def _rewrite_chunk(paras: tuple[str, ...], mode: str, level: str, profile: str) -> tuple[str, ...]:
+    numbered = "\n\n".join(f"[{i + 1}] {p}" for i, p in enumerate(paras))
+    prompt = _header(level, profile) + f"Mode: {mode}\nParagraphs:\n{_reading(numbered)}"
+    chars = sum(len(p) for p in paras)
+    budget = min(8000, 1000 + (chars // 2 if mode == "simplified" else chars))  # ~4 chars per token, plus reasoning
+    out = _call(f"rewrite_{mode}", "rewriter", prompt, Rewrite, budget)
+    by_n = {r.n: " ".join(r.text.split()) for r in out.paragraphs if r.text.strip()}
+    return tuple(by_n.get(i + 1, p) for i, p in enumerate(paras))
 
 
 MAX_CHAT_MESSAGE = 1_000
@@ -246,40 +313,68 @@ MAX_CHAT_TURNS = 12  # most recent messages sent to the model
 MAX_CHAT_READING = 12_000
 
 
-def tutor_reply(history: list[dict], level: str, reading: str | None = None) -> str:
-    """AI Tutor chat. history = [{"role": "user"|"assistant", "content": str}, ...] ending with the student's turn."""
+MAX_SUGGESTIONS = 3
+
+
+def _suggestion_note(m: dict) -> str:
+    """Remind the tutor what it suggested earlier and what the student tried, so it can adjust."""
+    sugg = m.get("suggestions") or []
+    if m.get("role") != "assistant" or not sugg:
+        return ""
+    applied = m.get("applied") or {}
+    parts = [f"{s['setting']}={s['value']} ({'student applied it' if s['setting'] in applied else 'not applied'})" for s in sugg]
+    return "\n[Settings suggested: " + "; ".join(parts) + "]"
+
+
+def tutor_reply(history: list[dict], level: str, reading: str | None = None, profile: str = "",
+                settings: dict | None = None, usage: str = "") -> TutorReply:
+    """AI Tutor chat. history = [{"role": "user"|"assistant", "content": str}, ...] ending with the student's turn.
+    Returns the reply plus any reading-setting suggestions, checked against the real settings list."""
+    current = preferences.clean(settings)
     context = f"Reader level: {LEVELS.get(level, LEVELS['13-17'])}."
+    context += "\nCurrent reading settings: " + "; ".join(f"{k}={v}" for k, v in current.items())
+    if profile:
+        context += "\n" + profile[:600]
+    if usage:
+        context += "\n" + usage[:600]
     if reading:
         trimmed = reading[:MAX_CHAT_READING]
         context += "\nThe student is reading this right now:\n" + _reading(trimmed)
         if len(reading) > MAX_CHAT_READING:
             context += "\n(Only the first part of the reading is shown.)"
     messages = [{"role": "developer", "content": context}] + [
-        {"role": m["role"], "content": str(m["content"])[:MAX_CHAT_MESSAGE]}
+        {"role": m["role"], "content": str(m["content"])[:MAX_CHAT_MESSAGE] + _suggestion_note(m)}
         for m in history[-MAX_CHAT_TURNS:]
         if m.get("role") in ("user", "assistant") and m.get("content") and not m.get("error")
     ]
     resp = _guarded(
         "tutor_chat",
-        lambda c: c.responses.with_raw_response.create(
+        lambda c: c.responses.with_raw_response.parse(
             model=MODEL_NAME,
             instructions=_instructions("ai_tutor"),
             input=messages,
-            max_output_tokens=1200,
+            text_format=TutorReply,
+            max_output_tokens=1400,
             reasoning={"effort": REASONING_EFFORT},
         ),
     )
-    text = (resp.output_text or "").strip()
-    if not text:
+    out = resp.output_parsed
+    if out is None or not out.reply.strip():
         raise AIError("The AI Tutor's answer came back empty. Please try again.")
-    return text
+    seen, safe = set(), []
+    for sg in out.suggestions:  # only real settings, real values, and actual changes
+        key, value = sg.setting.strip(), sg.value.strip()
+        if value in preferences.ALLOWED.get(key, ()) and value != current[key] and key not in seen:
+            seen.add(key)
+            safe.append(sg.model_copy(update={"setting": key, "value": value, "reason": sg.reason.strip()[:200]}))
+    return out.model_copy(update={"reply": out.reply.strip(), "suggestions": safe[:MAX_SUGGESTIONS]})
 
 
 @lru_cache(maxsize=64)
-def _summarize_cached(text: str, scope_label: str, level: str) -> Summary:
+def _summarize_cached(text: str, scope_label: str, level: str, profile: str = "") -> Summary:
     prompt = (
-        f"Reader level: {LEVELS.get(level, LEVELS['13-17'])}\n"
-        f"Part of the reading: {scope_label}\n"
+        _header(level, profile)
+        + f"Part of the reading: {scope_label}\n"
         f"{_reading(text)}"
     )
     return _call("summarize", "comprehension_coach", prompt, Summary, 3000)

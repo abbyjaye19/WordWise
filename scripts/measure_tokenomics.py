@@ -78,7 +78,7 @@ def session(level: str = "9-12", only_words: bool = False) -> None:
     history, reading = [], documents.section_text(HISTORY)
     for turn in TUTOR_TURNS:
         history.append({"role": "user", "content": turn})
-        history.append({"role": "assistant", "content": ai.tutor_reply(history, level, reading)})
+        history.append({"role": "assistant", "content": ai.tutor_reply(history, level, reading).reply})
 
 
 RUN_LEVELS = {1: "9-12", 2: "13-17"}

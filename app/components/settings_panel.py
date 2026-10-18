@@ -1,40 +1,25 @@
-"""Reading settings panel: text size, spacing, font, and background.
+"""Reading settings panel: text, page, and read-aloud preferences.
 
-Choices are saved in the browser (dcc.Store, local storage) so they carry
-across visits. Later, signed-in users can sync them to their account.
+Choices are saved in the browser (dcc.Store, local storage) so they apply on every page and
+carry across visits. Signed-in students also have them saved to their account, so they follow
+them to another device. The list of settings lives in services/preferences.py.
 """
 
 from __future__ import annotations
 
 from dash import dcc, html
 
-DEFAULT_PREFS = {"size": "m", "spacing": "normal", "font": "atkinson", "theme": "cream"}
+from services.preferences import DEFAULTS, SETTINGS
 
-OPTIONS = {
-    "size": [
-        {"label": "Small", "value": "s"},
-        {"label": "Medium", "value": "m"},
-        {"label": "Large", "value": "l"},
-        {"label": "Extra large", "value": "xl"},
-    ],
-    "spacing": [
-        {"label": "Normal", "value": "normal"},
-        {"label": "Wide", "value": "wide"},
-        {"label": "Extra wide", "value": "xwide"},
-    ],
-    "font": [
-        {"label": "Atkinson Hyperlegible", "value": "atkinson"},
-        {"label": "Lexend", "value": "lexend"},
-        {"label": "Verdana", "value": "verdana"},
-    ],
-    "theme": [
-        {"label": "Cream", "value": "cream"},
-        {"label": "Soft blue", "value": "blue"},
-        {"label": "Dark navy", "value": "dark"},
-    ],
-}
+DEFAULT_PREFS = DEFAULTS
+OPTIONS = {k: [{"label": lab, "value": val} for val, lab in v[1]] for k, v in SETTINGS.items()}
+LABELS = {k: v[0] for k, v in SETTINGS.items()}
 
-LABELS = {"size": "Text size", "spacing": "Line and letter spacing", "font": "Font", "theme": "Background"}
+GROUPS = [
+    ("Text", ["size", "font", "spacing"]),
+    ("Page", ["theme", "contrast", "linewidth"]),
+    ("Read aloud", ["rate", "readalong"]),
+]
 
 
 def _group(key: str) -> html.Fieldset:
@@ -73,9 +58,25 @@ def settings_panel() -> html.Div:
                             html.Button("Close", id="a11y-close", className="btn btn-secondary btn-small", n_clicks=0),
                         ],
                     ),
-                    html.P("Pick what feels easiest to read. We save your choices on this device.", className="settings-intro"),
-                    *[_group(k) for k in OPTIONS],
-                    html.Button("Reset to default", id="a11y-reset", className="btn btn-secondary", n_clicks=0),
+                    html.P(
+                        "Pick what feels easiest to read. Your choices apply on every page. "
+                        "If you are signed in, they are saved to your account too.",
+                        className="settings-intro",
+                    ),
+                    html.P(
+                        ["Not sure what works best? ", dcc.Link("Ask the AI Tutor", href="/ai-tutor"), " to help you try settings."],
+                        className="settings-intro settings-tip",
+                    ),
+                    *[
+                        html.Section(className="settings-section", children=[html.H3(title), *[_group(k) for k in keys]])
+                        for title, keys in GROUPS
+                    ],
+                    dcc.ConfirmDialogProvider(
+                        html.Button("Clear all preferences", id="a11y-reset-btn", className="btn btn-secondary", n_clicks=0),
+                        id="a11y-reset",
+                        message="Clear all your reading preferences and go back to the default settings?",
+                    ),
+                    html.P(id="a11y-status", className="settings-status", role="status"),
                 ],
             ),
         ]

@@ -95,3 +95,58 @@ html[data-theme="dark"] .goal-due.overdue { color:#F0A89D; }
   .week-chart { padding-right:0; }
   .wk-goal-label { top:-18px; }
 }
+
+/* ---------- Reading insights ---------- */
+.dash-jump { display:flex; flex-wrap:wrap; gap:8px; margin:-8px auto 8px; }
+.chip-link { display:inline-flex; align-items:center; min-height:36px; padding:4px 14px; border:1px solid var(--border); border-radius:999px; background:var(--surface); color:var(--heading); font-size:.9rem; font-weight:700; text-decoration:none; }
+.chip-link:hover { border-color:var(--navy-500); }
+.stat-row.stat-row-4 { grid-template-columns:repeat(4, 1fr); }
+.insights-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 28px; }
+.insight-block { min-width:0; }
+.insight-block h3 { font-family:var(--font-body); font-size:1rem; margin-bottom:10px; }
+
+/* Horizontal bars: one series, value at the end of every bar */
+.hbar-chart { display:flex; flex-direction:column; gap:8px; letter-spacing:0; word-spacing:0; line-height:1.3; }
+.hbar-row { display:grid; grid-template-columns:minmax(110px, 38%) 1fr 34px; align-items:center; gap:10px; font-size:.9rem; }
+.hbar-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hbar-track { height:16px; background:transparent; border-left:1px solid var(--grid); }
+.hbar-fill { height:100%; background:var(--bar); border-radius:0 4px 4px 0; }
+.hbar-value { font-weight:700; font-variant-numeric:tabular-nums; text-align:right; }
+
+/* Sessions */
+.session-list { list-style:none; margin:0; padding:0; letter-spacing:0; word-spacing:0; line-height:1.35; }
+.session-row { display:grid; grid-template-columns:62px 1fr auto; gap:10px; padding:7px 0; border-bottom:1px solid var(--grid); font-size:.92rem; }
+.session-row:last-child { border-bottom:none; }
+.session-day { color:var(--muted); font-weight:700; }
+.session-title { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.session-min { font-variant-numeric:tabular-nums; color:var(--muted); }
+
+/* Check-in ratings (1-5): one series, value on every bar */
+.ck-chart { display:flex; align-items:stretch; gap:6px; height:150px; border-bottom:1px solid var(--grid); padding-top:18px; margin-bottom:28px; letter-spacing:0; word-spacing:0; }
+.ck-col { position:relative; flex:1; max-width:48px; display:flex; flex-direction:column; align-items:center; }
+.ck-plot { flex:1; width:100%; display:flex; align-items:flex-end; justify-content:center; }
+.ck-bar { position:relative; width:min(26px, 80%); background:var(--bar); border-radius:4px 4px 0 0; }
+.ck-value { position:absolute; bottom:calc(100% + 2px); left:50%; transform:translateX(-50%); font-size:.8rem; font-weight:700; color:var(--text); }
+.ck-day { position:absolute; bottom:-22px; font-size:.72rem; color:var(--muted); white-space:nowrap; }
+
+/* ---------- What I want to work on ---------- */
+.profile-grid { display:grid; grid-template-columns:1.6fr 1fr; gap:20px; align-items:start; }
+.prof-rows { display:flex; flex-direction:column; margin-bottom:12px; }
+.prof-row { display:grid; grid-template-columns:minmax(180px, 34%) 1fr; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid var(--grid); }
+.prof-label { font-weight:700; line-height:1.3; letter-spacing:0; word-spacing:0; }
+.prof-choices.choice-row { gap:6px; }
+.prof-priority { display:flex; flex-direction:column; gap:4px; max-width:360px; margin:8px 0 14px; }
+.adapt-card { position:sticky; top:96px; }
+.adapt-list { margin:0 0 12px; padding-left:20px; line-height:1.4; }
+.adapt-list li { margin-bottom:10px; }
+
+@media (max-width: 900px) {
+  .stat-row.stat-row-4, .insights-grid, .profile-grid { grid-template-columns:1fr 1fr; }
+  .insights-grid, .profile-grid { grid-template-columns:1fr; }
+  .prof-row { grid-template-columns:1fr; }
+  .adapt-card { position:static; }
+}
+.prof-choices.choice-row { flex-wrap:nowrap; }
+.prof-choices .dash-options-list-option { min-height:36px !important; padding:4px 10px !important; font-size:.85rem; white-space:nowrap; letter-spacing:0; word-spacing:0; }
+.prof-row { grid-template-columns:minmax(150px, 30%) 1fr; }
+@media (max-width: 1200px) { .profile-grid { grid-template-columns:1fr; } .adapt-card { position:static; } }

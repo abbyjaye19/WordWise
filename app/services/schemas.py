@@ -35,3 +35,23 @@ class Summary(BaseModel):
     key_points: list[str]
     words_to_know: list[TrickyWord]
     check_questions: list[CheckQuestion]
+
+
+class RewrittenParagraph(BaseModel):
+    n: int = Field(description="The paragraph number you were given.")
+    text: str
+
+
+class Rewrite(BaseModel):
+    paragraphs: list[RewrittenParagraph]
+
+
+class SettingSuggestion(BaseModel):
+    setting: str = Field(description="One of the setting keys listed in the instructions.")
+    value: str = Field(description="One of the allowed values for that setting.")
+    reason: str = Field(description="One short, friendly sentence on why this might help.")
+
+
+class TutorReply(BaseModel):
+    reply: str = Field(description="Your chat message to the student (simple markdown).")
+    suggestions: list[SettingSuggestion] = Field(description="0 to 3 reading-setting changes to try. Usually empty.")

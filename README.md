@@ -60,9 +60,11 @@ If port 8050 is already in use, pick another one: `WORDWISE_PORT=8060 python app
 
 - **Reading Studio** (Reading Assistant in the menu):
   - Bring in a reading: upload a PDF, PowerPoint (`.pptx`), Word (`.docx`), or `.txt` file, paste text, or pick one of 4 samples (ages 5–8 up to college).
-  - Read aloud with each word highlighted as it's spoken, with slow/normal/fast speeds. This uses the browser's built-in voices, so it's free and needs no key.
+  - **Read along:** read aloud with the current sentence and word highlighted as they're spoken (choose word, sentence, or both). You can pause, go back a sentence, replay a sentence, or skip ahead, and change the speed (5 steps) while it plays. This uses the browser's built-in voices, so it's free and needs no key.
+  - **Reading levels:** switch the whole reading between **Original**, **Simplified wording**, and **Detailed explanation**. The AI versions keep the meaning, are clearly marked as AI, and can show the original under each paragraph. Highlights always belong to the original text.
   - Tap a word to look it up, highlight it (3 marker colors), or start reading aloud from there. There's also a reading ruler and a one-paragraph focus mode.
-  - AI help at the reader's level (ages 5–8, 9–12, 13–17, 18+):
+  - **How did it go?** After reading, a quick check-in: how well you understood it (1–5) and what made it hard.
+  - AI help at the reader's level (ages 5–8, 9–12, 13–17, 18+), adapted to what the student says they find hard:
     - **Word Coach:** meaning in this sentence, syllables, how to say it, synonyms, and an example.
     - **Explainer:** simpler words, an example, or step-by-step for a selected passage.
     - **Comprehension Coach:** big idea, key points, words to know, and "check yourself" questions with answers you tap to reveal.
@@ -73,6 +75,8 @@ If port 8050 is already in use, pick another one: `WORDWISE_PORT=8060 python app
   - move readings between folders
   - open a saved reading back in the studio
   - delete readings or folders (deleting a folder keeps its readings)
+- **Reading insights** (My Dashboard): reading sessions (time per reading), the tools you use most, saved words, and your comprehension check-ins over time, plus what made reading hard.
+- **What I want to work on** (My Dashboard): rate 8 areas (understanding what I read or hear, sounding out words, word meanings, spelling, speed, focus, remembering) and pick a top priority. Every AI helper and the AI Tutor use this to adapt, and the dashboard shows exactly how ("How WordWise adapts for you"). Every student reads differently, so there is no single "dyslexia mode".
 - **Reading goals** (My Dashboard):
   - Pick a daily minutes goal, and see today's progress, your streak, this week's total, and a 7-day chart.
   - Keep a checklist of your own goals with optional due dates.
@@ -88,6 +92,7 @@ If port 8050 is already in use, pick another one: `WORDWISE_PORT=8060 python app
   - Press Enter to send, and each answer has a 🔊 Listen button.
   - It guides students through homework rather than doing it for them, and points to 988 or a trusted adult if a student says they're unsafe.
   - Chats survive refreshes within the browser tab.
+  - **Finds your best settings with you:** tell it what's hard ("the lines blur", "the voice is too fast") or tap "Help me find my best reading settings". It suggests 1–3 setting changes, each with **Apply** and **Undo**, then asks how they feel so you can adjust together. It only suggests real settings (checked in code), using your current settings, your profile, and your check-ins.
 - **Tutor Directory:** 15 legitimate places to find a tutor yourself, filterable by age, format, and cost:
   - official certified-specialist directories (IDA, CERI, Wilson, ALTA, Barton, ASHA)
   - free or low-cost programs (Children's Dyslexia Centers, New Haven Reads, Reading Partners, ProLiteracy)
@@ -96,7 +101,7 @@ If port 8050 is already in use, pick another one: `WORDWISE_PORT=8060 python app
   - Khan Academy
 
   It also has a "before you choose a tutor" checklist based on IDA guidance. WordWise doesn't list or check individual tutors. The data is in `data/tutoring_sites.json`.
-- **Reading settings** (top right on every page): text size, spacing, font, and background. These are saved in your browser.
+- **Reading settings** (top right on every page): text size, font, spacing, background, contrast, line length, read-aloud speed, and read-along highlight. They apply on every page right away, are remembered in the browser, and are saved to your account when signed in (so they follow you to another device). **Clear all preferences** resets everything to the defaults.
 - The other sections are placeholders for now.
 
 ## Test data

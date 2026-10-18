@@ -49,7 +49,7 @@ html[data-theme="dark"] .status-error, html[data-theme="dark"] .notice-error { c
 .reader { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:32px 40px; font-size:1.15rem; }
 .r-section + .r-section { margin-top:24px; padding-top:24px; border-top:1px solid var(--border); }
 .r-label { font-family:var(--font-body); font-size:.8rem; color:var(--muted); font-weight:700; margin:0 0 12px; }
-.r-p { max-width:68ch; margin:0 0 1.1em; border-radius:6px; transition:opacity .15s; }
+.r-p { max-width:var(--measure); margin:0 0 1.1em; border-radius:6px; transition:opacity .15s; }
 .w { cursor:pointer; border-radius:4px; padding:0 1px; }
 .reader:not([data-mode="highlight"]) .w:hover { background:var(--navy-100); color:var(--navy-900); }
 .reader[data-mode="highlight"] .w:hover { box-shadow:inset 0 -3px 0 var(--brass-500); }
@@ -60,6 +60,12 @@ html[data-theme="dark"] .status-error, html[data-theme="dark"] .notice-error { c
 .r-reading { background:rgba(220,227,240,.45); box-shadow:-10px 0 0 rgba(220,227,240,.45), 10px 0 0 rgba(220,227,240,.45); }
 html[data-theme="dark"] .r-reading { background:rgba(60,90,143,.35); box-shadow:-10px 0 0 rgba(60,90,143,.35), 10px 0 0 rgba(60,90,143,.35); }
 .w-speaking { background:var(--brass-500) !important; color:var(--navy-900) !important; }
+/* Read-along: the sentence being read gets a soft band; the word gets the brass highlight. */
+.s-speaking { background:#F1E6CC; color:var(--navy-900); box-shadow:0 0 0 1px #F1E6CC; }
+html[data-theme="dark"] .s-speaking { background:#3A4C72; color:#FFFFFF; box-shadow:0 0 0 1px #3A4C72; }
+html[data-readalong="word"] .s-speaking { background:none; box-shadow:none; color:inherit; }
+html[data-readalong="sentence"] .w-speaking:not(.hl-gold):not(.hl-green):not(.hl-blue) { background:#F1E6CC !important; }
+html[data-theme="dark"][data-readalong="sentence"] .w-speaking:not(.hl-gold):not(.hl-green):not(.hl-blue) { background:#3A4C72 !important; color:#FFFFFF !important; }
 .focus-mode .r-p { opacity:.28; }
 .focus-mode .r-p.r-current, .focus-mode .r-p.r-reading { opacity:1; }
 #ww-ruler { position:fixed; pointer-events:none; z-index:15; background:rgba(176,141,87,.14); border-top:2px solid rgba(176,141,87,.7); border-bottom:2px solid rgba(176,141,87,.7); }
@@ -119,3 +125,30 @@ html[data-theme="dark"] .r-reading { background:rgba(60,90,143,.35); box-shadow:
 .intake[open] > summary::before { content:"−"; }
 .intake-title { margin:0; }
 .intake[open] > summary { margin-bottom:12px; }
+
+/* ---------- Reading Levels (AI versions are always marked as AI) ---------- */
+.segmented { display:inline-flex; }
+.segmented .tool-btn { border-radius:0; margin-left:-1px; }
+.segmented .tool-btn:first-child { border-radius:8px 0 0 8px; margin-left:0; }
+.segmented .tool-btn:last-child { border-radius:0 8px 8px 0; }
+.view-status { font-size:14px; color:var(--muted); }
+.view-status.working::after { content:"Rewriting your reading… this takes a few seconds."; font-weight:700; color:var(--accent); }
+.r-ai-banner { display:flex; flex-wrap:wrap; gap:4px 10px; align-items:baseline; margin:-8px 0 20px; padding:10px 14px; border-radius:8px; background:var(--navy-100); color:var(--navy-900); border-left:5px solid var(--navy-500); font-size:.85rem; line-height:1.4; letter-spacing:0; word-spacing:0; }
+.r-ai-banner strong { color:var(--navy-700); }
+.r-pair { margin:0 0 1.1em; }
+.r-p.r-ai { border-left:4px solid var(--navy-500); padding:2px 0 2px 14px; border-radius:0; margin-bottom:.5em; }
+.r-orig { max-width:var(--measure); margin:0 0 0 18px; padding:8px 12px; font-size:.85em; color:var(--muted); background:var(--bg); border:1px dashed var(--border); border-radius:8px; }
+.r-orig::before { content:"Original"; display:block; font-size:.75rem; font-weight:700; letter-spacing:0; word-spacing:0; color:var(--muted); margin-bottom:2px; }
+.r-ai-note { font-size:.85rem; color:var(--muted); border-top:1px solid var(--border); padding-top:12px; }
+.reader[data-view="simplified"][data-mode="highlight"] .r-ai .w,
+.reader[data-view="detailed"][data-mode="highlight"] .r-ai .w { cursor:not-allowed; }
+
+/* Speed + read-along controls */
+.tool-icon { min-width:40px; font-weight:700; padding:6px 8px; }
+.speed-label { min-width:104px; text-align:center; font-weight:700; font-size:14px; }
+
+/* Comprehension check-in */
+.check-hard-label { margin:10px 0 6px; }
+#checkin .btn { margin-top:10px; }
+.level-bar { display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; margin:0 0 14px; padding:10px 14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); font-size:15px; letter-spacing:0; word-spacing:0; line-height:1.3; }
+.speed-ctl { display:inline-flex; align-items:center; gap:2px; margin-left:6px; }

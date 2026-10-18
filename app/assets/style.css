@@ -13,7 +13,7 @@
 
   /* Reader settings (changed by the Reading settings panel) */
   --font-body:"Atkinson Hyperlegible", "Lexend", Verdana, sans-serif;
-  --fs:18px; --lh:1.6; --ls:0; --ws:0;
+  --fs:18px; --lh:1.6; --ls:0; --ws:0; --measure:68ch;
 }
 
 /* ---------- Reading settings ---------- */
@@ -36,6 +36,17 @@ html[data-theme="dark"] {
   --muted:#C5CCDA; --dot:#22365E; --accent:#A9BCE0;
 }
 
+/* High contrast: darker text and borders, plainer background (keeps the navy + cream palette). */
+html[data-contrast="high"] { --bg:#FFFDF8; --surface:#FFFFFF; --border:#5B6A86; --text:#081226; --heading:#0F1F3D; --muted:#26324A; --dot:transparent; }
+html[data-contrast="high"][data-theme="blue"] { --bg:#F4F7FC; --surface:#FFFFFF; }
+html[data-contrast="high"][data-theme="dark"] { --bg:#0A1328; --surface:#0F1C38; --border:#AFC0E0; --text:#FFFFFF; --heading:#FFFFFF; --muted:#E8ECF4; --accent:#C9D7F2; }
+html[data-contrast="high"] .btn-secondary { border-width:2px; }
+
+/* Line length: how many characters fit on one line of reading text. */
+html[data-linewidth="narrow"] { --measure:52ch; }
+html[data-linewidth="medium"] { --measure:68ch; }
+html[data-linewidth="wide"]   { --measure:86ch; }
+
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing:border-box; }
 [hidden] { display:none !important; }
@@ -50,7 +61,7 @@ h1, h2, h3 { font-family:var(--font-display); color:var(--heading); line-height:
 h1 { font-size:2.2rem; }
 h2 { font-size:1.6rem; }
 h3 { font-size:1.15rem; }
-p  { margin:0 0 1em; max-width:68ch; }
+p  { margin:0 0 1em; max-width:var(--measure); }
 a  { color:var(--heading); }
 em, i { font-style:normal; font-weight:700; }
 #main:focus { outline:none; }
@@ -190,3 +201,9 @@ em, i { font-style:normal; font-weight:700; }
 @media (prefers-reduced-motion: reduce) {
   * { transition:none !important; animation:none !important; }
 }
+
+/* Settings panel sections */
+.settings-section { border-top:1px solid var(--cream-300); padding-top:14px; margin-top:6px; }
+.settings-section h3 { font-family:var(--font-display); font-size:1.05rem; color:var(--navy-700); margin:0 0 10px; }
+.settings-tip { font-size:.95rem; }
+.settings-status { margin:12px 0 0; color:var(--sage-600); font-weight:700; min-height:1.5em; }
