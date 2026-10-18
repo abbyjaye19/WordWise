@@ -110,6 +110,21 @@ If port 8050 is already in use, pick another one: `WORDWISE_PORT=8060 python app
 - Every library query is limited to the signed-in user. Sign-in pauses for 5 minutes after 5 wrong passwords.
 - Students under 13 are asked to create an account with a parent or guardian.
 
+## Deliverables
+
+- `deliverables/report.html`: the full report, 14 printed pages. It's a single file with all images embedded.
+- `deliverables/slides.html`: a 10-slide reveal.js deck that works offline. Use the arrow keys to move between slides, F for fullscreen, and Esc for an overview.
+- `deliverables/agent_diagram.svg` and `deliverables/screenshots/`: the figures used in both.
+
+Rebuild everything from the evidence files (report and slides need Pillow; screenshots need `pip install playwright` and Microsoft Edge):
+
+```bash
+python scripts/safety_eval.py
+python scripts/capture_screenshots.py
+python scripts/build_report.py
+python scripts/build_slides.py
+```
+
 ## Tokenomics (measured)
 
 The numbers come from real calls; see `output/tokenomics/projections.md`. To reproduce them (needs a key, costs about $0.01):
