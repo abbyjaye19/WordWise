@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" font-family="Atkinson Hyperlegible, Verdana, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">WordWise agent architecture</title>
+  <desc id="d">A student uses the Reading Studio in the browser. Reading tools run in the browser with no AI. AI requests go from the Dash server through a guard layer, which holds four helpers that share one cached prompt prefix, then through the Portkey gateway to gpt-6-luna on Azure OpenAI. Accounts and saved work stay in a local database the AI never sees.</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0F1F3D"/>
+    </marker>
+    <style>
+      .box { fill:#F4EEE1; stroke:#0F1F3D; stroke-width:2; }
+      .navy { fill:#1B3366; stroke:#0F1F3D; stroke-width:2; }
+      .agent { fill:#DCE3F0; stroke:#3C5A8F; stroke-width:2; }
+      .h { font-family:'Libre Baskerville', Georgia, serif; font-weight:700; fill:#1B3366; font-size:17px; }
+      .hw { font-family:'Libre Baskerville', Georgia, serif; font-weight:700; fill:#FBF8F1; font-size:17px; }
+      .t { fill:#0F1F3D; font-size:13px; }
+      .tw { fill:#F4EEE1; font-size:13px; }
+      .s { fill:#4A5874; font-size:12px; }
+      .tag { fill:#B08D57; font-size:11px; font-weight:700; letter-spacing:.5px; }
+      .line { stroke:#0F1F3D; stroke-width:2; fill:none; }
+      .dash { stroke:#4A5874; stroke-width:1.5; fill:none; stroke-dasharray:5 4; }
+    </style>
+  </defs>
+  <rect width="1000" height="640" fill="#FBF8F1"/>
+
+  <!-- Student + browser -->
+  <rect class="box" x="20" y="24" width="260" height="250" rx="12"/>
+  <text class="tag" x="36" y="48">IN THE BROWSER</text>
+  <text class="h" x="36" y="74">Student</text>
+  <text class="t" x="36" y="96">Picks reader level: 5–8 · 9–12 ·</text>
+  <text class="t" x="36" y="113">13–17 · 18+</text>
+  <text class="h" x="36" y="146">Reading Studio (studio.js)</text>
+  <text class="t" x="36" y="168">Upload PDF · slides · Word · text</text>
+  <text class="t" x="36" y="186">Read aloud + word highlighting</text>
+  <text class="t" x="36" y="204">Highlighter · ruler · focus mode</text>
+  <text class="t" x="36" y="222">Text size, spacing, font, colors</text>
+  <text class="s" x="36" y="252">No AI, no cost: runs in the browser</text>
+
+  <!-- Dash server -->
+  <rect class="box" x="20" y="300" width="260" height="170" rx="12"/>
+  <text class="tag" x="36" y="324">WORDWISE SERVER (DASH)</text>
+  <text class="t" x="36" y="350">Pages, accounts, uploads,</text>
+  <text class="t" x="36" y="367">exports (Word / web page / PDF)</text>
+  <rect x="36" y="384" width="228" height="70" rx="8" fill="#FBF8F1" stroke="#B08D57" stroke-width="1.5"/>
+  <text class="t" x="48" y="406" font-weight="700">SQLite database</text>
+  <text class="s" x="48" y="424">accounts · folders · readings ·</text>
+  <text class="s" x="48" y="441">words · goals (never sent to AI)</text>
+
+  <path class="line" d="M150 274 L150 300" marker-end="url(#arr)" marker-start="url(#arr)"/>
+
+  <!-- Guard layer with agents -->
+  <rect class="navy" x="320" y="24" width="400" height="592" rx="14"/>
+  <text class="tag" x="340" y="50" fill="#E9D3A6">services/ai.py — GUARD LAYER</text>
+  <text class="tw" x="340" y="74">Before: daily spending cap · input size caps ·</text>
+  <text class="tw" x="340" y="91">reading wrapped in &lt;reading&gt; tags (data, not orders)</text>
+  <text class="tw" x="340" y="108">After: model must be gpt-6-luna · token + cost log</text>
+
+  <rect x="340" y="124" width="360" height="56" rx="10" fill="#B08D57" stroke="#0F1F3D" stroke-width="2"/>
+  <text class="t" x="356" y="146" font-weight="700">Shared cached prompt (~1,600 tokens)</text>
+  <text class="t" x="356" y="166">safety rules + reader-level guide → 10× cheaper</text>
+
+  <rect class="agent" x="340" y="196" width="360" height="92" rx="10"/>
+  <text class="h" x="356" y="222">Word Coach</text>
+  <text class="t" x="356" y="244">Tap a word → meaning in this sentence,</text>
+  <text class="t" x="356" y="261">syllables, say-it, synonyms, example</text>
+  <text class="s" x="356" y="279">Output: WordHelp (fixed JSON) · ~$0.00006</text>
+
+  <rect class="agent" x="340" y="300" width="360" height="92" rx="10"/>
+  <text class="h" x="356" y="326">Explainer</text>
+  <text class="t" x="356" y="348">Selected passage → simpler words, an</text>
+  <text class="t" x="356" y="365">example, or step by step</text>
+  <text class="s" x="356" y="383">Output: Explanation (fixed JSON) · ~$0.00008</text>
+
+  <rect class="agent" x="340" y="404" width="360" height="92" rx="10"/>
+  <text class="h" x="356" y="430">Comprehension Coach</text>
+  <text class="t" x="356" y="452">Big idea, key points, words to know,</text>
+  <text class="t" x="356" y="469">3 "check yourself" questions</text>
+  <text class="s" x="356" y="487">Output: Summary (fixed JSON) · ~$0.00026</text>
+
+  <rect class="agent" x="340" y="508" width="360" height="92" rx="10"/>
+  <text class="h" x="356" y="534">AI Tutor (chat)</text>
+  <text class="t" x="356" y="556">Free-form help; sees the open reading;</text>
+  <text class="t" x="356" y="573">guides homework, never writes it</text>
+  <text class="s" x="356" y="591">Output: short text, last 12 turns · ~$0.0001</text>
+
+  <path class="line" d="M280 140 L320 140" marker-end="url(#arr)"/>
+
+  <!-- Gateway + model -->
+  <rect class="box" x="750" y="150" width="236" height="150" rx="12"/>
+  <text class="tag" x="776" y="174">PORTKEY GATEWAY</text>
+  <text class="t" x="776" y="198">Key: PORTKEY_API_KEY</text>
+  <text class="t" x="776" y="218">Replay cache: identical</text>
+  <text class="t" x="776" y="235">request → stored answer, $0</text>
+  <text class="s" x="776" y="262">x-portkey-cache-status: HIT</text>
+  <text class="s" x="776" y="279">logged as free</text>
+
+  <rect class="navy" x="750" y="340" width="236" height="170" rx="12"/>
+  <text class="tag" x="776" y="364" fill="#E9D3A6">AZURE OPENAI</text>
+  <text class="hw" x="776" y="390">gpt-6-luna</text>
+  <text class="tw" x="776" y="414">One model for every helper</text>
+  <text class="tw" x="776" y="434">Prompt cache (1,024+)</text>
+  <text class="tw" x="776" y="454">Content filter blocks</text>
+  <text class="tw" x="776" y="471">jailbreak attempts upstream</text>
+  <text class="tw" x="776" y="494">Reasoning effort: low</text>
+
+  <path class="line" d="M720 225 L750 225" marker-end="url(#arr)"/>
+  <path class="line" d="M870 300 L870 340" marker-end="url(#arr)" marker-start="url(#arr)"/>
+    <text class="s" x="868" y="548" text-anchor="middle">No tools, no agent loops:</text>
+  <text class="s" x="868" y="566" text-anchor="middle">1 click = 1 model call</text>
+
+  <!-- Legend / footer -->
+  <text class="s" x="20" y="512">WordWise · MGT 409 final project</text>
+  <text class="s" x="20" y="532">Costs: measured average per call,</text>
+  <text class="s" x="20" y="549">warm cache (output/tokenomics/)</text>
+</svg>
