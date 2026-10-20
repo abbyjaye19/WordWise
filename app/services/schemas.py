@@ -55,3 +55,14 @@ class SettingSuggestion(BaseModel):
 class TutorReply(BaseModel):
     reply: str = Field(description="Your chat message to the student (simple markdown).")
     suggestions: list[SettingSuggestion] = Field(description="0 to 3 reading-setting changes to try. Usually empty.")
+
+
+class SayFix(BaseModel):
+    n: int = Field(description="Paragraph number.")
+    word: str = Field(description="The word exactly as written, without punctuation.")
+    occurrence: int = Field(description="Which time this word appears in the paragraph (1 = first).")
+    say: str = Field(description="Respelling the voice should speak instead.")
+
+
+class Pronunciation(BaseModel):
+    fixes: list[SayFix]

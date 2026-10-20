@@ -117,6 +117,13 @@ def _toolbar() -> html.Div:
                             html.Button("+", id="tts-faster", className="tool-btn tool-icon", type="button", title="Faster", **{"aria-label": "Faster"}),
                         ],
                     ),
+                    html.Label(
+                        [
+                            html.Span("Voice", className="sr-only"),
+                            # Filled by assets/studio.js with this browser's English voices, the most natural first.
+                            html.Select(id="tts-voice", className="tool-select voice-select", title="Choose a voice"),
+                        ]
+                    ),
                     html.Button("Highlight: Both", id="tts-readalong", className="tool-btn", type="button",
                                 title="What is highlighted while reading aloud: word, sentence, or both"),
                 ],
@@ -351,6 +358,7 @@ def _layout(user, store_kwargs, bad_link: bool):
         dcc.Store(id="reading-beat"),
         dcc.Store(id="tool-beat"),
         dcc.Store(id="view-store", storage_type="session"),
+        dcc.Store(id="tts-fixes"),
         dcc.Download(id="download"),
         html.Div(id="reader-sink", hidden=True),
         html.Div(id="view-sink", hidden=True),
@@ -587,6 +595,31 @@ def change_view(_o, _s, _d, level, doc, view):
         progress.log_tool(user["id"], f"{mode}_view")
     data = {"mode": mode, "level": level, "title": doc["title"], "count": len(paras), "covered": covered, "paras": rewritten}
     return data, ""
+
+
+# ---------- callbacks: Pronunciation Helper (so read-aloud says words like "read" correctly) ----------
+
+@callback(Output("tts-fixes", "data"), Input("doc-store", "data"), Input("view-store", "data"))
+def pronunciation_fixes(doc, view):
+    """Runs in the background when a reading (or an AI view of it) opens; read-aloud uses the
+    result as soon as it arrives. If it fails, read-aloud still works with the voice's own guesses."""
+    if not doc:
+        return {}
+    paras = _paragraphs(doc)
+    if view and view.get("title") == doc["title"] and view.get("count") == len(paras):
+        covered = view.get("covered", 0)
+        paras = list(view.get("paras") or [])[:covered] + paras[covered:]  # what's on screen
+    try:
+        return ai.pronunciation(paras)
+    except ai.AIError:
+        return no_update
+
+
+dash.clientside_callback(
+    "function (fixes) { if (window.WW && window.WW.setFixes) { window.WW.setFixes(fixes); } return ''; }",
+    Output("view-sink", "children"),
+    Input("tts-fixes", "data"),
+)
 
 
 def _profile(user: dict | None) -> str:

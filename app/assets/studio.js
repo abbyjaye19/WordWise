@@ -188,6 +188,14 @@
   }
 
   /* ---------- helpers ---------- */
+  // Short forms a voice may misread, and that don't end a sentence (Prof. Whitfield, Rm. 114, e.g.).
+  const ABBREV = {
+    "prof.": "Professor", "dr.": "Doctor", "mr.": "Mister", "mrs.": "Missus", "ms.": "Miz", "rm.": "Room",
+    "e.g.": "for example", "i.e.": "that is", "etc.": "et cetera", "vs.": "versus", "approx.": "approximately",
+    "dept.": "Department", "ave.": "Avenue", "no.": "number", "pp.": "pages", "ch.": "chapter", "fig.": "figure",
+  };
+  const NO_BREAK = /(?:\b(?:prof|dr|mr|mrs|ms|rm|e\.g|i\.e|vs|approx|dept|ave|no|pp|ch|fig|st|jr|sr)\.|\b[A-Z]\.)\s*$/i;
+
   function sentences(text) {
     // [{start, end}] for each sentence in the text
     const out = [];
@@ -195,7 +203,10 @@
     let m;
     while ((m = re.exec(text))) {
       if (!m[0]) break;
-      out.push({ start: m.index, end: m.index + m[0].length });
+      const last = out[out.length - 1];
+      // "Prof. Whitfield" is one sentence, not two.
+      if (last && NO_BREAK.test(text.slice(last.start, last.end).trimEnd())) last.end = m.index + m[0].length;
+      else out.push({ start: m.index, end: m.index + m[0].length });
     }
     return out.length ? out : [{ start: 0, end: text.length }];
   }
@@ -226,17 +237,93 @@
     }
   }
 
-  /* ---------- read aloud ---------- */
+  /* ---------- read aloud ----------
+   * Uses the browser's own voices (free, no key). Edge's "Natural" voices sound the most human, so
+   * they are ranked first. Voices load a moment after the page does, so we wait for them before the
+   * first sentence instead of falling back to the robotic default voice.
+   */
+  let VOICES = [];
+  const VOICE_KEY = "ww-voice";
+  const GOOD_NAMES = /\b(ava|andrew|emma|brian|jenny|aria|guy|michelle|christopher|eric|steffan|libby|sonia|ryan|natasha|william)\b/i;
+
+  function voiceScore(v) {
+    let s = 0;
+    if (/natural|neural|online/i.test(v.name)) s += 100;
+    if (/google/i.test(v.name)) s += 60;
+    if (GOOD_NAMES.test(v.name)) s += 20;
+    if (/en[-_]US/i.test(v.lang)) s += 10;
+    else if (/en[-_](GB|AU|CA|IE|NZ)/i.test(v.lang)) s += 5;
+    if (/desktop|espeak/i.test(v.name)) s -= 50;
+    return s;
+  }
+
+  function englishVoices() {
+    return VOICES.filter((v) => /^en/i.test(v.lang)).sort((a, b) => voiceScore(b) - voiceScore(a));
+  }
+
+  function voiceLabel(v) {
+    const m = v.name.match(/^(?:Microsoft|Google)\s+(.+?)(?:\s+Online)?(?:\s+\((Natural)\))?(?:\s+-\s+.*)?$/i);
+    const name = m ? m[1] : v.name;
+    const region = (v.lang.split(/[-_]/)[1] || "").toUpperCase();
+    const natural = /natural|neural|online|google/i.test(v.name);
+    return name + (region ? " (" + region + ")" : "") + (natural ? " · natural" : "");
+  }
+
+  function fillVoiceSelect() {
+    const sel = document.getElementById("tts-voice");
+    if (!sel) return;
+    const list = englishVoices();
+    const want = localStorage.getItem(VOICE_KEY);
+    const key = list.map((v) => v.name).join("|") + "#" + want;
+    if (sel.dataset.key === key) return;
+    sel.dataset.key = key;
+    sel.innerHTML = "";
+    if (!list.length) {
+      const o = document.createElement("option");
+      o.value = "";
+      o.textContent = "Default voice";
+      sel.appendChild(o);
+      return;
+    }
+    list.forEach((v, i) => {
+      const o = document.createElement("option");
+      o.value = v.name;
+      o.textContent = (i === 0 ? "★ " : "") + voiceLabel(v);
+      sel.appendChild(o);
+    });
+    sel.value = list.some((v) => v.name === want) ? want : list[0].name;
+  }
+
+  function loadVoices() {
+    if (!synth) return;
+    VOICES = synth.getVoices();
+    fillVoiceSelect();
+  }
+  if (synth) {
+    loadVoices();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", loadVoices);
+    else synth.onvoiceschanged = loadVoices;
+  }
+
+  // Wait (briefly) until the voice list is ready, so the first sentence uses a good voice.
+  function withVoices(cb) {
+    if (!synth || VOICES.length) return cb();
+    let done = false;
+    const go = () => {
+      if (done) return;
+      done = true;
+      loadVoices();
+      cb();
+    };
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", go, { once: true });
+    setTimeout(go, 1500);
+  }
+
   function pickVoice() {
     if (!synth) return null;
-    const voices = synth.getVoices().filter((v) => /^en/i.test(v.lang));
-    return (
-      voices.find((v) => /natural/i.test(v.name) && /en-US/i.test(v.lang)) ||
-      voices.find((v) => v.localService && /en-US/i.test(v.lang)) ||
-      voices.find((v) => v.default) ||
-      voices[0] ||
-      null
-    );
+    const list = englishVoices();
+    const want = localStorage.getItem(VOICE_KEY);
+    return list.find((v) => v.name === want) || list[0] || null;
   }
 
   // Speed and read-along style come from the Reading settings (saved preferences on <html>).
@@ -262,9 +349,74 @@
     });
   }
 
+  /* Pronunciation fixes from the Pronunciation Helper: {paragraph text: [{word, occurrence, say}]}.
+   * Only the spoken text changes; the words on screen stay exactly as written. */
+  state.fixes = {};
+  WW.setFixes = function (fixes) {
+    state.fixes = fixes || {};
+  };
+
+  function sayMap(p) {
+    const fixes = (state.fixes[p.textContent] || []).map((x) => ({ ...x, key: bare(x.word).toLowerCase() }));
+    const out = new Map();
+    const seen = {};
+    p.querySelectorAll(".w").forEach((w) => {
+      const token = w.textContent;
+      const b = bare(token).toLowerCase();
+      if (!b) return;
+      seen[b] = (seen[b] || 0) + 1;
+      const abbr = ABBREV[token.replace(/^[^\p{L}]+|[,;:)"'”’]+$/gu, "").toLowerCase()];
+      if (abbr) return out.set(w, { say: abbr, abbr: true }); // the fixed list wins: it also drops the period
+      const f = fixes.find((x) => x.key === b && x.occurrence === seen[b]);
+      if (f) out.set(w, f.say);
+    });
+    return out;
+  }
+
+  // The text actually spoken for [start, end) of a paragraph, plus where each word starts in it
+  // (so the highlight still follows the right word when a respelling is a different length).
+  function spokenText(p, start, end, says) {
+    const text = p.textContent;
+    let spoken = "";
+    let prev = start;
+    const marks = [];
+    p.querySelectorAll(".w").forEach((w) => {
+      const o = +w.dataset.o;
+      if (o < start || o >= end) return;
+      spoken += text.slice(prev, o);
+      marks.push({ s: spoken.length, w: w });
+      const token = w.textContent;
+      const say = says.get(w);
+      const b = bare(token);
+      if (say && say.abbr) spoken += token.replace(/[\p{L}.]+/u, say.say); // "Prof." -> "Professor" (no sentence-ending pause)
+      else spoken += say && b ? token.replace(b, say) : token;
+      prev = o + token.length;
+    });
+    spoken += text.slice(prev, end);
+    return { spoken: spoken, marks: marks };
+  }
+
+  // Group whole sentences into chunks of up to ~240 characters: fewer gaps between sentences than
+  // speaking one sentence at a time, and short enough for every browser's voices.
+  function chunksFrom(text, startAt) {
+    const ss = sentences(text).filter((c) => c.end > startAt);
+    if (ss.length) ss[0] = { start: Math.max(ss[0].start, startAt), end: ss[0].end };
+    const out = [];
+    ss.forEach((s) => {
+      const last = out[out.length - 1];
+      if (last && s.end - last.start <= 240) {
+        last.end = s.end;
+        last.sents.push(s);
+      } else {
+        out.push({ start: s.start, end: s.end, sents: [s] });
+      }
+    });
+    return out;
+  }
+
   function speakFrom(pEl, offset) {
     if (!synth) {
-      alert("Read aloud isn't available in this browser. Try Chrome or Edge.");
+      alert("Read aloud isn't available in this browser. Try Edge or Chrome.");
       return;
     }
     stop();
@@ -281,9 +433,8 @@
       p.classList.add("r-reading");
       setCurrent(p);
       scrollIntoViewIfNeeded(p);
-      const text = p.textContent;
-      const chunks = sentences(text).filter((c) => c.end > startAt);
-      if (chunks.length) chunks[0] = { start: Math.max(chunks[0].start, startAt), end: chunks[0].end };
+      const says = sayMap(p);
+      const chunks = chunksFrom(p.textContent, startAt);
       let ci = 0;
       const next = () => {
         if (myRun !== run) return;
@@ -294,29 +445,48 @@
           return;
         }
         const c = chunks[ci++];
-        state.cur = { p: p, start: c.start };
-        markSentence(p, c.start, c.end);
-        const u = new SpeechSynthesisUtterance(text.slice(c.start, c.end));
+        let sentence = c.sents[0];
+        state.cur = { p: p, start: sentence.start };
+        markSentence(p, sentence.start, sentence.end);
+        const sp = spokenText(p, c.start, c.end, says);
+        const u = new SpeechSynthesisUtterance(sp.spoken);
         const v = pickVoice();
-        if (v) u.voice = v;
+        if (v) {
+          u.voice = v;
+          u.lang = v.lang;
+        }
         u.rate = rate();
         u.onboundary = (ev) => {
           if (myRun !== run || (ev.name && ev.name !== "word")) return;
-          const w = wordAt(p, c.start + ev.charIndex);
-          if (!w) return;
+          let m = null;
+          for (const x of sp.marks) {
+            if (x.s <= ev.charIndex) m = x;
+            else break;
+          }
+          if (!m) return;
+          const w = m.w;
           p.querySelectorAll(".w-speaking").forEach((x) => x.classList.remove("w-speaking"));
           w.classList.add("w-speaking");
+          const o = +w.dataset.o;
+          if (o >= sentence.end || o < sentence.start) {
+            const s = c.sents.find((x) => o >= x.start && o < x.end);
+            if (s) {
+              sentence = s;
+              state.cur = { p: p, start: s.start };
+              markSentence(p, s.start, s.end);
+            }
+          }
           if (state.ruler) moveRulerTo(w);
         };
         u.onend = next;
-        u.onerror = () => {
-          if (myRun === run) next();
+        u.onerror = (ev) => {
+          if (myRun === run && ev.error !== "interrupted" && ev.error !== "canceled") next();
         };
         synth.speak(u);
       };
       next();
     };
-    speakPara(pEl, offset);
+    withVoices(() => speakPara(pEl, offset));
   }
 
   function play() {
@@ -404,12 +574,24 @@
   function sayText(text) {
     if (!synth || !text) return;
     stop();
-    const u = new SpeechSynthesisUtterance(text);
-    const v = pickVoice();
-    if (v) u.voice = v;
-    u.rate = rate();
-    synth.speak(u);
+    withVoices(() => {
+      const u = new SpeechSynthesisUtterance(text);
+      const v = pickVoice();
+      if (v) {
+        u.voice = v;
+        u.lang = v.lang;
+      }
+      u.rate = rate();
+      synth.speak(u);
+    });
   }
+
+  // Choosing a voice: remember it on this device and play a short sample.
+  document.addEventListener("change", (e) => {
+    if (!e.target || e.target.id !== "tts-voice") return;
+    localStorage.setItem(VOICE_KEY, e.target.value);
+    sayText("Hi! This is how I sound when I read to you.");
+  });
 
   function updateButtons() {
     const playBtn = document.getElementById("tts-play");
@@ -425,7 +607,7 @@
     const ra = document.getElementById("tts-readalong");
     if (ra) ra.textContent = "Highlight: " + (READALONG_LABELS[document.documentElement.dataset.readalong] || READALONG_LABELS.both);
   }
-  WW.refreshTools = function () { updateButtons(); syncViewButtons(); };
+  WW.refreshTools = function () { updateButtons(); syncViewButtons(); fillVoiceSelect(); };
 
   /* ---------- word actions ---------- */
   function lookup(w) {
@@ -572,7 +754,10 @@
     if (!sel || sel.isCollapsed || !el || !sel.rangeCount) return;
     const range = sel.getRangeAt(0);
     if (!el.contains(range.commonAncestorContainer)) return;
-    const text = sel.toString().replace(/\s+/g, " ").trim();
+    if (!sel.toString().trim().includes(" ")) return;
+    // Use whole words, even if the drag started or ended in the middle of one ("he exam" -> "The exam").
+    const words = Array.from(el.querySelectorAll(".w")).filter((w) => range.intersectsNode(w));
+    const text = words.map((w) => w.textContent).join(" ").replace(/\s+/g, " ").trim();
     if (!text || !text.includes(" ")) return;
     if (state.mode === "highlight") {
       el.querySelectorAll(".w[data-i]").forEach((w) => {
@@ -621,7 +806,6 @@
     if (a && !a.closest("#reader")) stop();
   }, true);
 
-  if (synth) synth.onvoiceschanged = () => {};
 
   /* ---------- reading time (for Reading goals) ----------
    * Counts time only while a reading is on screen, the tab is visible, and the

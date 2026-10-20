@@ -61,7 +61,7 @@ layout = html.Div(
     [
         # Hero
         html.Section(
-            className="hero dots-navy",
+            className="hero hero-mint",
             children=[
                 html.Div(className="geo geo-circle", **{"aria-hidden": "true"}),
                 html.Div(className="geo geo-arc", **{"aria-hidden": "true"}),
@@ -88,7 +88,7 @@ layout = html.Div(
                                 ),
                             ],
                         ),
-                        html.Img(src="/assets/skyline.svg", alt="", className="hero-skyline"),
+                        html.Img(src="/assets/skyline-green.svg", alt="", className="hero-skyline"),
                     ],
                 ),
             ],

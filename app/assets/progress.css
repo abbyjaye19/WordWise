@@ -1,10 +1,10 @@
 /* Reading goals + My words (My Dashboard), and the "Today" meter in the Reading Studio.
    Chart colors validated with the dataviz palette checker against each theme surface:
-   light/blue: bars #1B3366, goal line #8A6630 · dark: bars #7F9FDB, goal line #F2C46B. */
+   light/blue/green: bars #2F6B49, goal line #8A6630 · dark: bars #8CC79A, goal line #F2C46B. */
 
-:root { --bar:#1B3366; --goal-line:#8A6630; --grid:#E6DCC6; }
+:root { --bar:#2F6B49; --goal-line:#8A6630; --grid:#E6DCC6; }
 html[data-theme="blue"] { --grid:#C9D3E5; }
-html[data-theme="dark"] { --bar:#7F9FDB; --goal-line:#F2C46B; --grid:#2E4370; }
+html[data-theme="dark"] { --bar:#8CC79A; --goal-line:#F2C46B; --grid:#2E4370; }
 
 .progress-section { padding-top:8px; padding-bottom:24px; }
 .section-head { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
@@ -21,7 +21,7 @@ html[data-theme="dark"] { --bar:#7F9FDB; --goal-line:#F2C46B; --grid:#2E4370; }
 .stat-hero .stat-value { font-size:3rem; }
 .stat-unit { font-size:.95rem; color:var(--muted); font-weight:700; }
 .stat-note { font-size:.8rem; color:var(--muted); margin-top:4px !important; }
-.meter { height:10px; border-radius:999px; background:var(--navy-100); margin-top:8px; overflow:hidden; }
+.meter { height:10px; border-radius:999px; background:var(--mint-100); margin-top:8px; overflow:hidden; }
 html[data-theme="dark"] .meter { background:#2E4370; }
 .meter-fill { height:100%; background:var(--bar); border-radius:999px; }
 
@@ -84,10 +84,10 @@ html[data-theme="dark"] .goal-due.overdue { color:#F0A89D; }
 .word-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
 .word-head .btn { white-space:nowrap; flex-shrink:0; }
 .word-head .word-title { min-width:0; overflow-wrap:anywhere; }
-.ai-answer .word-head .btn { background:var(--cream-50); color:var(--navy-900); border-color:var(--navy-500); }
+.ai-answer .word-head .btn { background:var(--cream-50); color:var(--navy-900); border-color:var(--green-600); }
 #save-word-status p { margin:4px 0 0; }
 .today-reading { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:8px; font-size:.85rem; }
-.mini-meter { width:120px; height:8px; border-radius:999px; background:var(--navy-100); overflow:hidden; }
+.mini-meter { width:120px; height:8px; border-radius:999px; background:var(--mint-100); overflow:hidden; }
 .mini-meter-fill { height:100%; background:var(--bar); }
 
 @media (max-width: 900px) {
@@ -99,7 +99,7 @@ html[data-theme="dark"] .goal-due.overdue { color:#F0A89D; }
 /* ---------- Reading insights ---------- */
 .dash-jump { display:flex; flex-wrap:wrap; gap:8px; margin:-8px auto 8px; }
 .chip-link { display:inline-flex; align-items:center; min-height:36px; padding:4px 14px; border:1px solid var(--border); border-radius:999px; background:var(--surface); color:var(--heading); font-size:.9rem; font-weight:700; text-decoration:none; }
-.chip-link:hover { border-color:var(--navy-500); }
+.chip-link:hover { border-color:var(--green-600); }
 .stat-row.stat-row-4 { grid-template-columns:repeat(4, 1fr); }
 .insights-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 28px; }
 .insight-block { min-width:0; }

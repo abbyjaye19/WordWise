@@ -31,7 +31,8 @@ TOK = ROOT / "output" / "tokenomics"
 AUTHOR = "Abby Jaye"
 REPO = "github.com/abbyjaye19/WordWise"
 
-NAVY, NAVY7, NAVY5, NAVY1 = "#0F1F3D", "#1B3366", "#3C5A8F", "#DCE3F0"
+NAVY = "#0F1F3D"
+GREEN7, GREEN5, MINT1 = "#2F6B49", "#5E9A6E", "#E1F0DC"  # pastel green theme: fills green, text navy
 CREAM, CREAM1, CREAM3 = "#FBF8F1", "#F4EEE1", "#E6DCC6"
 BRASS, BRASS_DARK, MUTED, GREEN = "#B08D57", "#8A6630", "#4A5874", "#3E6B48"
 SKY = "#7F9FDB"
@@ -124,14 +125,14 @@ def harvey(level: int) -> str:
     """Harvey ball, level 0-4."""
     r, c = 11, 13
     parts = [f'<svg class="hb" viewBox="0 0 26 26" width="26" height="26" role="img" aria-label="{level} of 4">',
-             f'<circle cx="{c}" cy="{c}" r="{r}" fill="{CREAM}" stroke="{NAVY7}" stroke-width="2"/>']
+             f'<circle cx="{c}" cy="{c}" r="{r}" fill="{CREAM}" stroke="{GREEN7}" stroke-width="2"/>']
     if level >= 4:
-        parts.append(f'<circle cx="{c}" cy="{c}" r="{r}" fill="{NAVY7}"/>')
+        parts.append(f'<circle cx="{c}" cy="{c}" r="{r}" fill="{GREEN7}"/>')
     elif level > 0:
         ang = 2 * math.pi * level / 4
         x, y = c + r * math.sin(ang), c - r * math.cos(ang)
         large = 1 if level > 2 else 0
-        parts.append(f'<path d="M{c} {c} L{c} {c - r} A{r} {r} 0 {large} 1 {x:.2f} {y:.2f} Z" fill="{NAVY7}"/>')
+        parts.append(f'<path d="M{c} {c} L{c} {c - r} A{r} {r} 0 {large} 1 {x:.2f} {y:.2f} Z" fill="{GREEN7}"/>')
     parts.append("</svg>")
     return "".join(parts)
 
@@ -149,13 +150,13 @@ def support_gap_svg() -> str:
     for y, l1, l2, lo, hi, lab in rows:
         s.append(t(x0 - 14, y + 18, l1, 16, NAVY, 700, "end"))
         s.append(t(x0 - 14, y + 38, l2, 14, MUTED, anchor="end"))
-        s.append(f'<rect x="{x0}" y="{y}" width="{X(lo) - x0:.1f}" height="44" rx="4" fill="{NAVY7}"/>')
+        s.append(f'<rect x="{x0}" y="{y}" width="{X(lo) - x0:.1f}" height="44" rx="4" fill="{GREEN7}"/>')
         s.append(f'<rect x="{X(lo) + 2:.1f}" y="{y}" width="{X(hi) - X(lo) - 2:.1f}" height="44" rx="4" fill="{SKY}"/>')
         s.append(t(X(hi) + 10, y + 29, lab, 20, NAVY, 700))
     gx0, gx1, gy = X(6), X(15), 150
     s.append(f'<path d="M{gx0} {gy - 12} L{gx0} {gy} L{gx1} {gy} L{gx1} {gy - 12}" fill="none" stroke="{BRASS_DARK}" stroke-width="2.5"/>')
     s.append(t((gx0 + gx1) / 2, gy + 22, "Support gap: ~9–15 points of the population", 15, BRASS_DARK, 700, "middle"))
-    s.append(f'<rect x="{x0}" y="300" width="18" height="12" fill="{NAVY7}"/>' + t(x0 + 26, 311, "lower estimate", 13, MUTED))
+    s.append(f'<rect x="{x0}" y="300" width="18" height="12" fill="{GREEN7}"/>' + t(x0 + 26, 311, "lower estimate", 13, MUTED))
     s.append(f'<rect x="{x0 + 150}" y="300" width="18" height="12" fill="{SKY}"/>' + t(x0 + 176, 311, "range to upper estimate", 13, MUTED))
     s.append("</svg>")
     return "".join(s)
@@ -170,7 +171,7 @@ def hbars_svg(rows: list[tuple[str, float, str]], unit_fmt, width=620, highlight
     for i, (label, v, note) in enumerate(rows):
         y = 6 + i * (bar_h + gap)
         bw = max((width - left - 150) * v / top, 3)
-        fill = BRASS_DARK if label == highlight else NAVY7
+        fill = BRASS_DARK if label == highlight else GREEN7
         s.append(t(left - 12, y + 22, label, 15, NAVY, 700, "end"))
         s.append(f'<rect x="{left}" y="{y}" width="{bw:.1f}" height="{bar_h}" rx="4" fill="{fill}"/>')
         s.append(t(left + bw + 10, y + 16, unit_fmt(v), 16, NAVY, 700))
@@ -199,7 +200,7 @@ def waterfall_svg() -> str:
     for i, (label, v, kind) in enumerate(steps):
         x = x0 + 20 + i * (col_w + gap)
         if kind == "total":
-            y_top, y_bot, fill, running = Y(v), Y(0), NAVY7, v
+            y_top, y_bot, fill, running = Y(v), Y(0), GREEN7, v
             lab = f"${v:.2f}"
         else:
             start, end = running, running + v
@@ -223,7 +224,7 @@ def heatmap_svg() -> str:
     risks = {  # number: (likelihood 0-2, impact 0-2)
         1: (2, 2), 2: (2, 1), 3: (2, 1), 4: (0, 2), 5: (1, 2), 6: (1, 1), 7: (1, 1), 8: (0, 1),
     }
-    ramp = {0: "#EDF1F8", 1: NAVY1, 2: "#A9BCE0", 3: "#5B7FBF", 4: NAVY7}
+    ramp = {0: "#F0F7EC", 1: MINT1, 2: "#BFDDB7", 3: "#6FA57C", 4: GREEN7}
     cell, x0, y0 = 128, 120, 20
     s = [f'<svg viewBox="0 0 540 470" class="exh" role="img" aria-label="Risk heat map">']
     for li in range(3):
@@ -250,16 +251,16 @@ def heatmap_svg() -> str:
 def layers_svg() -> str:
     """Defense in depth: nested layers, outermost first."""
     layers = [
-        ("Provider", "Azure content filter blocks jailbreak attempts upstream", "#EDF1F8", NAVY),
-        ("App controls", "Auth, per-user data scoping, lockout, upload limits", NAVY1, NAVY),
-        ("Guard layer", "Budget cap, input caps, <reading> delimiting, model check, logging", "#A9BCE0", NAVY),
-        ("Prompt policy", "Grounding, homework integrity, wellbeing, privacy", NAVY7, CREAM),
+        ("Provider", "Azure content filter blocks jailbreak attempts upstream", "#F0F7EC", NAVY),
+        ("App controls", "Auth, per-user data scoping, lockout, upload limits", MINT1, NAVY),
+        ("Guard layer", "Budget cap, input caps, <reading> delimiting, model check, logging", "#BFDDB7", NAVY),
+        ("Prompt policy", "Grounding, homework integrity, wellbeing, privacy", GREEN7, CREAM),
     ]
     s = ['<svg viewBox="0 0 560 330" class="exh" role="img" aria-label="Four nested defense layers">']
     for i, (name, desc, fill, ink) in enumerate(layers):
         inset = i * 26
         x, y, w, h = 10 + inset, 10 + inset * 1.0, 540 - 2 * inset, 310 - 2 * inset
-        s.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" fill="{fill}" stroke="{NAVY7}" stroke-width="1.5"/>')
+        s.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" fill="{fill}" stroke="{GREEN7}" stroke-width="1.5"/>')
         s.append(t(x + 14, y + 20, name.upper(), 12, ink, 700, extra='letter-spacing="1"'))
     s.append(t(280, 152, "Model call", 20, CREAM, 700, "middle"))
     s.append(t(280, 178, "gpt-6-luna", 15, CREAM1, 400, "middle"))
@@ -271,10 +272,10 @@ def layers_svg() -> str:
 def roadmap_svg() -> str:
     cols = ["Now · Oct 2026", "Next term", "6–12 months"]
     rows = [
-        ("Evaluation", [(0, 1, "Pilot: 1–3 users, timed A/B", NAVY7), (1, 3, "Classroom study: time per assignment, quiz accuracy", NAVY5)]),
-        ("Product", [(0, 1, "Reading studio, 4 agents", NAVY7), (1, 2, "Reader-level self-check", NAVY5), (2, 3, "OCR for scans and photos", NAVY5)]),
-        ("Platform & cost", [(0, 1, "Local app, global cap", NAVY7), (1, 3, "Hosted version, per-student limits, teacher view", NAVY5)]),
-        ("Safety & privacy", [(0, 1, "13/13 red-team checks", NAVY7), (1, 2, "Larger attack set", NAVY5), (2, 3, "COPPA / privacy review", NAVY5)]),
+        ("Evaluation", [(0, 1, "Pilot: 1–3 users, timed A/B", GREEN7), (1, 3, "Classroom study: time per assignment, quiz accuracy", GREEN5)]),
+        ("Product", [(0, 1, "Reading studio, 4 agents", GREEN7), (1, 2, "Reader-level self-check", GREEN5), (2, 3, "OCR for scans and photos", GREEN5)]),
+        ("Platform & cost", [(0, 1, "Local app, global cap", GREEN7), (1, 3, "Hosted version, per-student limits, teacher view", GREEN5)]),
+        ("Safety & privacy", [(0, 1, "13/13 red-team checks", GREEN7), (1, 2, "Larger attack set", GREEN5), (2, 3, "COPPA / privacy review", GREEN5)]),
     ]
     W, lab_w, top, row_h = 1460, 190, 44, 50
     col_w = (W - lab_w) / 3
@@ -504,7 +505,7 @@ SLIDES = "".join([slide_title(), slide_summary(), slide_problem(), slide_landsca
                   slide_architecture(), slide_design(), slide_economics(), slide_risk(), slide_impact()])
 
 CSS = """
-:root { --navy:#0F1F3D; --navy7:#1B3366; --navy5:#3C5A8F; --navy1:#DCE3F0; --cream:#FBF8F1; --cream1:#F4EEE1; --cream3:#E6DCC6; --brass:#B08D57; --brassd:#8A6630; --muted:#4A5874; }
+:root { --navy:#0F1F3D; --navy7:#1B3366; --navy5:#3C5A8F; --navy1:#DCE3F0; --green7:#24503A; --green6:#3F7350; --mint1:#E1F0DC; --cream:#FBF8F1; --cream1:#F4EEE1; --cream3:#E6DCC6; --brass:#B08D57; --brassd:#8A6630; --muted:#4A5874; }
 .reveal-viewport { background:var(--cream); }
 .reveal { font-family:"Atkinson Hyperlegible", Verdana, sans-serif; font-size:20px; color:var(--navy); line-height:1.38; }
 .reveal .slides section { text-align:left; height:100%; box-sizing:border-box; }
@@ -518,7 +519,7 @@ CSS = """
 .reveal section.cs { padding:26px 56px 66px; }
 .reveal .tracker { display:flex; gap:6px; justify-content:flex-end; margin-bottom:10px; }
 .reveal .tracker span { font-size:12px; padding:3px 10px; border-radius:999px; color:var(--muted); border:1px solid var(--cream3); }
-.reveal .tracker span.on { background:var(--navy7); color:var(--cream); border-color:var(--navy7); font-weight:700; }
+.reveal .tracker span.on { background:var(--green7); color:var(--cream); border-color:var(--green7); font-weight:700; }
 .reveal h2.action { font-size:31px; line-height:1.25; margin:0 0 6px; padding-bottom:12px; border-bottom:3px solid var(--brass); max-width:1480px; }
 .reveal .exhibit { font-size:14px; font-weight:700; color:var(--brassd); letter-spacing:.04em; margin:10px 0 10px; }
 .reveal .body { margin-top:14px; }
@@ -531,11 +532,11 @@ CSS = """
 .reveal .g3 { display:grid; grid-template-columns:1fr 0.95fr 1.05fr; gap:26px; align-items:start; }
 .reveal .panel { background:#fff; border:1px solid var(--cream3); border-radius:12px; padding:14px 16px; }
 .reveal .stack { display:flex; flex-direction:column; gap:12px; }
-.reveal .box { background:var(--cream1); border-left:5px solid var(--navy7); border-radius:8px; padding:12px 16px; }
+.reveal .box { background:var(--cream1); border-left:5px solid var(--green6); border-radius:8px; padding:12px 16px; }
 .reveal .box p { font-size:17.5px; margin:0; } .reveal .box p.bh { font-weight:700; color:var(--navy7); font-size:18px; margin-bottom:4px; }
 .reveal .side-h { font-family:"Libre Baskerville", Georgia, serif; font-weight:700; color:var(--navy7); font-size:18px; margin:0 0 10px; }
 .reveal .num-box { display:grid; grid-template-columns:38px 1fr; gap:12px; align-items:start; }
-.reveal .num-box span { width:34px; height:34px; border-radius:50%; background:var(--navy7); color:var(--cream); font-weight:700; display:grid; place-items:center; font-size:17px; }
+.reveal .num-box span { width:34px; height:34px; border-radius:50%; background:var(--green7); color:var(--cream); font-weight:700; display:grid; place-items:center; font-size:17px; }
 .reveal .num-box p { margin:4px 0 0; font-size:17.5px; }
 .reveal .legend { font-size:14px; color:var(--muted); margin-top:8px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
 .reveal .legend .hb { width:18px; height:18px; }
@@ -543,9 +544,9 @@ CSS = """
 /* executive summary */
 .reveal .scr { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; margin-top:6px; }
 .reveal .scr > div { padding:18px 24px 20px; background:var(--cream1); border-right:2px solid var(--cream); position:relative; min-height:300px; }
-.reveal .scr > div.res { background:var(--navy1); }
+.reveal .scr > div.res { background:var(--mint1); }
 .reveal .scr p { font-size:19.5px; }
-.reveal .scr-h { font-family:"Libre Baskerville", Georgia, serif; font-weight:700; color:var(--cream) !important; background:var(--navy7); margin:-18px -24px 16px !important; padding:10px 24px; font-size:20px !important; clip-path:polygon(0 0, calc(100% - 22px) 0, 100% 50%, calc(100% - 22px) 100%, 0 100%); }
+.reveal .scr-h { font-family:"Libre Baskerville", Georgia, serif; font-weight:700; color:var(--cream) !important; background:var(--green7); margin:-18px -24px 16px !important; padding:10px 24px; font-size:20px !important; clip-path:polygon(0 0, calc(100% - 22px) 0, 100% 50%, calc(100% - 22px) 100%, 0 100%); }
 .reveal .res .scr-h { background:var(--brassd); }
 .reveal .metrics, .reveal .kpis { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-top:22px; }
 .reveal .metrics div, .reveal .kpis div { border-top:4px solid var(--brass); background:#fff; border-radius:0 0 10px 10px; padding:12px 16px; box-shadow:0 1px 4px rgba(15,31,61,.08); }
@@ -555,19 +556,19 @@ CSS = """
 
 /* tables */
 .reveal table { width:100%; border-collapse:collapse; margin:0; }
-.reveal table th { background:var(--navy7); color:var(--cream); text-align:left; padding:8px 10px; border:none; font-size:15px; font-weight:700; }
+.reveal table th { background:var(--green7); color:var(--cream); text-align:left; padding:8px 10px; border:none; font-size:15px; font-weight:700; }
 .reveal table td { padding:7px 10px; border:none; border-bottom:1px solid var(--cream3); vertical-align:middle; font-size:16px; }
 .reveal table tr:nth-child(even) td { background:var(--cream1); }
-.reveal table tr.hl td { background:var(--navy1); font-weight:700; }
+.reveal table tr.hl td { background:var(--mint1); font-weight:700; }
 .reveal table.matrix th { text-align:center; } .reveal table.matrix th:first-child { text-align:left; }
 .reveal table.matrix td { font-size:17px; padding:9px 10px; } .reveal td.c { text-align:center; }
-.reveal table.matrix tr.ours td { background:var(--navy1); font-weight:700; border-top:2px solid var(--navy7); border-bottom:2px solid var(--navy7); }
+.reveal table.matrix tr.ours td { background:var(--mint1); font-weight:700; border-top:2px solid var(--green7); border-bottom:2px solid var(--green7); }
 .reveal table.decisions td { font-size:15.5px; vertical-align:top; } .reveal td.pick { font-weight:700; color:var(--navy7); }
 .reveal table.scale td { font-size:16.5px; }
 
 /* solution */
 .reveal .chevrons { display:flex; gap:4px; margin:2px 0 16px; }
-.reveal .chev { flex:1; background:var(--navy7); color:var(--cream); padding:10px 26px 10px 30px; font-size:15.5px; font-weight:700; display:flex; align-items:center; gap:10px; clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 18px 50%); min-height:56px; line-height:1.25; }
+.reveal .chev { flex:1; background:var(--green7); color:var(--cream); padding:10px 26px 10px 30px; font-size:15.5px; font-weight:700; display:flex; align-items:center; gap:10px; clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 18px 50%); min-height:56px; line-height:1.25; }
 .reveal .chev:first-child { clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%); padding-left:16px; }
 .reveal .chev:nth-child(even) { background:var(--navy5); }
 .reveal .chev .n { width:26px; height:26px; flex:none; border-radius:50%; background:var(--brass); color:var(--navy); display:grid; place-items:center; font-size:14px; }
@@ -581,14 +582,14 @@ CSS = """
 .reveal ol.risks { list-style:none; margin:0 0 14px; padding:0; }
 .reveal ol.risks li { display:grid; grid-template-columns:30px 1fr; gap:10px; align-items:center; font-size:16px; margin:0 0 7px; }
 .reveal ol.risks li span { width:26px; height:26px; border-radius:50%; background:var(--brass); border:2px solid var(--navy); font-weight:700; display:grid; place-items:center; font-size:13px; }
-.reveal .result { background:var(--navy7); border-radius:10px; padding:12px 16px; }
+.reveal .result { background:var(--green7); border-radius:10px; padding:12px 16px; }
 .reveal .result .mv { color:var(--cream); } .reveal .result .ml { color:var(--cream1); }
 .reveal ul.layers { margin:10px 0 0 1em; } .reveal ul.layers li { font-size:14.5px; margin-bottom:4px; }
 
 /* implication banner */
 .reveal .implication { margin-top:22px; display:grid; grid-template-columns:150px 1fr; align-items:stretch; border-radius:10px; overflow:hidden; box-shadow:0 1px 4px rgba(15,31,61,.12); }
 .reveal .implication span { background:var(--brassd); color:var(--cream); font-weight:700; font-size:16px; display:grid; place-items:center; letter-spacing:.04em; }
-.reveal .implication p { background:var(--navy7); color:var(--cream); margin:0; padding:14px 20px; font-size:19px; line-height:1.35; }
+.reveal .implication p { background:var(--green7); color:var(--cream); margin:0; padding:14px 20px; font-size:19px; line-height:1.35; }
 
 /* impact */
 .reveal .status { margin-top:12px; font-size:16px; background:var(--cream1); border:2px dashed var(--brass); border-radius:10px; padding:9px 14px; }

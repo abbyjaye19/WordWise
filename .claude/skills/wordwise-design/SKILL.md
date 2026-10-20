@@ -1,6 +1,6 @@
 ---
 name: wordwise-design
-description: WordWise visual design system (navy + cream, formal but friendly, dyslexia-friendly, playful polka dots/geometric shapes, optional Yale campus line art). Use whenever building or styling ANY part of the WordWise project — app pages, components, CSS, Dash layouts, charts, report.html, or slides.html. Overrides the default black-pink style.
+description: WordWise visual design system (navy + cream + pastel green, formal but friendly, dyslexia-friendly, playful polka dots/geometric shapes, optional Yale campus line art). Use whenever building or styling ANY part of the WordWise project — app pages, components, CSS, Dash layouts, charts, report.html, or slides.html. Overrides the default black-pink style.
 ---
 
 # WordWise Design System
@@ -14,9 +14,14 @@ Apply this to the app, `deliverables/report.html`, and `deliverables/slides.html
 | Token | Hex | Use |
 |---|---|---|
 | `--navy-900` | `#0F1F3D` | Main text, header/footer background |
-| `--navy-700` | `#1B3366` | Primary buttons, headings, links |
-| `--navy-500` | `#3C5A8F` | Hover states, secondary accents, icons |
-| `--navy-100` | `#DCE3F0` | Selected states, soft highlights, tags |
+| `--navy-700` | `#1B3366` | Headings, links |
+| `--navy-500` | `#3C5A8F` | Rarely; prefer the greens below |
+| `--navy-100` | `#DCE3F0` | Legacy only; use `--mint-100` instead |
+| `--green-800` | `#24503A` | Primary buttons, selected/pressed states, user chat bubbles, slide table headers |
+| `--green-600` | `#3F7350` | Hover states, accents, AI-panel left border, chips |
+| `--mint-300` | `#BFDDB7` | Light borders on green areas |
+| `--mint-100` | `#E1F0DC` | Pastel green: AI panels, selected options, tags, home hero |
+| `--mint-50` | `#F0F7EC` | Page-header bands, suggestion cards |
 | `--cream-50` | `#FBF8F1` | Page background (off-white cream; never pure `#FFF`) |
 | `--cream-100` | `#F4EEE1` | Cards, panels, reading surface |
 | `--cream-300` | `#E6DCC6` | Borders, dividers, polka-dot color on cream |
@@ -25,7 +30,8 @@ Apply this to the app, `deliverables/report.html`, and `deliverables/slides.html
 | `--brick-600` | `#A2463A` | Errors and warnings (pair it with an icon and text, never color alone) |
 
 Rules:
-- Use navy for content and cream for surfaces. Brass is a sparing accent and should cover less than 5% of any screen.
+- **More green, less blue** (user preference, 2026-10-19): navy is kept for the header/footer bar, headings, and text; actions, selected states, and soft fills are forest green and pastel green. Cream stays the page background.
+- Use navy for text and cream for surfaces. Brass is a sparing accent and should cover less than 5% of any screen.
 - Body text is `--navy-900` on `--cream-50` or `--cream-100`, which passes WCAG AAA contrast. Keep every text pair at or above 4.5:1.
 - Never put text on a busy pattern. Patterns sit only behind empty areas or behind a solid panel.
 
@@ -34,6 +40,7 @@ Rules:
   --navy-900:#0F1F3D; --navy-700:#1B3366; --navy-500:#3C5A8F; --navy-100:#DCE3F0;
   --cream-50:#FBF8F1;  --cream-100:#F4EEE1; --cream-300:#E6DCC6;
   --brass-500:#B08D57; --sage-600:#4F7A5A; --brick-600:#A2463A;
+  --green-800:#24503A; --green-600:#3F7350; --mint-300:#BFDDB7; --mint-100:#E1F0DC; --mint-50:#F0F7EC;
   --font-display:"Libre Baskerville", Georgia, serif;
   --font-body:"Atkinson Hyperlegible", "Lexend", Verdana, sans-serif;
   --radius:12px; --shadow:0 2px 10px rgba(15,31,61,.08);
@@ -54,10 +61,10 @@ Rules:
 - Use generous white space, an 8px spacing scale, and a centered content column (max width about 1100px).
 - **Header:** solid `--navy-900` bar with the WordWise logo in cream serif type, plus a thin brass rule underneath.
 - **Cards:** `--cream-100` background, 1px `--cream-300` border, `--radius` corners, and a soft shadow.
-- **Primary button:** `--navy-700` background, cream text, 12px×20px padding, slightly rounded corners, with a visible focus ring (`outline: 3px solid var(--brass-500)`).
-- **Secondary button:** cream background, navy border and text.
+- **Primary button:** `--green-800` background, cream text, 12px×20px padding, slightly rounded corners, with a visible focus ring (`outline: 3px solid var(--brass-500)`).
+- **Secondary button:** cream background, `--green-800` border and text.
 - Pair every button and nav item with a **text label**. Icons are optional extras, never the only cue.
-- **AI-generated text** always sits in a visually distinct panel: a `--navy-100` background, a left border in `--navy-500`, and a small "AI explanation" label. It always appears next to the original text, never replacing it.
+- **AI-generated text** always sits in a visually distinct panel: a `--mint-100` background, a left border in `--green-600`, and a small "AI explanation" label. It always appears next to the original text, never replacing it.
 - **Navigation:** at most 5 top-level items, each with a plain-language label (for example "Read", "Explain", "Resources", "Find a tutor", "My dashboard").
 - Interactive targets are at least 44px tall. Every interaction must work with the keyboard alone.
 
@@ -105,10 +112,10 @@ Keep these subtle, decorative, and at low contrast. They should never compete wi
 
 ## 7. Charts, report, and slides
 
-- **Chart series:** `--navy-700`, `--brass-500`, `--navy-500`, `--sage-600`, `--cream-300`, plotted on a cream background with navy axis text.
+- **Chart series:** forest green `#2F6B49` first (pastel `#8CC79A` on dark), then `--brass-500`, `--green-600`, `--navy-700`, `--cream-300`, plotted on a cream background with navy axis text.
 - **`report.html`:** cream page, navy serif headings, brass rules between sections, with print styles for letter-size paper.
 - **`slides.html` (reveal.js):**
-  - Title and section slides use a navy background with polka dots.
+  - Title and section slides use a navy background with polka dots; exhibits, table headers, and implication bars use `--green-800` / `--mint-100`.
   - Content slides use a cream background.
   - Text is large (at least 32px body).
   - The skyline appears on the title slide.

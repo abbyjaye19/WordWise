@@ -16,7 +16,7 @@ SETTINGS: dict[str, tuple[str, list[tuple[str, str]], str, str]] = {
     "spacing": ("Line and letter spacing", [("normal", "Normal"), ("wide", "Wide"), ("xwide", "Extra wide")], "normal",
                 "space between lines, letters, and words"),
     "font": ("Font", [("atkinson", "Atkinson Hyperlegible"), ("lexend", "Lexend"), ("verdana", "Verdana")], "atkinson", "typeface"),
-    "theme": ("Background", [("cream", "Cream"), ("blue", "Soft blue"), ("dark", "Dark navy")], "cream", "background color"),
+    "theme": ("Background", [("cream", "Cream"), ("green", "Soft green"), ("blue", "Soft blue"), ("dark", "Dark navy")], "cream", "background color"),
     "contrast": ("Contrast", [("normal", "Normal"), ("high", "High")], "normal", "text contrast"),
     "linewidth": ("Line length", [("narrow", "Short lines"), ("medium", "Medium"), ("wide", "Long lines")], "medium",
                   "how many words fit on one line"),

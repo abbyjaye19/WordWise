@@ -244,4 +244,40 @@ The redesign was more professional but still mostly bullets and tables; this pro
 >
 > Although dyslexia is a common thing, each person still has different reading/comprehension styles and levels.  For example: I am dyslexia and I heavily struggle with reading/listening comprehension.  But others with dyslexia may have more toruble with spelling, etc.
 
+**Prompt 2:**
+
+> ok i am going to work on this project now - open the website in my browser please
+
+**Prompt 3:**
+
+> i have a friend who wants to test it, can they do that now?
+
+**Prompt 4:**
+
+> they are with me and will use this computer
+
+**Prompt 5:**
+
+> can you give me some readings/emails to test it on
+
+**Follow-up prompt** (sent right after, interrupting the first):
+
+> put then as PDFs in my downloads please
+
+The first prompt didn't say what format or where to put the readings; the follow-up asked for PDFs in the Downloads folder so they can be uploaded in the Reading Studio.
+
+---
+
+## Phase 21: Pastel Green Theme, Better Read-Aloud Voice, Cleaner Selection
+
+**Prompt 1:**
+
+> also make the website/ppt have more green and less blue, like light green/pastel green
+
+**Follow-up prompt** (sent right after, interrupting the first, with a screenshot of the "Understand a part" panel showing the selected text "he exam is cumulative…" with its first letter cut off):
+
+> another thign to note, the AI reader sounds like AI, it pronounced a few words wrong like "read", so make sure this is a better agent, and this needs to work cleaner
+
+The first prompt only covered colors; the follow-up came from friend testing and added read-aloud quality (robotic voice, wrong pronunciation of words like "read") and the clipped selection shown in the screenshot.
+
 ---

@@ -5,7 +5,7 @@
 - **Model:** only `gpt-6-luna` via `PORTKEY_API_KEY` (course rule; overrides the `gpt-5.6-luna` note in the parent `agents.md`).
 - Load `.env` from this folder first, then one folder up. Never commit `.env`.
 - Log input / cached input / output tokens for every AI call to `output/` — the report needs real numbers.
-- Visual style: follow the `wordwise-design` skill (`.claude/skills/wordwise-design/SKILL.md`) — navy + cream, formal but friendly. **Do not use black-pink** (overrides parent `agents.md`). Any mascot/illustration is built in HTML/CSS/SVG, not generated images.
+- Visual style: follow the `wordwise-design` skill (`.claude/skills/wordwise-design/SKILL.md`) — navy + cream with pastel/forest green accents (more green, less blue), formal but friendly. **Do not use black-pink** (overrides parent `agents.md`). Any mascot/illustration is built in HTML/CSS/SVG, not generated images.
 - If using Dash: run with debug/auto-reload off; kill the whole process tree when stopping; no duplicate servers.
 - **Audience:** students ~5–30 reading books (school or pleasure), school materials, and lecture slides. Goal is easier reading *and* comprehension. AI answers adapt to the "Who is reading?" level (5–8 / 9–12 / 13–17 / 18+).
 - Reading Studio architecture: `assets/studio.js` draws the reading into `#reader` (Dash never manages its children) and runs TTS/highlighter/ruler/focus; it talks to Dash via `dash_clientside.set_props` on `word-request` and `selection-store`. AI helpers live in `app/services/ai.py` with prompts in `prompts/`.

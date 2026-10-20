@@ -8,7 +8,7 @@
 .avatar-dot { color:var(--brass-500); font-size:12px; }
 .account-pop { position:absolute; right:0; top:calc(100% + 8px); min-width:180px; background:var(--cream-50); border:1px solid var(--cream-300); border-radius:var(--radius); box-shadow:0 8px 24px rgba(15,31,61,.2); padding:6px; z-index:40; display:flex; flex-direction:column; }
 .account-link { display:flex; align-items:center; min-height:44px; padding:0 12px; border-radius:8px; color:var(--navy-900); text-decoration:none; font-weight:700; }
-.account-link:hover { background:var(--navy-100); }
+.account-link:hover { background:var(--mint-100); }
 
 /* ---------- Sign in / create account ---------- */
 .auth-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
@@ -24,7 +24,7 @@
 .folder-list { display:flex; flex-direction:column; gap:4px; margin-bottom:16px; }
 .folder-list .dash-options-list-option { display:flex; align-items:center; gap:8px; min-height:44px; padding:6px 10px; border-radius:8px; cursor:pointer; border:2px solid transparent; }
 .folder-list .dash-options-list-option:hover { background:var(--bg); }
-.folder-list .dash-options-list-option:has(input:checked) { background:var(--navy-100); border-color:var(--navy-700); color:var(--navy-900); font-weight:700; }
+.folder-list .dash-options-list-option:has(input:checked) { background:var(--mint-100); border-color:var(--green-800); color:var(--navy-900); font-weight:700; }
 .new-folder { display:flex; gap:8px; margin-bottom:12px; }
 .btn-danger { color:var(--brick-600); border-color:var(--brick-600); }
 .btn-danger:hover { background:var(--brick-600); color:var(--cream-50); }
@@ -89,5 +89,5 @@ html[data-theme="dark"] .btn-danger { color:#F0A89D; border-color:#F0A89D; }
 .subfolder-chips { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:8px 0 4px; }
 .subfolder-chips:empty { display:none; }
 .folder-chip { display:inline-flex; align-items:center; gap:8px; min-height:40px; padding:4px 14px; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--text); font:inherit; font-size:.9rem; cursor:pointer; }
-.folder-chip:hover { border-color:var(--navy-500); }
+.folder-chip:hover { border-color:var(--green-600); }
 .reading-card .muted .folder-dot { width:10px; height:10px; margin:0 4px 0 2px; vertical-align:middle; }

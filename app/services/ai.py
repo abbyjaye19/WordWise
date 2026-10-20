@@ -1,10 +1,12 @@
 """AI helpers for the Reading Studio. Every call uses gpt-6-luna through Portkey.
 
-Five helpers ("agents"), each with its own prompt in prompts/:
+Six helpers ("agents"), each with its own prompt in prompts/:
   word_help   -> Word Coach: meaning in context, syllables, synonyms
   explain     -> Explainer: simpler / example / step-by-step for a selected passage
   summarize   -> Comprehension Coach: big idea, key points, words, check questions
   rewrite     -> Reading Levels: the whole reading in simplified or detailed wording
+  pronunciation -> Pronunciation Helper: respellings so read-aloud says words like
+                 "read" (past tense) correctly; only the spoken text changes
   tutor_reply -> AI Tutor: chat, optionally about the current reading, and it can
                  suggest reading-setting changes the student applies with one tap
 
@@ -30,7 +32,7 @@ from pydantic import BaseModel
 
 from config import DATA_DIR, MODEL_NAME, OUTPUT_DIR, PORTKEY_API_KEY, PROJECT_ROOT
 from services import preferences
-from services.schemas import Explanation, Rewrite, Summary, TutorReply, WordHelp
+from services.schemas import Explanation, Pronunciation, Rewrite, Summary, TutorReply, WordHelp
 
 PORTKEY_BASE_URL = "https://api.portkey.ai/v1"
 PROMPTS_DIR = PROJECT_ROOT / "prompts"
@@ -311,6 +313,52 @@ def _rewrite_chunk(paras: tuple[str, ...], mode: str, level: str, profile: str) 
 MAX_CHAT_MESSAGE = 1_000
 MAX_CHAT_TURNS = 12  # most recent messages sent to the model
 MAX_CHAT_READING = 12_000
+
+
+# ---------- Pronunciation Helper: fixes for words read-aloud voices often say wrong ----------
+
+MAX_SAY_CHARS = 40
+
+
+def pronunciation(paragraphs: list[str]) -> dict[str, list[dict]]:
+    """{paragraph text: [{"word", "occurrence", "say"}]} for the first ~2,000 words.
+    Only the spoken text changes; the student still sees the original words."""
+    covered, total = [], 0
+    for p in paragraphs:
+        if covered and total + len(p) > MAX_REWRITE_CHARS:
+            break
+        covered.append(p[:MAX_SELECTION_CHARS])
+        total += len(covered[-1])
+    chunks, cur, size = [], [], 0
+    for p in covered:
+        if cur and size + len(p) > REWRITE_CHUNK_CHARS:
+            chunks.append(tuple(cur))
+            cur, size = [], 0
+        cur.append(p)
+        size += len(p)
+    if cur:
+        chunks.append(tuple(cur))
+    out: dict[str, list[dict]] = {}
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        for part in pool.map(_pronunciation_chunk, chunks):
+            for text, fixes in part:
+                out.setdefault(text, []).extend(dict(f) for f in fixes)
+    return out
+
+
+@lru_cache(maxsize=256)
+def _pronunciation_chunk(paras: tuple[str, ...]) -> tuple:
+    numbered = "\n\n".join(f"[{i + 1}] {p}" for i, p in enumerate(paras))
+    out = _call("pronunciation", "pronunciation", f"Paragraphs:\n{_reading(numbered)}", Pronunciation, 1500)
+    found: dict[int, list] = {}
+    for f in out.fixes:
+        word, say = f.word.strip().strip(".,;:!?\"'()“”‘’"), " ".join(f.say.split())
+        if not (1 <= f.n <= len(paras)) or not word or not say or len(say) > MAX_SAY_CHARS or say.lower() == word.lower():
+            continue
+        if word.lower() not in paras[f.n - 1].lower():  # must really be in that paragraph
+            continue
+        found.setdefault(f.n, []).append((("word", word), ("occurrence", max(1, f.occurrence)), ("say", say)))
+    return tuple((paras[n - 1], tuple(fixes)) for n, fixes in found.items())
 
 
 MAX_SUGGESTIONS = 3

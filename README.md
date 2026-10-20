@@ -61,6 +61,9 @@ If port 8050 is already in use, pick another one: `WORDWISE_PORT=8060 python app
 - **Reading Studio** (Reading Assistant in the menu):
   - Bring in a reading: upload a PDF, PowerPoint (`.pptx`), Word (`.docx`), or `.txt` file, paste text, or pick one of 4 samples (ages 5–8 up to college).
   - **Read along:** read aloud with the current sentence and word highlighted as they're spoken (choose word, sentence, or both). You can pause, go back a sentence, replay a sentence, or skip ahead, and change the speed (5 steps) while it plays. This uses the browser's built-in voices, so it's free and needs no key.
+    - **Voice:** WordWise ranks the browser's English voices and uses the most natural one (Edge's "Natural" voices sound the most human, so **Edge is recommended**). You can pick another voice from the toolbar; it's remembered on that device.
+    - **Pronunciation Helper (AI):** when a reading opens, an AI pass finds words a voice is likely to say wrong in context, like past-tense "read" (→ "red"), "wind the rope" (→ "wined"), or "close the door" (→ "cloze"). Only the spoken text changes; the words on screen stay as written. Common abbreviations (Prof., Dr., Rm., e.g.) are expanded by a fixed list and no longer cause a mid-sentence pause.
+  - Selecting part of the reading always grabs whole words, even if the drag starts in the middle of one.
   - **Reading levels:** switch the whole reading between **Original**, **Simplified wording**, and **Detailed explanation**. The AI versions keep the meaning, are clearly marked as AI, and can show the original under each paragraph. Highlights always belong to the original text.
   - Tap a word to look it up, highlight it (3 marker colors), or start reading aloud from there. There's also a reading ruler and a one-paragraph focus mode.
   - **How did it go?** After reading, a quick check-in: how well you understood it (1–5) and what made it hard.
@@ -101,7 +104,7 @@ If port 8050 is already in use, pick another one: `WORDWISE_PORT=8060 python app
   - Khan Academy
 
   It also has a "before you choose a tutor" checklist based on IDA guidance. WordWise doesn't list or check individual tutors. The data is in `data/tutoring_sites.json`.
-- **Reading settings** (top right on every page): text size, font, spacing, background, contrast, line length, read-aloud speed, and read-along highlight. They apply on every page right away, are remembered in the browser, and are saved to your account when signed in (so they follow you to another device). **Clear all preferences** resets everything to the defaults.
+- **Reading settings** (top right on every page): text size, font, spacing, background (cream, soft green, soft blue, or dark), contrast, line length, read-aloud speed, and read-along highlight. They apply on every page right away, are remembered in the browser, and are saved to your account when signed in (so they follow you to another device). **Clear all preferences** resets everything to the defaults.
 - The other sections are placeholders for now.
 
 ## Test data

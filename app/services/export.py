@@ -34,6 +34,7 @@ SPACING = {  # line height, letter spacing (em), word spacing (em)
 }
 THEMES = {  # background, text
     "cream": ("#FBF8F1", "#0F1F3D"),
+    "green": ("#EEF6EB", "#0F1F3D"),
     "blue": ("#EEF2F8", "#0F1F3D"),
     "dark": ("#13213D", "#F4EEE1"),
 }
