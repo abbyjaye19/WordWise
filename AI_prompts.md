@@ -281,3 +281,11 @@ The first prompt didn't say what format or where to put the readings; the follow
 The first prompt only covered colors; the follow-up came from friend testing and added read-aloud quality (robotic voice, wrong pronunciation of words like "read") and the clipped selection shown in the screenshot.
 
 ---
+
+## Phase 22: My Story (About Page, Slides, Report) and Competitive Landscape
+
+**Prompt 1:**
+
+> in the dliues/report etc, i want you to tell my story - have an about section on the website showing me and my store of having double deficit dyslexia - this is a tool I would have found extremely useful when learning hwo to read and understand - having reading specialist help in college that basically did this for me made me realize how useful s atool like this  is and hoepfully can be for others - it was also hard finding recourses for this so it is a good homebase for somsone also struggling like I was - (dont put this in the presentaion, but what other things out there are like this? trying to make something somewhat original)
+
+---

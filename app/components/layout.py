@@ -68,7 +68,13 @@ def footer() -> html.Footer:
                             "or replace a trained reading specialist.",
                             className="footer-note",
                         ),
-                        html.P("A student project for MGT 409. Not affiliated with Yale University.", className="footer-note"),
+                        html.P(
+                            [
+                                dcc.Link("About WordWise: why I built it", href="/about", className="footer-link"),
+                                " · A student project for MGT 409 by Abby Jaye. Not affiliated with Yale University.",
+                            ],
+                            className="footer-note",
+                        ),
                     ]
                 ),
             ],

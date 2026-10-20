@@ -35,7 +35,7 @@ NAVY = "#0F1F3D"
 GREEN7, GREEN5, MINT1 = "#2F6B49", "#5E9A6E", "#E1F0DC"  # pastel green theme: fills green, text navy
 CREAM, CREAM1, CREAM3 = "#FBF8F1", "#F4EEE1", "#E6DCC6"
 BRASS, BRASS_DARK, MUTED, GREEN = "#B08D57", "#8A6630", "#4A5874", "#3E6B48"
-SKY = "#7F9FDB"
+SKY = "#A9D3A0"  # light green (was sky blue)
 FONT = "font-family:'Atkinson Hyperlegible',Verdana,sans-serif"
 
 
@@ -331,6 +331,7 @@ def slide_title() -> str:
   <p class="eyebrow light">MGT 409 · AI Foundations for Managers · Final project</p>
   <h1>WordWise</h1>
   <p class="pitch">An AI reading studio that helps students with dyslexia and other reading difficulties understand their own course materials, at a marginal cost of about {money(typ['1'], 3)} per student-month.</p>
+  <p class="origin"><strong>Origin:</strong> built from lived experience. I have double-deficit dyslexia; in college, a reading specialist gave me the kind of support WordWise now automates.</p>
   <p class="byline">{AUTHOR} · October 2026 · {REPO}</p>
   <div class="chips">
     <span>4 single-call <code>gpt-6-luna</code> agents</span>
@@ -367,6 +368,7 @@ def slide_problem() -> str:
     <div class="box"><p class="bh">1 · Support is rationed</p><p>Special-education status reaches the formally identified ~5–6%; most of the 15–20% with symptoms “will not qualify” yet “are likely to struggle” (IDA).</p></div>
     <div class="box"><p class="bh">2 · The best help is scarce</p><p>Intensive instruction from trained teachers is most effective (NIH NICHD), but “specialized instruction is expensive” and many families can't find it (IDA).</p></div>
     <div class="box"><p class="bh">3 · The cost compounds</p><p>Slow decoding consumes the effort comprehension needs; difficulties grow as academic demands increase (IDA).</p></div>
+    <div class="box founder"><p class="bh">Founder insight</p><p>I have double-deficit dyslexia. A college reading specialist gave me this kind of support, and trustworthy resources were hard to find. WordWise packages that support in one home base.</p></div>
   </div>
 </div>"""
     return frame(3, "Problem", "Most struggling readers fall outside formal support, and the help that works best is the hardest to get",
@@ -599,6 +601,9 @@ CSS = """
 .reveal section.title h1 { font-size:120px; color:var(--cream); margin:14px 0 18px; }
 .reveal .eyebrow { font-size:22px; font-weight:700; color:var(--brass); letter-spacing:.06em; margin:0; }
 .reveal section.title .pitch { font-size:31px; color:var(--cream1); max-width:1060px; line-height:1.35; margin-bottom:22px; }
+.reveal section.title .origin { font-size:21px; color:var(--cream); max-width:1060px; line-height:1.4; margin:0 0 18px; padding:10px 16px; border-left:4px solid var(--brass); background:rgba(225,240,220,.10); }
+.reveal .box.founder { background:var(--mint1); border-left-color:var(--brass); }
+.reveal section.title .origin strong { color:var(--brass); }
 .reveal section.title .byline { font-size:21px; color:var(--cream3); }
 .reveal section.title .chips { display:flex; gap:14px; margin-top:30px; flex-wrap:wrap; max-width:920px; }
 .reveal section.title .chips span { font-size:18px; padding:8px 16px; border:2px solid var(--brass); border-radius:999px; color:var(--cream); }

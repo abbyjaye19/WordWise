@@ -123,6 +123,27 @@ layout = html.Div(
                 ),
             ],
         ),
+        # Founder's story (full version on /about)
+        html.Section(
+            className="section container narrow",
+            children=html.Div(
+                className="card founder-card",
+                children=[
+                    html.Div("AJ", className="about-monogram small-mono", **{"aria-hidden": "true"}),
+                    html.Div(
+                        [
+                            html.P("Why I built WordWise", className="eyebrow"),
+                            html.P(
+                                "“I have double-deficit dyslexia. In college, a reading specialist helped me get through my readings "
+                                "and actually understand them. WordWise is the tool I wish I'd had when I was learning to read, "
+                                "and the home base I couldn't find.”"
+                            ),
+                            html.P(["— Abby Jaye, creator · ", dcc.Link("Read my story", href="/about", className="text-link")], className="founder-by"),
+                        ]
+                    ),
+                ],
+            ),
+        ),
         divider(),
         # Features
         html.Section(

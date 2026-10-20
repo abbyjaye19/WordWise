@@ -116,6 +116,8 @@ def sec_motivation() -> str:
     return f"""
 <section>
 <h2>1. Motivation</h2>
+<h3>Why I built it</h3>
+<p>This project comes from my own experience. I have double-deficit dyslexia: difficulty with both phonological awareness (working with the sounds in words) and rapid naming (quickly retrieving the names of familiar symbols such as letters), a combination associated with more severe reading difficulties than either deficit alone.<sup><a href="#s13">13</a></sup> Learning to read, and especially understanding what I read, was hard, and reading and listening comprehension remain the areas I work hardest at. In college I worked with a reading specialist whose sessions did for me much of what WordWise now does: helping me get through assigned readings and genuinely understand them. That experience showed me how valuable this kind of support is, and how much a tool that provides it would have helped me when I was first learning to read. It was also difficult to find trustworthy resources; they were scattered across many sites. WordWise is designed to be the home base I was looking for: help with a student's own readings, plus vetted information and routes to human specialists. Because no two readers with dyslexia struggle in the same way, it also adapts to what each student reports finding hard.</p>
 <h3>Who has the problem</h3>
 <p>Students from about age 5 to 30 who find reading hard, especially students with dyslexia. Prevalence depends on the definition used. The International Dyslexia Association reports that 6–7% of U.S. students are classified as having a learning disability and that about 85% of them have a primary disability in reading and language processing, which implies roughly 5–6% of students are formally identified; it adds that "perhaps as many as 15–20%" of the population have some symptoms of dyslexia, most of whom never qualify for special education.<sup><a href="#s12">12</a></sup> Other estimates fall in the same range (5–17.5% per Understood.org; up to 20% per the Yale Center for Dyslexia &amp; Creativity).<sup><a href="#s1">1</a>,<a href="#s2">2</a></sup> The gap between the identified and symptomatic populations is the core opportunity: most struggling readers receive no formal support.</p>
 <p>Dyslexia makes it hard to connect letters to the sounds they make, so reading is slow and effortful. It has nothing to do with intelligence.<sup><a href="#s1">1</a>,<a href="#s3">3</a></sup> The National Institutes of Health lists common signs as trouble sounding out words, spelling mistakes, slow reading, and trouble understanding what was just read.<sup><a href="#s4">4</a></sup> That last one matters most for school: when decoding takes all of a student's effort, comprehension suffers.</p>
@@ -359,6 +361,7 @@ SOURCES = [
     ("New Haven Reads, “Tutoring”", "https://newhavenreads.org/programs/tutoring"),
     ("International Dyslexia Association, “Dyslexia assessment: what is it and how can it help?”", "https://dyslexiaida.org/dyslexia-assessment-what-is-it-and-how-can-it-help/"),
     ("International Dyslexia Association, “Dyslexia basics”", "https://dyslexiaida.org/dyslexia-basics/"),
+    ("Norton et al., “Functional neuroanatomical evidence for the double-deficit hypothesis of developmental dyslexia,” Neuropsychologia 61 (2014)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4339699/"),
 ]
 
 
