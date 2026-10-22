@@ -129,7 +129,7 @@ layout = html.Div(
             children=html.Div(
                 className="card founder-card",
                 children=[
-                    html.Div("AJ", className="about-monogram small-mono", **{"aria-hidden": "true"}),
+                    html.Img(src="/assets/abby.jpg", alt="Abby Jaye", className="founder-photo"),
                     html.Div(
                         [
                             html.P("Why I built WordWise", className="eyebrow"),

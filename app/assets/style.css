@@ -264,3 +264,4 @@ html[data-theme="dark"] .about-wish { color:var(--mint-300); }
   .about-portrait { position:static; justify-self:center; }
   .founder-card { flex-direction:column; align-items:flex-start; }
 }
+.founder-photo { width:96px; height:96px; flex:none; object-fit:cover; border-radius:50%; border:3px solid var(--mint-300); }
