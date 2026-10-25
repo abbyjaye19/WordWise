@@ -13,3 +13,6 @@ venv/
 # Local user data: accounts, saved readings, and the session signing key
 data/wordwise.db
 data/.secret_key
+
+# Demo video (upload to Canvas; too large for the repo)
+deliverables/demo_video.mp4

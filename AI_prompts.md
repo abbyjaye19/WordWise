@@ -369,3 +369,11 @@ The first prompt only covered colors; the follow-up came from friend testing and
 **Prompt 2:**
 
 > yes push it and run the fresh clone check
+
+---
+
+## Phase 29: Demo Video
+
+**Prompt 1:**
+
+> could you make an AI demo walk through video?
