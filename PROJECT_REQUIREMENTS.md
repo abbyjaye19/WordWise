@@ -67,5 +67,5 @@ Title/pitch · Problem · What's new · Agent diagram · Demo screenshots · Cos
 - [x] Run 1–3 user tests, add results to `deliverables/user_testing.json`, rebuild report + slides
 - [ ] Proofread report and slides
 - [ ] Optional demo video
-- [ ] Final fresh-clone dry run on the submitted commit
+- [x] Final fresh-clone dry run (2026-10-25, commit 6a17ee7): 68 s install, all pages, demo, and AI help work with `.env` one folder up
 - [ ] Submit on Canvas: repo link, `report.html`, `slides.html` (and video if made)

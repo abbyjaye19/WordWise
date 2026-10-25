@@ -8,7 +8,7 @@ An AI reading-support website for people with dyslexia and other reading challen
 
 ## Run it locally
 
-You need Python 3.10 or newer. Setup takes about 2 minutes; it was tested from a fresh clone on 2026-10-15.
+You need Python 3.10 or newer. Setup takes about 2 minutes; it was last tested from a fresh clone on 2026-10-25 (Windows, Python 3.14, `.env` one folder up: install 68 s, everything including AI help worked).
 
 1. Clone this repo and open a terminal in the project folder:
    ```bash
@@ -51,6 +51,7 @@ Then sign in with username **`demo`** and password **`wordwise-demo`**. You'll f
 - 7 saved words
 - a week of reading time with a 3-day streak
 - personal goals with due dates
+- reading insights (sessions, most-used tools, 5 comprehension check-ins) and a "What I want to work on" profile, so AI help adapts
 
 Run `python scripts/seed_demo.py --reset` to start the demo account over. Other accounts are never touched.
 
