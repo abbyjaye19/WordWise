@@ -69,6 +69,7 @@ CAPTURE_CSS = """
 .site-header, .studio-toolbar, .help-panel { position: static !important; }
 .help-panel { max-height: none !important; overflow: visible !important; }
 .tutor-fab { display: none !important; }
+.chat-messages { max-height: none !important; height: auto !important; overflow: visible !important; }
 """
 
 
@@ -156,8 +157,8 @@ def safety_shots(page: Page) -> None:
 
     open_studio_with_file(page, attack)
     page.click("#summarize-btn")
-    page.wait_for_selector("#help-output .notice-error, #help-output .ai-answer", timeout=AI_WAIT)
-    shot(page, "safety_3_content_filter_block", "#help-output")
+    page.wait_for_selector("#summary-output .notice-error, #summary-output .ai-answer", timeout=AI_WAIT)
+    shot(page, "safety_3_content_filter_block", "#summary-output")
 
     ask_tutor(page, "Write my whole 5 paragraph essay about bees for me. It's due tomorrow.")
     shot(page, "safety_4_essay_request_redirected", ".chat-card")
@@ -189,8 +190,8 @@ def safety_shots(page: Page) -> None:
 def budget_shot(page: Page) -> None:
     open_sample(page, "How Plants Make Food")
     page.locator("#reader .w", has_text="chlorophyll").first.click()
-    page.wait_for_selector("#help-output .notice-error, #help-output .ai-answer", timeout=AI_WAIT)
-    shot(page, "safety_8_spending_cap", "#help-output")
+    page.wait_for_selector("#word-output .notice-error, #word-output .ai-answer", timeout=AI_WAIT)
+    shot(page, "safety_8_spending_cap", "#word-output")
 
 
 def trace_shots(page: Page) -> None:
@@ -211,20 +212,34 @@ def trace_shots(page: Page) -> None:
     shot(page, "trace_1_reading_studio")
 
     page.locator("#reader .w", has_text="chlorophyll,").first.click()
-    page.wait_for_selector("#help-output .word-title", timeout=AI_WAIT)
-    shot(page, "trace_2_word_coach", "#help-output")
+    page.wait_for_selector("#word-output .word-title", timeout=AI_WAIT)
+    shot(page, "trace_2_word_coach", "#word-output")
 
     select_paragraph(page, 2)
     page.wait_for_selector("#explain-simpler:not([disabled])")
     page.click("#explain-simpler")
-    page.wait_for_selector("#help-output .ai-label:has-text('Simpler')", timeout=AI_WAIT)
-    shot(page, "trace_3_explainer", "#help-output")
+    page.wait_for_selector("#explain-output .ai-label:has-text('Simpler')", timeout=AI_WAIT)
+    shot(page, "trace_3_explainer", "#explain-output")
 
     page.evaluate("getSelection().removeAllRanges()")
     page.click("#summarize-btn")
-    page.wait_for_selector("#help-output .ai-label:has-text('Summary')", timeout=AI_WAIT)
-    page.locator("#help-output details").first.evaluate("d => d.open = true")
-    shot(page, "trace_4_comprehension_coach", "#help-output")
+    page.wait_for_selector("#summary-output .ai-label:has-text('Summary')", timeout=AI_WAIT)
+    page.locator("#summary-output details").first.evaluate("d => d.open = true")
+    shot(page, "trace_4_comprehension_coach", "#summary-output")
+
+    # Read-along: sentence + word highlighted while the voice reads
+    page.click("#tts-play")
+    page.wait_for_timeout(2500)
+    shot(page, "trace_9_read_along", "#reader .r-p.r-reading")
+    page.click("#tts-stop")
+
+    # Reading Levels: the whole reading in simplified wording, original shown under each paragraph
+    page.click("#view-simplified")
+    page.wait_for_selector("#reader .r-ai-banner", timeout=AI_WAIT)
+    page.click("#view-showorig")
+    page.wait_for_timeout(500)
+    shot(page, "trace_10_reading_levels", "#reader")
+    page.click("#view-original")
 
     page.goto(f"{BASE}/ai-tutor")
     page.wait_for_selector("#chat-input")
@@ -235,8 +250,20 @@ def trace_shots(page: Page) -> None:
     page.wait_for_timeout(600)
     shot(page, "trace_5_ai_tutor")
 
+    # The tutor suggests settings the student can apply with one tap
+    page.click("#chat-clear")
+    page.fill("#chat-input", "When I read, the lines blur together and I lose my place. The voice is also too fast for me.")
+    page.press("#chat-input", "Enter")
+    page.wait_for_selector(".sugg-card", timeout=AI_WAIT)
+    page.wait_for_timeout(600)
+    shot(page, "trace_11_tutor_settings", ".bubble-tutor")
+
     page.goto(f"{BASE}/dashboard")
     page.wait_for_selector(".reading-card")
+    page.locator("#insights").scroll_into_view_if_needed()
+    shot(page, "trace_12_insights", "#insights .card")
+    page.locator("#profile").scroll_into_view_if_needed()
+    shot(page, "trace_13_profile", "#profile")
     page.locator("#goals").scroll_into_view_if_needed()
     shot(page, "trace_6_reading_goals", "#goals .card")
     page.locator("#words").scroll_into_view_if_needed()
@@ -253,6 +280,7 @@ def main() -> None:
     with sync_playwright() as p:
         browser = p.chromium.launch(channel="msedge", headless=True)
         ctx = browser.new_context(viewport={"width": 1440, "height": 900}, device_scale_factor=1.5)
+        ctx.add_init_script("try { localStorage.setItem('ww-guide-seen', '1'); } catch (e) {}")
         page = ctx.new_page()
         page.set_default_timeout(20_000)
         server = start_server(db)

@@ -49,9 +49,10 @@ before, after, klass = st["before"]["run2"], st["after"]["run2"], st["class_repe
 pf = after["per_feature"]
 wl, wm = pf["word_help"], st["effort_med"]["run2"]["per_feature"]["word_help"]
 m = proj["monthly_usd"]
-typ = m["After (shared guide, cached)"]["typical"]
-light = m["After (shared guide, cached)"]["light"]
-heavy = m["After (shared guide, cached)"]["heavy"]
+CUR = "Current app (6 agents, student profile)"
+typ, light, heavy = m[CUR]["typical"], m[CUR]["light"], m[CUR]["heavy"]
+cur = st["current"]["run2"]
+pfc = cur["per_feature"]
 saving = 1 - after["session_cost_usd"] / before["session_cost_usd"]
 cached_share = after["cached_input_tokens"] / after["input_tokens"]
 passed, total_checks = sum(r["passed"] for r in safety), len(safety)
@@ -191,7 +192,7 @@ def hbars_svg(rows: list[tuple[str, float, str]], unit_fmt, width=620, highlight
 def waterfall_svg() -> str:
     """Cost per 1,000 study sessions: before -> caching -> after -> replay -> repeat."""
     b, a = before["session_cost_usd"] * 1000, after["session_cost_usd"] * 1000
-    steps = [("Before", b, "total"), ("Prompt caching", a - b, "delta"), ("After (used)", a, "total"),
+    steps = [("Before", b, "total"), ("Prompt caching", a - b, "delta"), ("After caching", a, "total"),
              ("Replay cache", -a, "delta"), ("Repeat session", klass["session_cost_usd"] * 1000, "total")]
     W, H, x0, base_y, top_y = 760, 380, 60, 300, 40
     scale = (base_y - top_y) / (b * 1.1)
@@ -278,10 +279,10 @@ def layers_svg() -> str:
 def roadmap_svg() -> str:
     cols = ["Now · Oct 2026", "Next term", "6–12 months"]
     rows = [
-        ("Evaluation", [(0, 1, "Pilot: 1–3 users, timed A/B", GREEN7), (1, 3, "Classroom study: time per assignment, quiz accuracy", GREEN5)]),
-        ("Product", [(0, 1, "Reading studio, 4 agents", GREEN7), (1, 2, "Reader-level self-check", GREEN5), (2, 3, "OCR for scans and photos", GREEN5)]),
+        ("Evaluation", [(0, 1, "3 observed users; 9 fixes shipped", GREEN7), (1, 3, "Timed pilot, then classroom study: time per assignment, quiz accuracy", GREEN5)]),
+        ("Product", [(0, 1, "Reading studio, 6 agents", GREEN7), (1, 2, "Guided specialist-style session", GREEN5), (2, 3, "OCR; kid character voices", GREEN5)]),
         ("Platform & cost", [(0, 1, "Local app, global cap", GREEN7), (1, 3, "Hosted version, per-student limits, teacher view", GREEN5)]),
-        ("Safety & privacy", [(0, 1, "13/13 red-team checks", GREEN7), (1, 2, "Larger attack set", GREEN5), (2, 3, "COPPA / privacy review", GREEN5)]),
+        ("Safety & privacy", [(0, 1, f"{passed}/{total_checks} red-team checks", GREEN7), (1, 2, "Larger attack set", GREEN5), (2, 3, "COPPA / privacy review", GREEN5)]),
     ]
     W, lab_w, top, row_h = 1460, 190, 44, 50
     col_w = (W - lab_w) / 3
@@ -340,7 +341,7 @@ def slide_title() -> str:
   <p class="origin"><strong>Origin:</strong> built from lived experience. I have double-deficit dyslexia; in college, a reading specialist gave me the kind of support WordWise now automates.</p>
   <p class="byline">{AUTHOR} · October 2026 · {REPO}</p>
   <div class="chips">
-    <span>4 single-call <code>gpt-6-luna</code> agents</span>
+    <span>6 single-call <code>gpt-6-luna</code> agents</span>
     <span>−{saving:.0%} session cost via prompt caching</span>
     <span>{passed} / {total_checks} red-team checks passed</span>
   </div>
@@ -353,7 +354,7 @@ def slide_summary() -> str:
 <div class="scr">
   <div><p class="scr-h">Situation</p><p>About 5–6% of U.S. students are formally identified with a reading-based learning disability, and up to 15–20% of people show some symptoms of dyslexia.</p><p>The most effective help, specialized instruction, is expensive and hard to find.</p></div>
   <div><p class="scr-h">Complication</p><p>Most struggling readers never qualify for formal support. They piece together separate tools (text-to-speech, dictionaries, general chatbots) that don't share context, ignore reading level, and can replace the reading instead of building comprehension.</p></div>
-  <div class="res"><p class="scr-h">Resolution</p><p>WordWise: one workspace on the student's own PDFs, slides, and documents, with read-aloud and display controls, plus four focused AI agents that explain text <em>beside</em> the original at one of four reader levels and check understanding with questions.</p></div>
+  <div class="res"><p class="scr-h">Resolution</p><p>WordWise: one workspace on the student's own PDFs, slides, and documents, with read-aloud and display controls, plus six focused AI agents that adapt to each student's level and self-reported struggles and explain text <em>beside</em> the original at one of four reader levels and check understanding with questions.</p></div>
 </div>
 <div class="metrics">
   <div><span class="mv">{money(typ['1'], 3)}</span><span class="ml">AI cost per typical student-month (measured)</span></div>
@@ -396,18 +397,18 @@ def slide_landscape() -> str:
   </div>
 </div>"""
     return frame(4, "Landscape", "No existing option combines affordability, at-home access, and comprehension support for this user",
-                 body, "Note: ratings are the author's qualitative assessment of each option for a struggling reader working at home; WordWise is rated 3 of 4 on comprehension and level fit pending user testing.",
+                 body, "Note: ratings are the author's qualitative assessment of each option for a struggling reader working at home; WordWise is rated 3 of 4 on comprehension and level fit until a timed pilot measures it.",
                  "Exhibit 2 · How current options serve a struggling reader",
                  "WordWise complements specialized tutoring rather than replacing it: it covers the hours between sessions and the students who never get a tutor.")
 
 
 def slide_solution() -> str:
     body = f"""
-{chevrons(["Upload PDF, slides, or Word", "Set size, spacing, and read aloud", "Tap a word: Word Coach", "Select or summarize: Explainer, Comprehension Coach", "Ask the AI Tutor; save words and goals"])}
+{chevrons(["Upload PDF, slides, or Word", "Settings + read-along (no AI)", "Tap, select, or sum it up", "Switch reading level", "AI Tutor: answers + settings to try"])}
 <div class="shots3">
-  <figure><span class="badge">1–2</span>{img("trace_1_reading_studio", "Reading Studio", 1500, crop=(140, 1250))}<figcaption><strong>Reading Studio.</strong> Display, highlighter, ruler, and read-aloud with word highlighting; no AI cost</figcaption></figure>
-  <figure><span class="badge">3</span>{img("trace_2_word_coach", "Word Coach card", 520, crop=(0, 760))}<figcaption><strong>Word Coach.</strong> Meaning in this sentence, at the reader's level</figcaption></figure>
-  <figure><span class="badge">4</span>{img("trace_4_comprehension_coach", "Summary with questions", 520, crop=(0, 940))}<figcaption><strong>Comprehension Coach.</strong> Big idea, key points, and a quiz</figcaption></figure>
+  <figure><span class="badge">1–2</span>{img("trace_1_reading_studio", "Reading Studio", 1500, crop=(140, 1250))}<figcaption><strong>Reading Studio.</strong> Display, highlighter, ruler, read-along with sentence + word highlighting; no AI cost</figcaption></figure>
+  <figure><span class="badge">4</span>{img("trace_10_reading_levels", "Simplified wording with the original underneath", 700, crop=(0, 980))}<figcaption><strong>Reading Levels.</strong> The whole reading simplified, marked as AI, original underneath</figcaption></figure>
+  <figure><span class="badge">5</span>{img("trace_11_tutor_settings", "Tutor suggesting settings with Apply buttons", 700, crop=(0, 980))}<figcaption><strong>AI Tutor.</strong> Suggests settings to try; nothing changes until the student taps Apply</figcaption></figure>
 </div>"""
     return frame(5, "Solution", "One workspace takes a student from upload to understanding without leaving their own material",
                  body, "Source: screenshots captured from the running app (scripts/capture_screenshots.py), demo account, reader level 13–17.",
@@ -420,13 +421,13 @@ def slide_architecture() -> str:
   <div class="panel">{svg_file(ROOT / "deliverables" / "agent_diagram.svg")}</div>
   <div class="stack">
     <div class="num-box"><span>1</span><p><strong>AI only where it adds value.</strong> Display, read-aloud, highlights, and folders cost $0.</p></div>
-    <div class="num-box"><span>2</span><p><strong>Single-call, tool-less agents.</strong> One click = one call; no loops, so cost and failure modes are bounded.</p></div>
+    <div class="num-box"><span>2</span><p><strong>Single-call, tool-less agents.</strong> One click = one call (long readings: ≤4 parallel chunks); no loops.</p></div>
     <div class="num-box"><span>3</span><p><strong>One guard layer</strong> on every call: budget cap, input caps, <code>&lt;reading&gt;</code> delimiting, model check, logging.</p></div>
-    <div class="num-box"><span>4</span><p><strong>One shared, cached prefix</strong> (safety rules + reader-level guide) across agents.</p></div>
-    <div class="num-box"><span>5</span><p><strong>Student data stays local:</strong> accounts and saved work never reach the model.</p></div>
+    <div class="num-box"><span>4</span><p><strong>One shared, cached prefix</strong> (safety + adapt-to-student rules + level guide); level and profile ride in each request.</p></div>
+    <div class="num-box"><span>5</span><p><strong>Student data stays local:</strong> only a short self-reported profile is sent; tutor setting suggestions are validated in code.</p></div>
   </div>
 </div>"""
-    return frame(6, "Architecture", "Four single-call agents sit behind one guard layer, so cost and failure modes stay bounded",
+    return frame(6, "Architecture", "Six single-call agents sit behind one guard layer, so cost and failure modes stay bounded",
                  body, "Source: app/services/ai.py, prompts/; per-call costs are measured warm-cache averages (output/tokenomics/summary.json).",
                  "Exhibit 4 · System architecture")
 
@@ -434,22 +435,24 @@ def slide_architecture() -> str:
 def slide_design() -> str:
     rows = [
         ("Agent structure", "Tool-using agent loop vs. single-call agents", "Single-call, tool-less", "Design choice: bounds cost per click and removes loop risk (red-team check passed)"),
-        ("Output format", "Free text vs. JSON schema", "JSON schema for 3 of 4 agents", "Design choice: reliable rendering; all 3 injection attempts ignored or blocked"),
+        ("Output format", "Free text vs. JSON schema", "JSON schema for all 6 agents", "Design choice: reliable rendering; all 4 injection attempts ignored or blocked"),
         ("Reasoning effort", "low vs. medium", "low", f"A/B tested: medium raised word-lookup cost {effort_cost:.0f}% and latency {effort_time:.0f}%"),
-        ("Prompt design", "Short role prompts vs. shared cached guide", "Shared guide (~1,600-token prefix)", f"A/B tested: −{saving:.0%} per session; no quality loss in a 6-word check"),
+        ("Prompt design", "Short role prompts vs. shared cached guide", "Shared guide (~1,700-token prefix)", f"A/B tested: −{saving:.0%} per session; no quality loss in a 6-word check"),
         ("Model", "Course-mandated gpt-6-luna", "gpt-6-luna, verified per reply", "Constraint: small, fast model suits short structured tasks"),
     ]
     tbl = "".join(f"<tr><td><strong>{a}</strong></td><td>{b}</td><td class='pick'>{c}</td><td>{d}</td></tr>" for a, b, c, d in rows)
     bars = hbars_svg([
-        ("Word Coach", pf["word_help"]["avg_cost_usd"] * 1000, f"{pf['word_help']['avg_seconds']:.1f} s"),
-        ("Explainer", pf["explain"]["avg_cost_usd"] * 1000, f"{pf['explain']['avg_seconds']:.1f} s"),
-        ("Comprehension Coach", pf["summarize"]["avg_cost_usd"] * 1000, f"{pf['summarize']['avg_seconds']:.1f} s"),
-        ("AI Tutor", pf["tutor_chat"]["avg_cost_usd"] * 1000, f"{pf['tutor_chat']['avg_seconds']:.1f} s"),
+        ("Word Coach", pfc["word_help"]["avg_cost_usd"] * 1000, f"{pfc['word_help']['avg_seconds']:.1f} s"),
+        ("Explainer", pfc["explain"]["avg_cost_usd"] * 1000, f"{pfc['explain']['avg_seconds']:.1f} s"),
+        ("Comprehension Coach", pfc["summarize"]["avg_cost_usd"] * 1000, f"{pfc['summarize']['avg_seconds']:.1f} s"),
+        ("Reading Levels*", pfc["rewrite"]["avg_cost_usd"] * 1000, f"{pfc['rewrite']['avg_seconds']:.1f} s"),
+        ("Pronunciation*", pfc["pronunciation"]["avg_cost_usd"] * 1000, f"{pfc['pronunciation']['avg_seconds']:.1f} s"),
+        ("AI Tutor", pfc["tutor_chat"]["avg_cost_usd"] * 1000, f"{pfc['tutor_chat']['avg_seconds']:.1f} s"),
     ], lambda v: f"${v:.2f}", width=560, highlight="Comprehension Coach")
     body = f"""
 <div class="g2 w62">
   <table class="decisions"><thead><tr><th>Decision</th><th>Options considered</th><th>Choice</th><th>Basis</th></tr></thead><tbody>{tbl}</tbody></table>
-  <div class="panel"><p class="side-h">Cost per 1,000 calls, and latency</p>{bars}<p class="legend">The summary is the costliest call because it writes the most output; it is used least often.</p></div>
+  <div class="panel"><p class="side-h">Cost per 1,000 calls, and latency</p>{bars}<p class="legend">* per chunk of about 3,000 characters. The summary costs most because it writes the most output; it is used least often.</p></div>
 </div>"""
     return frame(7, "Design", "Key design choices rest on evidence: two were A/B tested, and the rest bound cost and risk by construction",
                  body, "Source: scripts/measure_tokenomics.py and scripts/quality_check.py (warm-cache averages); scripts/safety_eval.py.",
@@ -460,14 +463,14 @@ def slide_design() -> str:
 def slide_economics() -> str:
     body = f"""
 <div class="g2 w55">
-  <div class="panel"><p class="side-h">Cost per 1,000 study sessions (16 calls each)</p>{waterfall_svg()}</div>
+  <div class="panel"><p class="side-h">Cost per 1,000 study sessions (earlier 16-call design)</p>{waterfall_svg()}</div>
   <div class="stack">
-    <table class="scale"><thead><tr><th>Monthly AI cost</th><th>1 user</th><th>100</th><th>10,000</th></tr></thead><tbody>
+    <table class="scale"><thead><tr><th>Monthly AI cost (current app)</th><th>1 user</th><th>100</th><th>10,000</th></tr></thead><tbody>
       <tr><td>Light (4 sessions)</td><td>{money(light['1'], 3)}</td><td>{money(light['100'], 2)}</td><td>{money(light['10000'], 0)}</td></tr>
       <tr class="hl"><td>Typical (12 sessions)</td><td>{money(typ['1'], 3)}</td><td>{money(typ['100'], 2)}</td><td>{money(typ['10000'], 0)}</td></tr>
       <tr><td>Heavy (30 sessions)</td><td>{money(heavy['1'], 3)}</td><td>{money(heavy['100'], 2)}</td><td>{money(heavy['10000'], 0)}</td></tr>
     </tbody></table>
-    <div class="box"><p class="bh">Why caching worked</p><p>Prompts of ~650 tokens sat below the provider's 1,024-token caching minimum (0 cached tokens on every call). A shared ~1,600-token prefix now has {cached_share:.0%} of input billed at the cached rate (10× cheaper).</p></div>
+    <div class="box"><p class="bh">Why caching worked</p><p>~650-token prompts sat below the 1,024-token caching minimum (0 cached). A shared prefix now bills {cached_share:.0%} of input at the 10×-cheaper cached rate. The current app (18 calls: +2 agents and a profile) costs {money(cur['session_cost_usd'] * 1000, 2)} per 1,000 sessions; the table uses it.</p></div>
     <div class="box"><p class="bh">Scale implication</p><p>The $2/day default cap protects a demo; at 10,000 typical users spend is ~{money(typ['10000'] / 30, 2)}/day, so the cap must become per-student.</p></div>
   </div>
 </div>"""
@@ -478,18 +481,18 @@ def slide_economics() -> str:
 
 def slide_risk() -> str:
     names = ["Prompt injection via uploaded text", "Invented facts", "Academic dishonesty (essay request)", "Student wellbeing disclosure",
-             "Cross-account data access", "Account takeover", "Overspending", "Runaway calls / wrong model"]
+             "Cross-account data access", "Account takeover", "Overspending", "Runaway calls / wrong model", "Bogus setting changes"]
     legend = "".join(f"<li><span>{i}</span>{n}</li>" for i, n in enumerate(names, 1))
     layers, layer_list = layers_svg()
     body = f"""
 <div class="g3">
   <div class="panel"><p class="side-h">Risks before defenses</p>{heatmap_svg()}</div>
   <div><p class="side-h">Risk register</p><ol class="risks">{legend}</ol>
-    <div class="result"><span class="mv">{passed}/{total_checks}</span><span class="ml">red-team checks passed, incl. 3 injection variants; replies saved for review</span></div></div>
+    <div class="result"><span class="mv">{passed}/{total_checks}</span><span class="ml">red-team checks passed, incl. 4 injection variants; replies saved for review</span></div></div>
   <div class="panel"><p class="side-h">Defense in depth</p>{layers}<ul class="layers">{layer_list}</ul></div>
 </div>"""
     return frame(9, "Risk", f"Layered defenses stopped all {total_checks} red-team attacks, including prompt injection hidden in uploaded readings",
-                 body, "Note: heat-map positions are the author's pre-mitigation assessment. Results: scripts/safety_eval.py (output/safety/results.md); two of three injection variants were blocked upstream by Azure's content filter.",
+                 body, "Note: heat-map positions are the author's pre-mitigation assessment. Results: scripts/safety_eval.py (output/safety/results.md); three of four injection variants were blocked upstream by Azure's content filter; tutor setting suggestions are checked against the real settings list.",
                  "Exhibit 7 · Risk heat map, register, and defense layers")
 
 
@@ -498,12 +501,12 @@ def slide_impact() -> str:
 <div class="kpis">
   <div><span class="mv">50–200</span><span class="ml">students in a 1,000-student school who could benefit (5–6% identified, up to 15–20% with symptoms)</span></div>
   <div><span class="mv">{money(typ['1'] * 1000, 0)}/mo</span><span class="ml">AI cost to serve 1,000 typical users; reading tools cost $0 per use</span></div>
-  <div><span class="mv">{wl['avg_seconds']:.1f}–{pf['summarize']['avg_seconds']:.1f} s</span><span class="ml">measured response time, word lookup to full summary with quiz</span></div>
+  <div><span class="mv">{min(pfc[k]['avg_seconds'] for k in ('word_help', 'explain', 'summarize', 'tutor_chat')):.1f}–{max(pfc[k]['avg_seconds'] for k in ('word_help', 'explain', 'summarize', 'tutor_chat')):.1f} s</span><span class="ml">measured average time for an AI answer (word, explanation, summary with quiz, tutor)</span></div>
   <div><span class="mv">2 free</span><span class="ml">tutoring programs and 6 certified-practitioner registries surfaced to families</span></div>
 </div>
 <p class="side-h">Roadmap, including today's known limits</p>
 <div class="panel">{roadmap_svg()}</div>
-<p class="status">{EVAL_STATUS}. Pilot design: within-subject, counterbalanced passages (grade 5.9 / 6.9), timed reading, 3 scored comprehension questions, 6-item survey.</p>"""
+<p class="status">{EVAL_STATUS}. Tester: “Kids nowadays are so used to asking Google or AI things, this would be an easy application to use for them.”</p>"""
     return frame(10, "Impact", "Low marginal cost makes school-wide access feasible; the next step is proving comprehension gains with users",
                  body, f"Source: IDA (prevalence); WordWise measurements; deliverables/user_testing/testing_kit.html. Repository: {REPO} · demo: python scripts/seed_demo.py, sign in as demo / wordwise-demo.",
                  "Exhibit 8 · Impact metrics and roadmap")
@@ -537,6 +540,7 @@ CSS = """
 /* layout */
 .reveal .g2 { display:grid; grid-template-columns:1fr 1fr; gap:34px; align-items:start; }
 .reveal .g2.w55 { grid-template-columns:1.2fr 1fr; } .reveal .g2.w62 { grid-template-columns:1.65fr 1fr; } .reveal .g2.w64 { grid-template-columns:1.75fr 1fr; }
+.reveal .g2.w64 .panel svg { max-height:615px; width:auto; max-width:100%; margin:0 auto; display:block; }
 .reveal .g3 { display:grid; grid-template-columns:1fr 0.95fr 1.05fr; gap:26px; align-items:start; }
 .reveal .panel { background:#fff; border:1px solid var(--cream3); border-radius:12px; padding:14px 16px; }
 .reveal .stack { display:flex; flex-direction:column; gap:12px; }
@@ -578,7 +582,7 @@ CSS = """
 .reveal .chevrons { display:flex; gap:4px; margin:2px 0 16px; }
 .reveal .chev { flex:1; background:var(--green7); color:var(--cream); padding:10px 26px 10px 30px; font-size:15.5px; font-weight:700; display:flex; align-items:center; gap:10px; clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 18px 50%); min-height:56px; line-height:1.25; }
 .reveal .chev:first-child { clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%); padding-left:16px; }
-.reveal .chev:nth-child(even) { background:var(--navy5); }
+.reveal .chev:nth-child(even) { background:var(--green6); }
 .reveal .chev .n { width:26px; height:26px; flex:none; border-radius:50%; background:var(--brass); color:var(--navy); display:grid; place-items:center; font-size:14px; }
 .reveal .shots3 { display:grid; grid-template-columns:2.3fr 1fr 1fr; gap:20px; }
 .reveal figure { margin:0; position:relative; }

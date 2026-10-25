@@ -1,7 +1,8 @@
 """Measure real token use and cost for one WordWise study session, under different settings.
 
 Usage, from the project folder (needs PORTKEY_API_KEY; costs about $0.01 in total):
-    python scripts/measure_tokenomics.py
+    python scripts/measure_tokenomics.py            # full comparison (rewrites the call log)
+    python scripts/measure_tokenomics.py --current  # add/refresh only the "current" full session
 
 What it does
   A "study session" = what one student does in one sitting in the Reading Studio:
@@ -17,6 +18,9 @@ Settings compared
   effort_med   same as "after" but reasoning effort "medium" instead of "low" (word lookups only)
   class_repeat a second student in the same class repeats run 2 exactly. Portkey replays identical
                requests from its cache (x-portkey-cache-status: HIT), so the model isn't called.
+  current      today's app: the same 16 calls plus the Pronunciation Helper (runs when a reading opens)
+               and one Reading Levels rewrite (Simplified), all with a student profile, as a signed-in
+               student would use it. Projections use this setting.
 
 Writes
   output/tokenomics/calls.jsonl   every call with its token counts and cost
@@ -35,7 +39,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "app"))
 
-from services import ai, documents  # noqa: E402
+from services import ai, documents, preferences  # noqa: E402
 
 OUT = ROOT / "output" / "tokenomics"
 CALLS = OUT / "calls.jsonl"
@@ -64,6 +68,30 @@ def clear_caches() -> None:
     ai.word_help.cache_clear()
     ai.explain.cache_clear()
     ai._summarize_cached.cache_clear()
+    ai._rewrite_chunk.cache_clear()
+    ai._pronunciation_chunk.cache_clear()
+
+
+PROFILE = preferences.profile_context(
+    {"ratings": {"comprehension": 2, "listening": 2, "vocabulary": 1}, "priority": "comprehension"}, 3.0)
+SETTINGS = {"spacing": "wide", "rate": "0.85"}
+
+
+def session_current(level: str) -> None:
+    """A signed-in student's session in today's app (18+ calls)."""
+    clear_caches()
+    ai.pronunciation(P)  # runs in the background when the reading opens
+    for word, sentence in WORDS:
+        ai.word_help(word, sentence, level, PROFILE)
+    for passage, mode in EXPLAINS:
+        ai.explain(passage, mode, level, PROFILE)
+    ai.rewrite(P, "simplified", level, PROFILE)
+    ai.summarize(documents.section_text(HISTORY), "Whole reading", level, PROFILE)
+    history, reading = [], documents.section_text(HISTORY)
+    for turn in TUTOR_TURNS:
+        history.append({"role": "user", "content": turn})
+        out = ai.tutor_reply(history, level, reading, PROFILE, SETTINGS, "Most-used tools (30 days): Read aloud (14), Word Coach (11).")
+        history.append({"role": "assistant", "content": out.reply})
 
 
 def session(level: str = "9-12", only_words: bool = False) -> None:
@@ -91,7 +119,10 @@ def run(setting: str, guide: bool, effort: str, only_words: bool = False, runs=(
     for run_no in runs:
         ai.LOG_EXTRA = {"setting": setting, "run": run_no}
         t = time.perf_counter()
-        session(level=RUN_LEVELS[run_no], only_words=only_words)
+        if setting == "current":
+            session_current(RUN_LEVELS[run_no])
+        else:
+            session(level=RUN_LEVELS[run_no], only_words=only_words)
         print(f"  {setting:12s} run {run_no}: {time.perf_counter() - t:5.1f}s")
 
 
@@ -104,7 +135,7 @@ def summarize_results() -> dict:
     for (setting, run_no), calls in sorted(by.items()):
         feats = defaultdict(list)
         for c in calls:
-            feats[c["feature"].split("_")[0] if c["feature"].startswith("explain") else c["feature"]].append(c)
+            feats[c["feature"].split("_")[0] if c["feature"].startswith(("explain", "rewrite")) else c["feature"]].append(c)
         entry = {
             "calls": len(calls),
             "session_cost_usd": round(sum(c["cost_usd"] for c in calls), 6),
@@ -136,14 +167,20 @@ def main() -> None:
     if not ai.PORTKEY_API_KEY:
         sys.exit("PORTKEY_API_KEY is missing. Add it to .env (this folder or one level up).")
     OUT.mkdir(parents=True, exist_ok=True)
-    if CALLS.exists():
+    only_current = "--current" in sys.argv
+    if only_current and CALLS.exists():  # keep earlier settings, replace only "current"
+        kept = [line for line in CALLS.read_text(encoding="utf-8").splitlines() if json.loads(line).get("setting") != "current"]
+        CALLS.write_text("".join(line + "\n" for line in kept), encoding="utf-8")
+    elif CALLS.exists():
         CALLS.unlink()
     ai.USAGE_LOG = CALLS  # keep measurement calls out of the app's usage log
     print("Measuring (about 1-2 minutes)...")
-    run("before", guide=False, effort="low")
-    run("after", guide=True, effort="low")
-    run("effort_med", guide=True, effort="medium", only_words=True)
-    run("class_repeat", guide=True, effort="low", runs=(2,), fresh=False)
+    if not only_current:
+        run("before", guide=False, effort="low")
+        run("after", guide=True, effort="low")
+        run("effort_med", guide=True, effort="medium", only_words=True)
+        run("class_repeat", guide=True, effort="low", runs=(2,), fresh=False)
+    run("current", guide=True, effort="low")
     summary = summarize_results()
     SUMMARY.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 

@@ -325,3 +325,11 @@ The first prompt only covered colors; the follow-up came from friend testing and
 **Prompt 1** (with a screenshot of the "Understand a part" buttons):
 
 > Noah just tested it - he loved it! he is 25 year old, but is very familiar with reading challeneges as he has been assiting his younger brother who has downsymdrome since he was born with reading/writing stretegies - his brother has reading comprehension issues, so he used this through that lense of how it would help his brother - he thought all uses in here were good - he really enjoyed the difference voices, he though maybe even adding in some chracter voices would be good for kids! (starwars, disney, etc.), also when you click on  show me an example, or break it down into steps, it is unclear whether it actually click or not, and you have to scroll way down to see this, it would be helpful to make it change color once you clicked on it, and have the example.steps go right below these bottons rather than at the bottom - also maybe having this be a side tab you can drag over on top the reading or hide it would be amazing - that way it is much easier to use.  also the rwadon ruler is now shwoign for him.  A quote he said about his use is "the reading tools from WordWies ere extremly helpful in breaking down into digestible smaller portions, additionally, it can be hard ti find resources, so havign a tool that gives you help that is tailored to a learners needs is very beneficial" havign the reading toills in a seprate taband on the first page is repeptive, get rid of this repitition
+
+---
+
+## Phase 26: Refresh Report, Slides, Measurements, and Screenshots
+
+**Prompt 1:**
+
+> yes please start step 1

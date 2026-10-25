@@ -12,7 +12,7 @@ Source: https://zlisto.github.io/mgt_409_fa26/project_requirements.html (reviewe
   - [x] `README.md` with step-by-step run instructions (tested from a fresh clone 2026-10-15)
   - [x] `.env.example` with key names only
   - [x] No real `.env` / `PORTKEY_API_KEY` committed (scanned before first push)
-- [x] **`report.html`** — 14 printed letter pages, images embedded (`scripts/build_report.py`) · ⏳ add user-testing results
+- [x] **`report.html`** — 15 printed letter pages, images embedded (`scripts/build_report.py`); updated 2026-10-25 for 6 agents, current costs, 15/15 safety, 3 user tests
 - [x] **`slides.html`** — 10 slides, reveal.js embedded, works offline (`scripts/build_slides.py`)
 - [ ] **Demo video** (optional) — 2–3 min screen recording
 
@@ -59,12 +59,12 @@ Title/pitch · Problem · What's new · Agent diagram · Demo screenshots · Cos
 
 - [x] Token logs per run (`output/usage_log.jsonl`, `output/tokenomics/`)
 - [x] Screenshots: traced run + 8 defenses (`deliverables/screenshots/`)
-- [ ] ⏳ Real-user feedback: kit ready in `deliverables/user_testing/testing_kit.html`
+- [x] Real-user feedback: 3 observed sessions (Oct 19 and 25) in `deliverables/user_testing.json`; 9 fixes shipped. Timed pilot not run (stated as a limit)
 - [x] Sourced statistics on dyslexia prevalence and the cost/availability of specialized instruction (no sourced dollar figure for tutoring)
 
-## Remaining before submission (as of 2026-10-17)
+## Remaining before submission (as of 2026-10-25)
 
-- [ ] Run 1–3 user tests, add results to `deliverables/user_testing.json`, rebuild report + slides
+- [x] Run 1–3 user tests, add results to `deliverables/user_testing.json`, rebuild report + slides
 - [ ] Proofread report and slides
 - [ ] Optional demo video
 - [ ] Final fresh-clone dry run on the submitted commit

@@ -258,6 +258,142 @@
         }
       }
     },
+    "current": {
+      "run1": {
+        "calls": 18,
+        "session_cost_usd": 0.002184,
+        "input_tokens": 39338,
+        "cached_input_tokens": 32544,
+        "cache_write_tokens": 6740,
+        "output_tokens": 2022,
+        "reasoning_tokens": 256,
+        "median_seconds": 2.0,
+        "gateway_hits": 0,
+        "per_feature": {
+          "explain": {
+            "calls": 3,
+            "avg_input": 1831,
+            "avg_cached": 1712,
+            "avg_output": 104,
+            "avg_reasoning": 0,
+            "avg_cost_usd": 8.39e-05,
+            "avg_seconds": 2.81
+          },
+          "pronunciation": {
+            "calls": 1,
+            "avg_input": 2249,
+            "avg_cached": 2246,
+            "avg_output": 292,
+            "avg_reasoning": 187,
+            "avg_cost_usd": 0.0001688,
+            "avg_seconds": 6.79
+          },
+          "rewrite": {
+            "calls": 1,
+            "avg_input": 2025,
+            "avg_cached": 1769,
+            "avg_output": 198,
+            "avg_reasoning": 0,
+            "avg_cost_usd": 0.0001486,
+            "avg_seconds": 2.16
+          },
+          "summarize": {
+            "calls": 1,
+            "avg_input": 2048,
+            "avg_cached": 0,
+            "avg_output": 346,
+            "avg_reasoning": 0,
+            "avg_cost_usd": 0.0004289,
+            "avg_seconds": 3.03
+          },
+          "tutor_chat": {
+            "calls": 4,
+            "avg_input": 3093,
+            "avg_cached": 2302,
+            "avg_output": 44,
+            "avg_reasoning": 0,
+            "avg_cost_usd": 0.0001439,
+            "avg_seconds": 2.15
+          },
+          "word_help": {
+            "calls": 8,
+            "avg_input": 1894,
+            "avg_cached": 1773,
+            "avg_output": 87,
+            "avg_reasoning": 9,
+            "avg_cost_usd": 7.63e-05,
+            "avg_seconds": 1.94
+          }
+        }
+      },
+      "run2": {
+        "calls": 18,
+        "session_cost_usd": 0.002071,
+        "input_tokens": 39316,
+        "cached_input_tokens": 34321,
+        "cache_write_tokens": 4941,
+        "output_tokens": 2209,
+        "reasoning_tokens": 439,
+        "median_seconds": 1.92,
+        "gateway_hits": 0,
+        "per_feature": {
+          "explain": {
+            "calls": 3,
+            "avg_input": 1831,
+            "avg_cached": 1712,
+            "avg_output": 105,
+            "avg_reasoning": 0,
+            "avg_cost_usd": 8.43e-05,
+            "avg_seconds": 1.85
+          },
+          "pronunciation": {
+            "calls": 1,
+            "avg_input": 2249,
+            "avg_cached": 2246,
+            "avg_output": 270,
+            "avg_reasoning": 159,
+            "avg_cost_usd": 0.0001578,
+            "avg_seconds": 2.56
+          },
+          "rewrite": {
+            "calls": 1,
+            "avg_input": 2025,
+            "avg_cached": 1769,
+            "avg_output": 197,
+            "avg_reasoning": 0,
+            "avg_cost_usd": 0.0001481,
+            "avg_seconds": 4.21
+          },
+          "summarize": {
+            "calls": 1,
+            "avg_input": 2048,
+            "avg_cached": 1795,
+            "avg_output": 347,
+            "avg_reasoning": 0,
+            "avg_cost_usd": 0.000223,
+            "avg_seconds": 2.85
+          },
+          "tutor_chat": {
+            "calls": 4,
+            "avg_input": 3088,
+            "avg_cached": 2298,
+            "avg_output": 44,
+            "avg_reasoning": 0,
+            "avg_cost_usd": 0.0001434,
+            "avg_seconds": 1.66
+          },
+          "word_help": {
+            "calls": 8,
+            "avg_input": 1894,
+            "avg_cached": 1773,
+            "avg_output": 113,
+            "avg_reasoning": 35,
+            "avg_cost_usd": 8.95e-05,
+            "avg_seconds": 2.96
+          }
+        }
+      }
+    },
     "effort_med": {
       "run1": {
         "calls": 8,

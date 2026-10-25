@@ -31,10 +31,12 @@ def main() -> None:
     after = st["after"]["run2"]["session_cost_usd"]
     word_low = st["after"]["run2"]["per_feature"]["word_help"]
     word_med = st["effort_med"]["run2"]["per_feature"]["word_help"]
-    class_cost = after * (1 - CLASS_SHARE)
+    current = st["current"]["run2"]["session_cost_usd"] if "current" in st else after
+    class_cost = current * (1 - CLASS_SHARE)
 
-    scenarios = {"Before (short prompts, no caching)": before, "After (shared guide, cached)": after,
-                 f"After + class repeats ({int(CLASS_SHARE * 100)}% replayed)": class_cost}
+    scenarios = {"Current app (6 agents, student profile)": current,
+                 f"Current + class repeats ({int(CLASS_SHARE * 100)}% replayed)": class_cost,
+                 "Earlier design, before caching (16 calls)": before, "Earlier design, after caching (16 calls)": after}
     proj = {name: {usage: {n: round(cost * sessions * n, 4) for n in USER_COUNTS}
                    for usage, sessions in SESSIONS_PER_MONTH.items()}
             for name, cost in scenarios.items()}
@@ -46,7 +48,9 @@ def main() -> None:
         f"Model: `{s['model']}` via Portkey. Prices per 1M tokens: input ${p['input_per_1m']}, cached input "
         f"${p['cached_input_per_1m']}, cache write ${p['cache_write_per_1m']}, output ${p['output_per_1m']}.",
         "",
-        "One **study session** = 8 word lookups + 3 explain requests + 1 summary + 4 AI Tutor messages (16 calls).",
+        "One **study session** = 8 word lookups + 3 explain requests + 1 summary + 4 AI Tutor messages (16 calls). "
+        "The **current app** adds the Pronunciation Helper (when the reading opens) and one Reading Levels rewrite, "
+        "all with a student profile (18 calls).",
         "",
         "## Measured cost per session (warm prompt cache)",
         "",
@@ -56,6 +60,9 @@ def main() -> None:
     for key, label in (("before", "Before: short prompts (never cached)"), ("after", "After: shared reader-level guide (cached)")):
         e = st[key]["run2"]
         lines.append(f"| {label} | {e['input_tokens']:,} | {e['cached_input_tokens']:,} | {e['output_tokens']:,} ({e['reasoning_tokens']}) | ${e['session_cost_usd']:.5f} |")
+    if "current" in st:
+        e = st["current"]["run2"]
+        lines.append(f"| **Current app (6 agents, profile; 18 calls)** | {e['input_tokens']:,} | {e['cached_input_tokens']:,} | {e['output_tokens']:,} ({e['reasoning_tokens']}) | **${e['session_cost_usd']:.5f}** |")
     e = st["class_repeat"]["run2"]
     lines.append(f"| Same session repeated by a classmate (Portkey replay: {e['gateway_hits']}/{e['calls']} hits) | {e['input_tokens']:,} | — | — | ${e['session_cost_usd']:.5f} |")
     lines += [
@@ -64,12 +71,12 @@ def main() -> None:
         f"The cache costs a one-time write (about {CACHE_PREFIX_TOKENS:,} tokens x ${p['cache_write_per_1m']}/1M = "
         f"${CACHE_PREFIX_TOKENS * p['cache_write_per_1m'] / 1e6:.5f} per feature) whenever it expires; with steady use it stays warm.",
         "",
-        "## Cost per feature call (after, warm)",
+        "## Cost per feature call (current app, warm)",
         "",
         "| Feature | Avg input | Avg cached | Avg output | Avg cost | Avg seconds |",
         "|---|---:|---:|---:|---:|---:|",
     ]
-    for f, v in st["after"]["run2"]["per_feature"].items():
+    for f, v in st["current" if "current" in st else "after"]["run2"]["per_feature"].items():
         lines.append(f"| {f} | {v['avg_input']:,} | {v['avg_cached']:,} | {v['avg_output']} | ${v['avg_cost_usd']:.6f} | {v['avg_seconds']} |")
     lines += [
         "",
@@ -101,7 +108,7 @@ def main() -> None:
     ]
     (OUT / "projections.md").write_text("\n".join(lines), encoding="utf-8")
     (OUT / "projections.json").write_text(json.dumps({"assumptions": {"sessions_per_month": SESSIONS_PER_MONTH, "class_share": CLASS_SHARE},
-                                                      "session_cost_usd": {"before": before, "after": after, "class": class_cost},
+                                                      "session_cost_usd": {"before": before, "after": after, "current": current, "class": class_cost},
                                                       "monthly_usd": proj}, indent=2), encoding="utf-8")
     print("\n".join(lines))
 
