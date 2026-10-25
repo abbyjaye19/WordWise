@@ -365,3 +365,7 @@ The first prompt only covered colors; the follow-up came from friend testing and
 **Prompt 1:**
 
 > everything looks great to me - check to make sure all areas of the assignment for the report, slides and website are met, then we can move forward
+
+**Prompt 2:**
+
+> yes push it and run the fresh clone check
