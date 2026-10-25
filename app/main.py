@@ -127,6 +127,7 @@ app.clientside_callback(
         if (!n) { return window.dash_clientside.no_update; }
         try {
             Object.keys(localStorage).filter(k => k.startsWith("_dash_persistence")).forEach(k => localStorage.removeItem(k));
+            ["ww-voice", "ww-guide-seen"].forEach(k => localStorage.removeItem(k));  // chosen voice; show the Quick guide again
         } catch (e) {}
         return window.dash_clientside.no_update;
     }

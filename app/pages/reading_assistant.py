@@ -187,9 +187,19 @@ def _level_bar() -> html.Div:
 
 def _help_panel() -> html.Aside:
     return html.Aside(
+        id="help-panel",
         className="help-panel",
+        tabIndex="-1",
         **{"aria-label": "Reading help"},
         children=[
+            html.Div(
+                className="help-panel-head",
+                children=[
+                    html.Span("Reading help", className="tool-label"),
+                    html.Button("Dock beside reading", id="help-dock", className="link-btn", type="button", hidden=True),
+                    html.Button("Hide ›", id="help-hide", className="link-btn", type="button", title="Hide the help panel (bring it back with the Help tab)"),
+                ],
+            ),
             html.Div(
                 className="help-block",
                 children=[
@@ -215,11 +225,12 @@ def _help_panel() -> html.Aside:
                     html.Div(
                         className="btn-stack",
                         children=[
-                            html.Button("Make it simpler", id="explain-simpler", className="btn btn-primary btn-small", n_clicks=0, disabled=True),
-                            html.Button("Give me an example", id="explain-example", className="btn btn-secondary btn-small", n_clicks=0, disabled=True),
-                            html.Button("Break it into steps", id="explain-steps", className="btn btn-secondary btn-small", n_clicks=0, disabled=True),
+                            html.Button("Make it simpler", id="explain-simpler", title="Select part of your reading first, then press this", className="btn btn-secondary btn-small", n_clicks=0, disabled=True),
+                            html.Button("Give me an example", id="explain-example", title="Select part of your reading first, then press this", className="btn btn-secondary btn-small", n_clicks=0, disabled=True),
+                            html.Button("Break it into steps", id="explain-steps", title="Select part of your reading first, then press this", className="btn btn-secondary btn-small", n_clicks=0, disabled=True),
                         ],
                     ),
+                    dcc.Loading(html.Div(id="explain-output", className="help-output", **{"aria-live": "polite"}), type="dot", color="#24503A"),
                 ],
             ),
             html.Div(
@@ -234,6 +245,8 @@ def _help_panel() -> html.Aside:
                             html.Button("Look up", id="lookup-btn", className="btn btn-secondary btn-small", n_clicks=0),
                         ],
                     ),
+                    html.P("Or tap any word in your reading.", className="muted small"),
+                    dcc.Loading(html.Div(id="word-output", className="help-output", **{"aria-live": "polite"}), type="dot", color="#24503A"),
                 ],
             ),
             html.Div(
@@ -243,6 +256,7 @@ def _help_panel() -> html.Aside:
                     html.P("Get the big idea, key points, and questions to check yourself.", className="muted"),
                     dcc.Dropdown(id="summary-scope", clearable=False, searchable=False, className="scope-dropdown"),
                     html.Button("Summarize", id="summarize-btn", className="btn btn-primary btn-small", n_clicks=0, disabled=True),
+                    dcc.Loading(html.Div(id="summary-output", className="help-output", **{"aria-live": "polite"}), type="dot", color="#24503A"),
                 ],
             ),
             html.Div(
@@ -278,11 +292,6 @@ def _help_panel() -> html.Aside:
                     html.P("Chat with the AI Tutor about this reading. It can see what you're reading.", className="muted"),
                     dcc.Link("Ask the AI Tutor →", href="/ai-tutor", className="btn btn-secondary btn-small"),
                 ],
-            ),
-            dcc.Loading(
-                html.Div(id="help-output", className="help-output", **{"aria-live": "polite"}),
-                type="dot",
-                color="#1B3366",
             ),
         ],
     )
@@ -364,6 +373,8 @@ def _layout(user, store_kwargs, bad_link: bool):
         html.Div(id="reader-sink", hidden=True),
         html.Div(id="view-sink", hidden=True),
         html.Div(id="tool-sink", hidden=True),
+        html.Div(id="help-sink", hidden=True),
+        html.Button("‹ Help", id="help-tab", className="help-tab", type="button", hidden=True, title="Show reading help"),
         html.Div(
             className="container-wide",
             children=html.P(
@@ -541,6 +552,23 @@ dash.clientside_callback(
     Input("view-store", "data"),
 )
 
+# When an answer arrives, bring it into view right under the button that asked for it.
+dash.clientside_callback(
+    """
+    function (w, e, s) {
+        const id = (dash_clientside.callback_context.triggered_id || "");
+        const el = id && document.getElementById(id);
+        if (el && el.firstChild) { setTimeout(() => el.scrollIntoView({block: "nearest", behavior: "smooth"}), 50); }
+        return "";
+    }
+    """,
+    Output("help-sink", "children"),
+    Input("word-output", "children"),
+    Input("explain-output", "children"),
+    Input("summary-output", "children"),
+    prevent_initial_call=True,
+)
+
 # Show the saved speed / highlight style on the toolbar as soon as the page opens.
 dash.clientside_callback(
     "function (_id, _prefs) { if (window.WW && window.WW.refreshTools) { setTimeout(window.WW.refreshTools, 0); } return ''; }",
@@ -683,7 +711,9 @@ def on_selection(sel):
 # ---------- callbacks: AI help ----------
 
 @callback(
-    Output("help-output", "children"),
+    Output("word-output", "children"),
+    Output("explain-output", "children"),
+    Output("summary-output", "children"),
     Input("word-request", "data"),
     Input("lookup-btn", "n_clicks"),
     Input("lookup-input", "n_submit"),
@@ -699,7 +729,18 @@ def on_selection(sel):
     prevent_initial_call=True,
 )
 def help_me(word_req, _lb, _ls, _s, _e, _st, _sum, typed, sel, doc, level, scope):
+    """Each answer goes right under the button that asked for it (word, explain, or summary slot)."""
     trig = ctx.triggered_id
+    slot = 0 if trig in ("word-request", "lookup-btn", "lookup-input") else 1 if str(trig).startswith("explain-") else 2
+    content = _help_content(trig, word_req, typed, sel, doc, level, scope)
+    if content is no_update:
+        return no_update, no_update, no_update
+    out = [no_update, no_update, no_update]
+    out[slot] = content
+    return tuple(out)
+
+
+def _help_content(trig, word_req, typed, sel, doc, level, scope):
     level = level or "13-17"
     user = accounts.current_user()
     profile = _profile(user)

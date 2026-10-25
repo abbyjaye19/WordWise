@@ -68,7 +68,7 @@ html[data-readalong="sentence"] .w-speaking:not(.hl-gold):not(.hl-green):not(.hl
 html[data-theme="dark"][data-readalong="sentence"] .w-speaking:not(.hl-gold):not(.hl-green):not(.hl-blue) { background:#2F5A43 !important; color:#FFFFFF !important; }
 .focus-mode .r-p { opacity:.28; }
 .focus-mode .r-p.r-current, .focus-mode .r-p.r-reading { opacity:1; }
-#ww-ruler { position:fixed; pointer-events:none; z-index:15; background:rgba(176,141,87,.14); border-top:2px solid rgba(176,141,87,.7); border-bottom:2px solid rgba(176,141,87,.7); }
+#ww-ruler { position:fixed; pointer-events:none; z-index:15; background:rgba(176,141,87,.20); border-top:3px solid rgba(138,102,48,.85); border-bottom:3px solid rgba(138,102,48,.85); }
 
 /* ---------- Help panel ---------- */
 .help-panel { position:sticky; top:84px; max-height:calc(100vh - 100px); overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px; font-size:16px; }
@@ -169,3 +169,22 @@ html[data-theme="dark"][data-readalong="sentence"] .w-speaking:not(.hl-gold):not
 .guide-card h2 { font-size:1.3rem; margin-bottom:6px; }
 .guide-card dd { margin-bottom:4px; line-height:1.45; }
 .guide-more { margin-top:20px; }
+
+/* ---------- Help panel: hide behind a tab, or slide it over the reading ---------- */
+.help-panel-head { display:flex; align-items:center; gap:8px; margin:-8px 0 8px; }
+.help-panel-head .tool-label { flex:1; }
+.help-panel-head .link-btn { font-size:.85rem; color:var(--green-800); font-weight:700; }
+.studio-main.help-tucked { grid-template-columns:minmax(0, 1fr); }
+.studio-main.help-tucked .help-panel { position:fixed; top:84px; right:0; width:min(400px, 92vw); max-height:calc(100vh - 100px); z-index:40;
+  transform:translateX(105%); transition:transform .2s ease; box-shadow:-8px 0 30px rgba(15,31,61,.25); border-radius:var(--radius) 0 0 var(--radius); }
+.studio-main.help-tucked.help-peek .help-panel { transform:none; }
+.help-tab { position:fixed; right:0; top:42%; z-index:39; writing-mode:vertical-rl; padding:16px 10px; min-width:44px;
+  background:var(--green-800); color:var(--cream-50); border:2px solid var(--brass-500); border-right:none; border-radius:10px 0 0 10px;
+  font:inherit; font-weight:700; font-size:16px; letter-spacing:.04em; cursor:pointer; box-shadow:-4px 0 14px rgba(15,31,61,.2); }
+.help-tab:hover { background:var(--green-600); }
+@media (prefers-reduced-motion: reduce) { .studio-main.help-tucked .help-panel { transition:none; } }
+
+/* The kind of help you asked for stays highlighted; its answer appears right below. */
+.btn.is-chosen { background:var(--green-800) !important; color:var(--cream-50) !important; border-color:var(--green-800) !important; box-shadow:0 0 0 3px var(--mint-300); }
+.help-block .help-output { margin-top:12px; }
+.help-block .help-output:empty { display:none; }

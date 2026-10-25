@@ -305,7 +305,7 @@ def user_testing_html(ut: dict) -> str:
 <p>With WordWise, reading time changed by <strong>{(tw - tn) / tn:+.0%}</strong> and comprehension by <strong>{sw - sn:+.1f}</strong> points out of 3.</p>
 <table><thead><tr><th>Survey statement</th><th>Average (1–5)</th></tr></thead><tbody>{survey}</tbody></table>""")
     else:
-        out.append("<p><strong>What this evidence does and doesn't show.</strong> These sessions show that new users could use WordWise without instructions and they found real usability problems, each of which was fixed. They do not measure reading time or comprehension gains: neither tester did the timed with/without protocol, both know the author, and neither is currently a struggling student reader. A timed pilot with students in the target group is the next step (protocol ready in <code>deliverables/user_testing/testing_kit.html</code>).</p>")
+        out.append("<p><strong>What this evidence does and doesn't show.</strong> These sessions show that new users could use WordWise without instructions and they found real usability problems, each of which was fixed. They do not measure reading time or comprehension gains: no tester did the timed with/without protocol, all three know the author, and none is currently a struggling student reader (one tested on behalf of a brother with reading-comprehension difficulties). A timed pilot with students in the target group is the next step (protocol ready in <code>deliverables/user_testing/testing_kit.html</code>).</p>")
     return "\n".join(out)
 
 

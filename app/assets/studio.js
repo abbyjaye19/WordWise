@@ -618,7 +618,30 @@
     }
   }
 
-  WW.refreshTools = function () { updateButtons(); syncViewButtons(); fillVoiceSelect(); initGuide(); };
+  /* ---------- help panel: docked beside the reading, hidden behind a "Help" tab, or slid over the reading ---------- */
+  const HELP_KEY = "ww-help";
+  function setHelp(mode) {
+    const main = document.querySelector(".studio-main");
+    const tab = document.getElementById("help-tab");
+    if (!main) return;
+    main.classList.toggle("help-tucked", mode !== "docked");
+    main.classList.toggle("help-peek", mode === "peek");
+    if (tab) tab.hidden = mode !== "tucked";
+    const dock = document.getElementById("help-dock");
+    if (dock) dock.hidden = mode !== "peek";
+    const hide = document.getElementById("help-hide");
+    if (hide) hide.textContent = mode === "peek" ? "Close ›" : "Hide ›";
+    if (mode !== "peek") localStorage.setItem(HELP_KEY, mode);
+    if (mode === "peek") { const p = document.getElementById("help-panel"); if (p) p.focus({ preventScroll: true }); }
+  }
+  function initHelp() {
+    const main = document.querySelector(".studio-main");
+    if (!main || main.dataset.helpReady) return;
+    main.dataset.helpReady = "1";
+    setHelp(localStorage.getItem(HELP_KEY) === "tucked" ? "tucked" : "docked");
+  }
+
+  WW.refreshTools = function () { updateButtons(); syncViewButtons(); fillVoiceSelect(); initGuide(); initHelp(); };
 
   /* ---------- word actions ---------- */
   function lookup(w) {
@@ -697,7 +720,15 @@
       if (el) el.classList.toggle("focus-mode", state.focus);
       if (state.focus && !document.querySelector("#reader .r-current") && paras()[0]) setCurrent(paras()[0]);
     }
-    if (key === "ruler") rulerEl().hidden = true;
+    if (key === "ruler") {
+      // Show it right away on the line you're reading (not only after the mouse moves over the text).
+      if (!state.ruler) rulerEl().hidden = true;
+      else {
+        const top = document.querySelector("#reader .r-current .w, #reader .r-reading .w") ||
+          Array.from(document.querySelectorAll("#reader .w")).find((w) => w.getBoundingClientRect().top > 150);
+        if (top) moveRulerTo(top);
+      }
+    }
   }
 
   /* ---------- events (delegated, so they work after Dash re-renders) ---------- */
@@ -722,6 +753,18 @@
       case "tts-play": return play();
       case "tts-pause": return paused ? play() : pause();
       case "tts-stop": return stop();
+      case "help-hide": return setHelp("tucked");
+      case "help-tab": return setHelp("peek");
+      case "help-dock": return setHelp("docked");
+      case "explain-simpler":
+      case "explain-example":
+      case "explain-steps":
+        // Show which kind of help was asked for (the answer appears right under these buttons).
+        ["explain-simpler", "explain-example", "explain-steps"].forEach((id) => {
+          const b = document.getElementById(id);
+          if (b) { b.classList.toggle("is-chosen", id === btn.id); b.setAttribute("aria-pressed", id === btn.id ? "true" : "false"); }
+        });
+        return;
       case "tts-replay": logTool("replay"); return jump(0);
       case "tts-back": logTool("replay"); return jump(-1);
       case "tts-next": return jump(1);
@@ -794,8 +837,7 @@
     const box = el.getBoundingClientRect();
     const r = rulerEl();
     if (e.clientY < box.top || e.clientY > box.bottom || e.clientX < box.left || e.clientX > box.right) {
-      r.hidden = true;
-      return;
+      return; // mouse left the reading: keep the ruler where it was
     }
     const h = 40;
     r.style.left = box.left + "px";
@@ -805,9 +847,21 @@
     r.hidden = false;
   });
 
+  // After scrolling, snap the ruler back onto whatever line is now under it.
+  let scrollTimer = null;
   document.addEventListener("scroll", () => {
     const r = document.getElementById("ww-ruler");
-    if (r && !speaking) r.hidden = true;
+    if (!r || speaking || !state.ruler) return;
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+      const el = reader();
+      if (!el) return;
+      const box = el.getBoundingClientRect();
+      const y = parseFloat(r.style.top || "0") + (parseFloat(r.style.height || "0") / 2);
+      const hit = document.elementFromPoint(box.left + box.width / 2, Math.min(Math.max(y, box.top + 10), box.bottom - 10));
+      const w = hit && (hit.closest(".w") || (hit.closest(".r-p") && hit.closest(".r-p").querySelector(".w")));
+      if (w) moveRulerTo(w);
+    }, 120);
   }, { passive: true });
 
   // Stop talking when the user leaves the studio page.

@@ -10,7 +10,7 @@ NAV_ITEMS = [
     {"label": "Tutor Directory", "href": "/tutors"},
     {"label": "Resources", "href": "/resources"},
     {"label": "My Dashboard", "href": "/dashboard"},
-    {"label": "Tool Guide", "href": "/learning-tools"},  # last: the same guide also opens inside the Reading Studio
+    {"label": "About", "href": "/about"},  # the tool guide lives inside the Reading Studio (Quick guide)
 ]
 
 

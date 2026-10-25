@@ -9,7 +9,10 @@
       "date": "2026-10-19",
       "kind": "observed",
       "what_they_did": "Uploaded test PDFs (a course email and readings), used read-aloud and selected passages for “Make it simpler”.",
-      "tools_used": ["Read aloud", "Understand a part"],
+      "tools_used": [
+        "Read aloud",
+        "Understand a part"
+      ],
       "liked": "",
       "quotes": [],
       "problems": [
@@ -29,7 +32,10 @@
       "date": "2026-10-25",
       "kind": "observed",
       "what_they_did": "Created her own account and explored the Reading Studio and the AI Tutor.",
-      "tools_used": ["Reading Studio tools", "AI Tutor"],
+      "tools_used": [
+        "Reading Studio tools",
+        "AI Tutor"
+      ],
       "liked": "The AI Tutor, as a natural way in for children used to asking Google or AI.",
       "quotes": [
         "I thought this was very easy to use for younger kids. I would have used this to practice reading strategies later (and mom would have made/helped me).",
@@ -41,7 +47,35 @@
       ],
       "changes": [
         "Each page now has its own school-themed icon and header color, with the same layout.",
-        "The tool explanations moved into the Reading Studio as a Quick guide (opens on a first visit); the Tool Guide page moved to the end of the menu."
+        "The tool explanations moved into the Reading Studio as a Quick guide that opens on a first visit (the separate page was later removed; see Tester 3)."
+      ]
+    },
+    {
+      "id": "Tester 3",
+      "who": "Noah, 25; has helped his younger brother, who has Down syndrome and reading-comprehension difficulties, with reading and writing strategies since childhood. Tested with his brother's needs in mind.",
+      "date": "2026-10-25",
+      "kind": "observed",
+      "what_they_did": "Used the Reading Studio tools, including the different read-aloud voices, the reading ruler, and “Give me an example” / “Break it into steps”.",
+      "tools_used": [
+        "Read aloud (voices)",
+        "Reading ruler",
+        "Understand a part"
+      ],
+      "liked": "All of the tools; especially the choice of voices. Suggested adding fun character voices for children.",
+      "quotes": [
+        "The reading tools from WordWise were extremely helpful in breaking down into digestible smaller portions. Additionally, it can be hard to find resources, so having a tool that gives you help that is tailored to a learner's needs is very beneficial."
+      ],
+      "problems": [
+        "After pressing “Give me an example” or “Break it into steps” it was unclear whether the press worked, and the answer appeared far down at the bottom of the panel.",
+        "Wanted to hide the help panel, or pull it over the reading, to have more room.",
+        "The reading ruler did not appear (it only showed once the mouse moved over the text).",
+        "The separate tool-guide page repeated the guide inside the Reading Studio."
+      ],
+      "changes": [
+        "The chosen help button now stays highlighted, and each answer appears right under the button that asked for it.",
+        "The help panel can be hidden behind a “Help” tab, slid over the reading, or docked again; the choice is remembered.",
+        "The ruler now appears immediately on the current line, stays put, and is bolder.",
+        "The separate guide page was removed; the Quick guide in the Reading Studio is the one place for it, and About took its menu spot."
       ]
     }
   ]

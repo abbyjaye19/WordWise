@@ -1,5 +1,5 @@
-"""What each reading tool does, written once and shown in two places:
-the "Quick guide" inside the Reading Studio (where students actually use the tools) and the Tool Guide page.
+"""What each reading tool does, shown as the "Quick guide" right above the Reading Studio tools,
+where students actually use them (testers skipped a separate guide page and went straight to the tools).
 """
 
 from __future__ import annotations
@@ -62,23 +62,8 @@ def quick_guide() -> html.Details:
                 ],
             ),
             html.P(
-                ["Tip: everything you change is remembered. ", dcc.Link("See the full Tool Guide", href="/learning-tools", className="text-link"), "."],
+                ["Tip: everything you change is remembered. Questions? ", dcc.Link("Ask the AI Tutor", href="/ai-tutor", className="text-link"), "."],
                 className="muted small guide-foot",
             ),
         ],
     )
-
-
-def guide_cards() -> list:
-    """One card per group for the Tool Guide page."""
-    return [
-        html.Div(
-            className="card guide-card",
-            children=[
-                html.P(where, className="guide-where"),
-                html.H2(group),
-                html.Dl([el for name, what in tools for el in (html.Dt(name), html.Dd(what))]),
-            ],
-        )
-        for group, where, tools in GUIDE
-    ]
