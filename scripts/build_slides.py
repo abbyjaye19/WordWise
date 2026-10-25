@@ -53,6 +53,7 @@ CUR = "Current app (6 agents, student profile)"
 typ, light, heavy = m[CUR]["typical"], m[CUR]["light"], m[CUR]["heavy"]
 cur = st["current"]["run2"]
 pfc = cur["per_feature"]
+cur_cached_share = cur["cached_input_tokens"] / cur["input_tokens"]
 saving = 1 - after["session_cost_usd"] / before["session_cost_usd"]
 cached_share = after["cached_input_tokens"] / after["input_tokens"]
 passed, total_checks = sum(r["passed"] for r in safety), len(safety)
@@ -304,6 +305,15 @@ def roadmap_svg() -> str:
     return "".join(s)
 
 
+def k(x) -> str:
+    """A key number or phrase that should stand out."""
+    return f'<b class="k">{x}</b>'
+
+
+def bullets(items: list[str], cls: str = "pts") -> str:
+    return f'<ul class="{cls}">' + "".join(f"<li>{i}</li>" for i in items) + "</ul>"
+
+
 def chevrons(steps: list[str]) -> str:
     return '<div class="chevrons">' + "".join(
         f'<div class="chev"><span class="n">{i}</span><span>{s}</span></div>' for i, s in enumerate(steps, 1)) + "</div>"
@@ -311,7 +321,7 @@ def chevrons(steps: list[str]) -> str:
 
 # ---------- slides ----------
 
-skyline = data_uri(ROOT / "app" / "assets" / "skyline.svg")
+skyline = data_uri(ROOT / "app" / "assets" / "skyline-green.svg")
 
 LANDSCAPE = [  # (option, affordable, at home, own material, builds comprehension, reader-level fit)
     ("Specialized tutoring", 1, 2, 4, 4, 4),
@@ -333,38 +343,55 @@ def landscape_table() -> str:
 
 
 def slide_title() -> str:
+    tests = json.loads(UT.read_text(encoding="utf-8"))["testers"] if UT.exists() else []
+    stats = [
+        ("6", "single-call AI agents, all on gpt-6-luna"),
+        (money(typ['1'], 3), "AI cost per typical student-month"),
+        (f"{passed}/{total_checks}", "red-team safety checks passed"),
+        (str(len(tests)), f"observed user tests · {sum(len(t.get('changes', [])) for t in tests)} fixes shipped"),
+    ]
+    cards = "".join(f'<div><span class="mv">{v}</span><span class="ml">{lab}</span></div>' for v, lab in stats)
     return f"""
-<section class="title" data-background-color="#0F1F3D">
-  <p class="eyebrow light">MGT 409 · AI Foundations for Managers · Final project</p>
-  <h1>WordWise</h1>
-  <p class="pitch">An AI reading studio that helps students with dyslexia and other reading difficulties understand their own course materials, at a marginal cost of about {money(typ['1'], 3)} per student-month.</p>
-  <p class="origin"><strong>Origin:</strong> built from lived experience. I have double-deficit dyslexia; in college, a reading specialist gave me the kind of support WordWise now automates.</p>
-  <p class="byline">{AUTHOR} · October 2026 · {REPO}</p>
-  <div class="chips">
-    <span>6 single-call <code>gpt-6-luna</code> agents</span>
-    <span>−{saving:.0%} session cost via prompt caching</span>
-    <span>{passed} / {total_checks} red-team checks passed</span>
+<section class="title" data-background-color="#FBF8F1">
+  <div class="t-grid">
+    <div class="t-left">
+      <p class="eyebrow">MGT 409 · AI Foundations for Managers · Final project</p>
+      <h1>WordWise</h1>
+      <p class="pitch">An AI reading studio that helps students with dyslexia understand <b class="k">their own</b> course materials, adapted to how <b class="k">each</b> student reads.</p>
+      <div class="origin"><span>Origin</span><p>Built from lived experience: I have <b class="k">double-deficit dyslexia</b>, and a college reading specialist gave me the support WordWise now automates.</p></div>
+      <p class="byline">{AUTHOR} · October 2026 · {REPO}</p>
+    </div>
+    <div class="t-stats">{cards}</div>
   </div>
   <img class="skyline" src="{skyline}" alt="">
 </section>"""
 
 
 def slide_summary() -> str:
+    sit = bullets([f"{k('5–6%')} of U.S. students are formally identified with a reading disability",
+                   f"Up to {k('15–20%')} of people show symptoms of dyslexia",
+                   f"The best help, specialized instruction, is {k('expensive')} and scarce"])
+    comp = bullets([f"Most struggling readers {k('never qualify')} for formal support",
+                    "They juggle separate tools: text-to-speech, dictionaries, chatbots",
+                    f"Those tools ignore reading level and can {k('replace')} the reading"])
+    res = bullets([f"{k('One workspace')} on the student's own PDFs, slides, and documents",
+                   f"{k('6 AI agents')} explain <em>beside</em> the original at {k('4 reader levels')}",
+                   f"Adapts to each student's {k('self-reported struggles')} and checks understanding"])
     body = f"""
 <div class="scr">
-  <div><p class="scr-h">Situation</p><p>About 5–6% of U.S. students are formally identified with a reading-based learning disability, and up to 15–20% of people show some symptoms of dyslexia.</p><p>The most effective help, specialized instruction, is expensive and hard to find.</p></div>
-  <div><p class="scr-h">Complication</p><p>Most struggling readers never qualify for formal support. They piece together separate tools (text-to-speech, dictionaries, general chatbots) that don't share context, ignore reading level, and can replace the reading instead of building comprehension.</p></div>
-  <div class="res"><p class="scr-h">Resolution</p><p>WordWise: one workspace on the student's own PDFs, slides, and documents, with read-aloud and display controls, plus six focused AI agents that adapt to each student's level and self-reported struggles and explain text <em>beside</em> the original at one of four reader levels and check understanding with questions.</p></div>
+  <div><p class="scr-h">Situation</p>{sit}</div>
+  <div><p class="scr-h">Complication</p>{comp}</div>
+  <div class="res"><p class="scr-h">Resolution</p>{res}</div>
 </div>
 <div class="metrics">
   <div><span class="mv">{money(typ['1'], 3)}</span><span class="ml">AI cost per typical student-month (measured)</span></div>
-  <div><span class="mv">−{saving:.0%}</span><span class="ml">session cost after making prompts cacheable</span></div>
-  <div><span class="mv">{wl['avg_seconds']:.1f} s</span><span class="ml">average word-lookup latency</span></div>
+  <div><span class="mv">−{saving:.0%}</span><span class="ml">session cost from prompt caching</span></div>
+  <div><span class="mv">{pfc['word_help']['avg_seconds']:.1f} s</span><span class="ml">average word-lookup answer</span></div>
   <div><span class="mv">{passed}/{total_checks}</span><span class="ml">red-team checks passed</span></div>
 </div>"""
-    return frame(2, "Summary", "WordWise closes the gap between who needs reading support and who receives it, at near-zero marginal cost",
+    return frame(2, "Summary", "WordWise closes the gap between who needs reading support and who gets it, at near-zero marginal cost",
                  body, "Source: International Dyslexia Association (prevalence; cost of instruction); WordWise measurements (output/tokenomics, output/safety).",
-                 implication=f"Comprehension support can be offered to every struggling reader, not only the formally identified, for under {money(heavy['1'], 2)} per student-month even at heavy use.")
+                 implication=f"Every struggling reader can get comprehension support, not only the formally identified, for under {k(money(heavy['1'], 2))} per student-month.")
 
 
 def slide_problem() -> str:
@@ -372,16 +399,16 @@ def slide_problem() -> str:
 <div class="g2 w55">
   <div class="panel">{support_gap_svg()}</div>
   <div class="stack">
-    <div class="box"><p class="bh">1 · Support is rationed</p><p>Special-education status reaches the formally identified ~5–6%; most of the 15–20% with symptoms “will not qualify” yet “are likely to struggle” (IDA).</p></div>
-    <div class="box"><p class="bh">2 · The best help is scarce</p><p>Intensive instruction from trained teachers is most effective (NIH NICHD), but “specialized instruction is expensive” and many families can't find it (IDA).</p></div>
-    <div class="box"><p class="bh">3 · The cost compounds</p><p>Slow decoding consumes the effort comprehension needs; difficulties grow as academic demands increase (IDA).</p></div>
-    <div class="box founder"><p class="bh">Founder insight</p><p>I have double-deficit dyslexia. A college reading specialist gave me this kind of support, and trustworthy resources were hard to find. WordWise packages that support in one home base.</p></div>
+    <div class="box"><p class="bh">1 · Support is rationed</p>{bullets([f"{k('~5–6%')} identified vs. {k('15–20%')} with symptoms", "Most “will not qualify” yet “are likely to struggle” (IDA)"])}</div>
+    <div class="box"><p class="bh">2 · The best help is scarce</p>{bullets(["Trained-teacher instruction works best (NIH)", f"But it is {k('expensive')} and hard to find (IDA)"])}</div>
+    <div class="box"><p class="bh">3 · The cost compounds</p>{bullets(["Decoding drains the effort comprehension needs", f"Gaps {k('widen')} as schoolwork gets harder (IDA)"])}</div>
+    <div class="box founder"><p class="bh">Founder insight</p>{bullets([f"I have {k('double-deficit dyslexia')}; a college reading specialist gave me this support", f"Resources were scattered; WordWise is one {k('home base')}"])}</div>
   </div>
 </div>"""
     return frame(3, "Problem", "Most struggling readers fall outside formal support, and the help that works best is the hardest to get",
                  body, "Source: International Dyslexia Association, “Dyslexia basics” (6–7% of students classified LD, ~85% reading-based; 15–20% with symptoms), “Evaluating professionals”, “Dyslexia assessment”; NIH NICHD, reading-disorder treatments.",
                  "Exhibit 1 · Share of population, by level of reading difficulty",
-                 "The design target is the unserved middle: at-home, low-cost, comprehension-focused help that does not depend on formal identification.")
+                 f"Design target: the {k('unserved middle')}, with at-home, low-cost comprehension help that needs no formal diagnosis.")
 
 
 def slide_landscape() -> str:
@@ -390,16 +417,17 @@ def slide_landscape() -> str:
   <div>{landscape_table()}<p class="legend">{harvey(0)} none &nbsp; {harvey(2)} partial &nbsp; {harvey(4)} strong</p></div>
   <div class="stack">
     <p class="side-h">Where WordWise differs</p>
-    <div class="num-box"><span>1</span><p><strong>Comprehension, not just access:</strong> explanations sit beside the original and end in “check yourself” questions</p></div>
-    <div class="num-box"><span>2</span><p><strong>Reader-level control:</strong> four levels (5–8 to 18+) applied to every agent</p></div>
-    <div class="num-box"><span>3</span><p><strong>One context:</strong> read-aloud, highlights, word help, and tutor all work on the same open document</p></div>
-    <div class="num-box"><span>4</span><p><strong>Built-in integrity:</strong> the tutor plans and hints; it doesn't write graded work</p></div>
+    <div class="num-box"><span>1</span><p><strong>Comprehension, not just access</strong><br>Help sits beside the original and ends in check questions</p></div>
+    <div class="num-box"><span>2</span><p><strong>Fits each reader</strong><br>{k('4')} reader levels + a {k('profile')} of what's hard</p></div>
+    <div class="num-box"><span>3</span><p><strong>One context</strong><br>Read-along, word help, and tutor share one document</p></div>
+    <div class="num-box"><span>4</span><p><strong>Built-in integrity</strong><br>The tutor plans and hints; it never writes graded work</p></div>
+    <div class="num-box"><span>5</span><p><strong>Closest product</strong><br>DyslexiaBuddy: Apple-only; no level fit or tutor directory</p></div>
   </div>
 </div>"""
     return frame(4, "Landscape", "No existing option combines affordability, at-home access, and comprehension support for this user",
                  body, "Note: ratings are the author's qualitative assessment of each option for a struggling reader working at home; WordWise is rated 3 of 4 on comprehension and level fit until a timed pilot measures it.",
                  "Exhibit 2 · How current options serve a struggling reader",
-                 "WordWise complements specialized tutoring rather than replacing it: it covers the hours between sessions and the students who never get a tutor.")
+                 f"WordWise {k('complements')} tutoring: it covers the hours between sessions, and the students who never get a tutor.")
 
 
 def slide_solution() -> str:
@@ -412,7 +440,8 @@ def slide_solution() -> str:
 </div>"""
     return frame(5, "Solution", "One workspace takes a student from upload to understanding without leaving their own material",
                  body, "Source: screenshots captured from the running app (scripts/capture_screenshots.py), demo account, reader level 13–17.",
-                 "Exhibit 3 · A study session in five steps")
+                 "Exhibit 3 · A study session in five steps",
+                 f"Every step works on the student's {k('own')} reading; AI help is always labeled and the original is always one tap away.")
 
 
 def slide_architecture() -> str:
@@ -420,27 +449,28 @@ def slide_architecture() -> str:
 <div class="g2 w64">
   <div class="panel">{svg_file(ROOT / "deliverables" / "agent_diagram.svg")}</div>
   <div class="stack">
-    <div class="num-box"><span>1</span><p><strong>AI only where it adds value.</strong> Display, read-aloud, highlights, and folders cost $0.</p></div>
-    <div class="num-box"><span>2</span><p><strong>Single-call, tool-less agents.</strong> One click = one call (long readings: ≤4 parallel chunks); no loops.</p></div>
-    <div class="num-box"><span>3</span><p><strong>One guard layer</strong> on every call: budget cap, input caps, <code>&lt;reading&gt;</code> delimiting, model check, logging.</p></div>
-    <div class="num-box"><span>4</span><p><strong>One shared, cached prefix</strong> (safety + adapt-to-student rules + level guide); level and profile ride in each request.</p></div>
-    <div class="num-box"><span>5</span><p><strong>Student data stays local:</strong> only a short self-reported profile is sent; tutor setting suggestions are validated in code.</p></div>
+    <div class="num-box"><span>1</span><p><strong>AI only where it adds value</strong><br>Display, read-aloud, highlights, folders: {k('$0')}</p></div>
+    <div class="num-box"><span>2</span><p><strong>Single-call, tool-less agents</strong><br>{k('1 click = 1 call')}; no loops (long readings: ≤4 chunks)</p></div>
+    <div class="num-box"><span>3</span><p><strong>One guard layer</strong><br>Budget cap · input caps · <code>&lt;reading&gt;</code> tags · model check · cost log</p></div>
+    <div class="num-box"><span>4</span><p><strong>One cached prefix</strong><br>{k(f"{cur_cached_share:.0%}")} of input billed at the 10×-cheaper cached rate</p></div>
+    <div class="num-box"><span>5</span><p><strong>Student data stays local</strong><br>Only a short profile is sent; tutor suggestions checked in code</p></div>
   </div>
 </div>"""
     return frame(6, "Architecture", "Six single-call agents sit behind one guard layer, so cost and failure modes stay bounded",
                  body, "Source: app/services/ai.py, prompts/; per-call costs are measured warm-cache averages (output/tokenomics/summary.json).",
-                 "Exhibit 4 · System architecture")
+                 "Exhibit 4 · System architecture",
+                 f"Cost and failure modes are {k('bounded by design')}: no agent can loop, act, or reach student records.")
 
 
 def slide_design() -> str:
     rows = [
-        ("Agent structure", "Tool-using agent loop vs. single-call agents", "Single-call, tool-less", "Design choice: bounds cost per click and removes loop risk (red-team check passed)"),
-        ("Output format", "Free text vs. JSON schema", "JSON schema for all 6 agents", "Design choice: reliable rendering; all 4 injection attempts ignored or blocked"),
-        ("Reasoning effort", "low vs. medium", "low", f"A/B tested: medium raised word-lookup cost {effort_cost:.0f}% and latency {effort_time:.0f}%"),
-        ("Prompt design", "Short role prompts vs. shared cached guide", "Shared guide (~1,700-token prefix)", f"A/B tested: −{saving:.0%} per session; no quality loss in a 6-word check"),
-        ("Model", "Course-mandated gpt-6-luna", "gpt-6-luna, verified per reply", "Constraint: small, fast model suits short structured tasks"),
+        ("Agent structure", "Single-call, tool-less", "vs. agent loop", f"{k('0')} loops; cost bounded per click"),
+        ("Output format", "JSON schema, all 6 agents", "vs. free text", f"{k('4/4')} injection attempts ignored or blocked"),
+        ("Reasoning effort", "low", "vs. medium (A/B)", f"Medium: {k(f'+{effort_cost:.0f}%')} cost, {k(f'+{effort_time:.0f}%')} latency"),
+        ("Prompt design", "Shared cached guide", "vs. short prompts (A/B)", f"{k(f'−{saving:.0%}')} per session, no quality loss"),
+        ("Model", "gpt-6-luna", "course-mandated", "Verified on every reply"),
     ]
-    tbl = "".join(f"<tr><td><strong>{a}</strong></td><td>{b}</td><td class='pick'>{c}</td><td>{d}</td></tr>" for a, b, c, d in rows)
+    tbl = "".join(f"<tr><td><strong>{a}</strong></td><td class='pick'>{b}<span class='alt'>{c}</span></td><td>{d}</td></tr>" for a, b, c, d in rows)
     bars = hbars_svg([
         ("Word Coach", pfc["word_help"]["avg_cost_usd"] * 1000, f"{pfc['word_help']['avg_seconds']:.1f} s"),
         ("Explainer", pfc["explain"]["avg_cost_usd"] * 1000, f"{pfc['explain']['avg_seconds']:.1f} s"),
@@ -450,14 +480,14 @@ def slide_design() -> str:
         ("AI Tutor", pfc["tutor_chat"]["avg_cost_usd"] * 1000, f"{pfc['tutor_chat']['avg_seconds']:.1f} s"),
     ], lambda v: f"${v:.2f}", width=560, highlight="Comprehension Coach")
     body = f"""
-<div class="g2 w62">
-  <table class="decisions"><thead><tr><th>Decision</th><th>Options considered</th><th>Choice</th><th>Basis</th></tr></thead><tbody>{tbl}</tbody></table>
-  <div class="panel"><p class="side-h">Cost per 1,000 calls, and latency</p>{bars}<p class="legend">* per chunk of about 3,000 characters. The summary costs most because it writes the most output; it is used least often.</p></div>
+<div class="g2 w58">
+  <table class="decisions"><thead><tr><th>Decision</th><th>Choice</th><th>Evidence</th></tr></thead><tbody>{tbl}</tbody></table>
+  <div class="panel"><p class="side-h">Cost per 1,000 calls · latency</p>{bars}<p class="legend">* per ~3,000-character chunk · summary writes the most output</p></div>
 </div>"""
-    return frame(7, "Design", "Key design choices rest on evidence: two were A/B tested, and the rest bound cost and risk by construction",
+    return frame(7, "Design", "Key design choices rest on evidence: two were A/B tested, the rest bound cost and risk by design",
                  body, "Source: scripts/measure_tokenomics.py and scripts/quality_check.py (warm-cache averages); scripts/safety_eval.py.",
                  "Exhibit 5 · Decision log and measured cost per agent",
-                 "In both A/B tests the cheaper option carried no measured quality penalty (and low effort was also faster), so controlling cost did not trade off the student experience.")
+                 f"In both A/B tests the cheaper option had {k('no measured quality penalty')}: cost control did not cost students.")
 
 
 def slide_economics() -> str:
@@ -470,13 +500,14 @@ def slide_economics() -> str:
       <tr class="hl"><td>Typical (12 sessions)</td><td>{money(typ['1'], 3)}</td><td>{money(typ['100'], 2)}</td><td>{money(typ['10000'], 0)}</td></tr>
       <tr><td>Heavy (30 sessions)</td><td>{money(heavy['1'], 3)}</td><td>{money(heavy['100'], 2)}</td><td>{money(heavy['10000'], 0)}</td></tr>
     </tbody></table>
-    <div class="box"><p class="bh">Why caching worked</p><p>~650-token prompts sat below the 1,024-token caching minimum (0 cached). A shared prefix now bills {cached_share:.0%} of input at the 10×-cheaper cached rate. The current app (18 calls: +2 agents and a profile) costs {money(cur['session_cost_usd'] * 1000, 2)} per 1,000 sessions; the table uses it.</p></div>
-    <div class="box"><p class="bh">Scale implication</p><p>The $2/day default cap protects a demo; at 10,000 typical users spend is ~{money(typ['10000'] / 30, 2)}/day, so the cap must become per-student.</p></div>
+    <div class="box"><p class="bh">Why caching worked</p>{bullets([f"~650-token prompts were under the 1,024-token minimum: {k('0')} cached", f"A shared prefix now bills {k(f'{cached_share:.0%}')} of input at the cached rate"])}</div>
+    <div class="box"><p class="bh">Current app (table above)</p>{bullets([f"18 calls (+2 agents, profile): {k(money(cur['session_cost_usd'] * 1000, 2))} per 1,000 sessions", f"10,000 typical users ≈ {k(money(typ['10000'] / 30, 2) + '/day')}: the $2 cap must go per-student"])}</div>
   </div>
 </div>"""
     return frame(8, "Economics", f"Prompt caching cut session cost {saving:.0%}; 10,000 typical students would cost about {money(typ['10000'], 0)} a month in AI",
                  body, f"Source: measured with scripts/measure_tokenomics.py; gpt-6-luna prices per 1M tokens: input $0.10, cached $0.01, cache write $0.125, output $0.50. Usage levels (4 / 12 / 30 sessions a month) are assumptions.",
-                 "Exhibit 6 · Unit economics")
+                 "Exhibit 6 · Unit economics",
+                 f"At {k(money(typ['1'], 3))} per student-month, AI cost is not the barrier to school-wide access.")
 
 
 def slide_risk() -> str:
@@ -493,7 +524,8 @@ def slide_risk() -> str:
 </div>"""
     return frame(9, "Risk", f"Layered defenses stopped all {total_checks} red-team attacks, including prompt injection hidden in uploaded readings",
                  body, "Note: heat-map positions are the author's pre-mitigation assessment. Results: scripts/safety_eval.py (output/safety/results.md); three of four injection variants were blocked upstream by Azure's content filter; tutor setting suggestions are checked against the real settings list.",
-                 "Exhibit 7 · Risk heat map, register, and defense layers")
+                 "Exhibit 7 · Risk heat map, register, and defense layers",
+                 f"Defenses are {k('layered')}: if one layer misses an attack, the next still contains it.")
 
 
 def slide_impact() -> str:
@@ -506,7 +538,7 @@ def slide_impact() -> str:
 </div>
 <p class="side-h">Roadmap, including today's known limits</p>
 <div class="panel">{roadmap_svg()}</div>
-<p class="status">{EVAL_STATUS}. Tester: “Kids nowadays are so used to asking Google or AI things, this would be an easy application to use for them.”</p>"""
+<div class="status"><p>{EVAL_STATUS}.</p><p class="q">“Kids nowadays are so used to asking Google or AI things, this would be an easy application to use for them.” <span>(tester)</span></p></div>"""
     return frame(10, "Impact", "Low marginal cost makes school-wide access feasible; the next step is proving comprehension gains with users",
                  body, f"Source: IDA (prevalence); WordWise measurements; deliverables/user_testing/testing_kit.html. Repository: {REPO} · demo: python scripts/seed_demo.py, sign in as demo / wordwise-demo.",
                  "Exhibit 8 · Impact metrics and roadmap")
@@ -519,7 +551,7 @@ CSS = """
 :root { --navy:#0F1F3D; --navy7:#1B3366; --navy5:#3C5A8F; --navy1:#DCE3F0; --green7:#24503A; --green6:#3F7350; --mint1:#E1F0DC; --cream:#FBF8F1; --cream1:#F4EEE1; --cream3:#E6DCC6; --brass:#B08D57; --brassd:#8A6630; --muted:#4A5874; }
 .reveal-viewport { background:var(--cream); }
 .reveal { font-family:"Atkinson Hyperlegible", Verdana, sans-serif; font-size:20px; color:var(--navy); line-height:1.38; }
-.reveal .slides section { text-align:left; height:100%; box-sizing:border-box; }
+.reveal .slides section { text-align:left; height:100%; box-sizing:border-box; flex-direction:column; }
 .reveal h1, .reveal h2 { font-family:"Libre Baskerville", Georgia, serif; color:var(--navy7); letter-spacing:0; text-transform:none; }
 .reveal strong { color:var(--navy7); } .reveal em { font-style:normal; font-weight:700; }
 .reveal code { font-size:.85em; background:var(--cream1); padding:1px 6px; border-radius:5px; }
@@ -527,13 +559,24 @@ CSS = """
 .reveal svg.exh { width:100%; height:auto; display:block; }
 
 /* consulting frame */
-.reveal section.cs { padding:26px 56px 66px; }
+.reveal section.cs { padding:24px 56px 86px; }
 .reveal .tracker { display:flex; gap:6px; justify-content:flex-end; margin-bottom:10px; }
 .reveal .tracker span { font-size:12px; padding:3px 10px; border-radius:999px; color:var(--muted); border:1px solid var(--cream3); }
 .reveal .tracker span.on { background:var(--green7); color:var(--cream); border-color:var(--green7); font-weight:700; }
 .reveal h2.action { font-size:31px; line-height:1.25; margin:0 0 6px; padding-bottom:12px; border-bottom:3px solid var(--brass); max-width:1480px; }
 .reveal .exhibit { font-size:14px; font-weight:700; color:var(--brassd); letter-spacing:.04em; margin:10px 0 10px; }
-.reveal .body { margin-top:14px; }
+.reveal .body { margin-top:10px; flex:1; min-height:0; display:flex; flex-direction:column; gap:16px; }
+.reveal .body > .g2, .reveal .body > .g3, .reveal .body > .scr, .reveal .body > .shots3 { flex:1; min-height:0; align-items:stretch; }
+.reveal .body > .g2 > *, .reveal .body > .g3 > * { min-height:0; }
+.reveal .body .panel { display:flex; flex-direction:column; justify-content:center; }
+.reveal .body .stack { justify-content:space-between; }
+/* key numbers stand out */
+.reveal b.k { color:var(--green7); font-weight:800; }
+.reveal .implication b.k, .reveal .result b.k { color:#F2C46B; }
+.reveal ul.pts { margin:0; padding-left:1.15em; }
+.reveal ul.pts li { font-size:19px; line-height:1.35; margin:0 0 8px; }
+.reveal ul.pts li::marker { color:var(--brass); }
+.reveal .box ul.pts li { font-size:17.5px; margin-bottom:3px; }
 .reveal .source { position:absolute; left:56px; right:56px; bottom:40px; font-size:12.5px; color:var(--muted); line-height:1.3; margin:0; }
 .reveal .foot { position:absolute; left:56px; right:150px; bottom:14px; display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted); border-top:1px solid var(--cream3); padding-top:5px; }
 
@@ -549,20 +592,26 @@ CSS = """
 .reveal .side-h { font-family:"Libre Baskerville", Georgia, serif; font-weight:700; color:var(--navy7); font-size:18px; margin:0 0 10px; }
 .reveal .num-box { display:grid; grid-template-columns:38px 1fr; gap:12px; align-items:start; }
 .reveal .num-box span { width:34px; height:34px; border-radius:50%; background:var(--green7); color:var(--cream); font-weight:700; display:grid; place-items:center; font-size:17px; }
-.reveal .num-box p { margin:4px 0 0; font-size:17.5px; }
+.reveal .num-box p { margin:2px 0 0; font-size:17.5px; line-height:1.35; }
 .reveal .legend { font-size:14px; color:var(--muted); margin-top:8px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
 .reveal .legend .hb { width:18px; height:18px; }
 
 /* executive summary */
 .reveal .scr { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; margin-top:6px; }
-.reveal .scr > div { padding:18px 24px 20px; background:var(--cream1); border-right:2px solid var(--cream); position:relative; min-height:300px; }
+.reveal .scr > div { padding:18px 24px 20px; background:var(--cream1); border-right:2px solid var(--cream); position:relative; }
+.reveal .scr > div { display:flex; flex-direction:column; }
+.reveal .scr ul.pts { flex:1; display:flex; flex-direction:column; justify-content:space-evenly; }
+.reveal .scr ul.pts li { font-size:23px; margin-bottom:0; }
+/* screenshots: image shrinks to fit so captions never slide under the banner */
+.reveal .shots3 > figure { display:flex; flex-direction:column; min-height:0; }
+.reveal .shots3 > figure img { flex:1; min-height:0; height:auto !important; }
 .reveal .scr > div.res { background:var(--mint1); }
 .reveal .scr p { font-size:19.5px; }
 .reveal .scr-h { font-family:"Libre Baskerville", Georgia, serif; font-weight:700; color:var(--cream) !important; background:var(--green7); margin:-18px -24px 16px !important; padding:10px 24px; font-size:20px !important; clip-path:polygon(0 0, calc(100% - 22px) 0, 100% 50%, calc(100% - 22px) 100%, 0 100%); }
 .reveal .res .scr-h { background:var(--brassd); }
-.reveal .metrics, .reveal .kpis { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-top:22px; }
+.reveal .metrics, .reveal .kpis { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-top:0; }
 .reveal .metrics div, .reveal .kpis div { border-top:4px solid var(--brass); background:#fff; border-radius:0 0 10px 10px; padding:12px 16px; box-shadow:0 1px 4px rgba(15,31,61,.08); }
-.reveal .mv { display:block; font-family:"Libre Baskerville", Georgia, serif; font-weight:700; font-size:34px; color:var(--navy7); line-height:1.1; }
+.reveal .mv { display:block; font-family:"Libre Baskerville", Georgia, serif; font-weight:700; font-size:40px; color:var(--green7); line-height:1.1; }
 .reveal .ml { display:block; font-size:15.5px; color:var(--navy); margin-top:4px; line-height:1.3; }
 .reveal .kpis { margin:0 0 18px; }
 
@@ -575,7 +624,9 @@ CSS = """
 .reveal table.matrix th { text-align:center; } .reveal table.matrix th:first-child { text-align:left; }
 .reveal table.matrix td { font-size:17px; padding:9px 10px; } .reveal td.c { text-align:center; }
 .reveal table.matrix tr.ours td { background:var(--mint1); font-weight:700; border-top:2px solid var(--green7); border-bottom:2px solid var(--green7); }
-.reveal table.decisions td { font-size:15.5px; vertical-align:top; } .reveal td.pick { font-weight:700; color:var(--navy7); }
+.reveal table.decisions td { font-size:18px; vertical-align:middle; padding:14px 12px; } .reveal td.pick { font-weight:700; color:var(--navy7); }
+.reveal td.pick .alt { display:block; font-weight:400; font-size:14px; color:var(--muted); }
+.reveal .g2.w58 { grid-template-columns:1.45fr 1fr; }
 .reveal table.scale td { font-size:16.5px; }
 
 /* solution */
@@ -586,7 +637,7 @@ CSS = """
 .reveal .chev .n { width:26px; height:26px; flex:none; border-radius:50%; background:var(--brass); color:var(--navy); display:grid; place-items:center; font-size:14px; }
 .reveal .shots3 { display:grid; grid-template-columns:2.3fr 1fr 1fr; gap:20px; }
 .reveal figure { margin:0; position:relative; }
-.reveal figure img { display:block; width:100%; height:430px; object-fit:contain; object-position:top; border:1px solid var(--cream3); border-radius:10px; background:var(--cream1); margin:0; max-width:100%; max-height:none; box-sizing:border-box; }
+.reveal figure img { display:block; width:100%; height:470px; object-fit:contain; object-position:top; border:1px solid var(--cream3); border-radius:10px; background:var(--cream1); margin:0; max-width:100%; max-height:none; box-sizing:border-box; }
 .reveal figcaption { font-size:15px; color:var(--navy); margin-top:6px; line-height:1.3; }
 .reveal .badge { position:absolute; top:-10px; left:-10px; z-index:2; background:var(--brass); color:var(--navy); font-weight:700; font-size:14px; padding:4px 10px; border-radius:999px; border:2px solid var(--navy); }
 
@@ -599,26 +650,32 @@ CSS = """
 .reveal ul.layers { margin:10px 0 0 1em; } .reveal ul.layers li { font-size:14.5px; margin-bottom:4px; }
 
 /* implication banner */
-.reveal .implication { margin-top:22px; display:grid; grid-template-columns:150px 1fr; align-items:stretch; border-radius:10px; overflow:hidden; box-shadow:0 1px 4px rgba(15,31,61,.12); }
+.reveal .implication { margin-top:14px; display:grid; grid-template-columns:150px 1fr; align-items:stretch; border-radius:10px; overflow:hidden; box-shadow:0 1px 4px rgba(15,31,61,.12); }
 .reveal .implication span { background:var(--brassd); color:var(--cream); font-weight:700; font-size:16px; display:grid; place-items:center; letter-spacing:.04em; }
 .reveal .implication p { background:var(--green7); color:var(--cream); margin:0; padding:14px 20px; font-size:19px; line-height:1.35; }
 
 /* impact */
-.reveal .status { margin-top:12px; font-size:16px; background:var(--cream1); border:2px dashed var(--brass); border-radius:10px; padding:9px 14px; }
+.reveal .status { font-size:16.5px; background:var(--mint1); border-left:5px solid var(--brass); border-radius:10px; padding:10px 16px; }
+.reveal .status p { margin:0; } .reveal .status p.q { font-family:"Libre Baskerville", Georgia, serif; font-size:18px; color:var(--green7); margin-top:4px; }
+.reveal .status p.q span { font-family:"Atkinson Hyperlegible", Verdana, sans-serif; font-size:14px; color:var(--muted); }
 
-/* title */
-.reveal section.title { color:var(--cream); padding:90px 90px; background-image:radial-gradient(rgba(251,248,241,.08) 3px, transparent 3px); background-size:32px 32px; }
-.reveal section.title h1 { font-size:120px; color:var(--cream); margin:14px 0 18px; }
-.reveal .eyebrow { font-size:22px; font-weight:700; color:var(--brass); letter-spacing:.06em; margin:0; }
-.reveal section.title .pitch { font-size:31px; color:var(--cream1); max-width:1060px; line-height:1.35; margin-bottom:22px; }
-.reveal section.title .origin { font-size:21px; color:var(--cream); max-width:1060px; line-height:1.4; margin:0 0 18px; padding:10px 16px; border-left:4px solid var(--brass); background:rgba(225,240,220,.10); }
+/* title: same cream + green palette as the content slides */
+.reveal section.title { color:var(--navy); padding:70px 80px 60px; background-image:radial-gradient(rgba(36,80,58,.10) 2.5px, transparent 2.5px); background-size:30px 30px; border-top:14px solid var(--green7); }
+.reveal .t-grid { display:grid; grid-template-columns:1.45fr 1fr; gap:56px; align-items:center; flex:1; }
+.reveal section.title h1 { font-size:116px; color:var(--navy7); margin:8px 0 6px; line-height:1; }
+.reveal section.title h1::after { content:""; display:block; width:180px; height:8px; background:var(--brass); margin-top:18px; border-radius:4px; }
+.reveal .eyebrow { font-size:20px; font-weight:700; color:var(--brassd); letter-spacing:.06em; margin:0; }
+.reveal section.title .pitch { font-size:29px; color:var(--navy); line-height:1.35; margin:22px 0 22px; }
+.reveal section.title .origin { display:grid; grid-template-columns:110px 1fr; border-radius:10px; overflow:hidden; background:var(--mint1); margin:0 0 20px; }
+.reveal section.title .origin span { background:var(--green7); color:var(--cream); font-weight:700; font-size:16px; display:grid; place-items:center; letter-spacing:.04em; }
+.reveal section.title .origin p { margin:0; padding:12px 18px; font-size:19px; line-height:1.4; }
+.reveal section.title .byline { font-size:19px; color:var(--muted); }
+.reveal .t-stats { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.reveal .t-stats div { background:#fff; border-top:5px solid var(--green7); border-radius:0 0 12px 12px; padding:18px 18px 16px; box-shadow:0 2px 8px rgba(15,31,61,.10); }
+.reveal .t-stats .mv { font-size:46px; }
+.reveal .t-stats .ml { font-size:16px; }
 .reveal .box.founder { background:var(--mint1); border-left-color:var(--brass); }
-.reveal section.title .origin strong { color:var(--brass); }
-.reveal section.title .byline { font-size:21px; color:var(--cream3); }
-.reveal section.title .chips { display:flex; gap:14px; margin-top:30px; flex-wrap:wrap; max-width:920px; }
-.reveal section.title .chips span { font-size:18px; padding:8px 16px; border:2px solid var(--brass); border-radius:999px; color:var(--cream); }
-.reveal section.title code { background:rgba(251,248,241,.14); color:var(--cream); }
-.reveal section.title .skyline { position:absolute; right:60px; bottom:50px; width:500px; border:none; }
+.reveal section.title .skyline { position:absolute; right:80px; bottom:28px; width:430px; border:none; opacity:.9; }
 .reveal .slide-number { display:none; }
 .reveal .controls { color:var(--brass); } .reveal .progress { color:var(--brass); }
 """
@@ -636,7 +693,7 @@ def main() -> None:
 </head><body>
 <div class="reveal"><div class="slides">{SLIDES}</div></div>
 <script>{reveal_js}</script>
-<script>Reveal.initialize({{ hash: true, width: 1600, height: 900, margin: 0.03, center: false, transition: "fade", controls: true, progress: true }});</script>
+<script>Reveal.initialize({{ hash: true, width: 1600, height: 900, margin: 0.03, center: false, display: "flex", transition: "fade", controls: true, progress: true }});</script>
 <!-- reveal.js 5.2 (c) Hakim El Hattab, MIT license: scripts/vendor/revealjs/LICENSE -->
 </body></html>"""
     OUT.write_text(doc, encoding="utf-8")

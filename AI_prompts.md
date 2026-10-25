@@ -333,3 +333,19 @@ The first prompt only covered colors; the follow-up came from friend testing and
 **Prompt 1:**
 
 > yes please start step 1
+
+**Prompt 2:**
+
+> open the website in my browser, also open the report and slides
+
+---
+
+## Phase 27: Slide Polish — Bullets, Title Slide, Fill Space, Key Numbers
+
+**Prompt 1** (with screenshots of slides 2, 1, and 7):
+
+> this slide it too hard to read: i need bullet points, not long sentences, also the main slide does not match the rest of the theme, make it blend better  - overall, the slides are good, i think it be designed better (see slide 7 above) the wrods ont he bottom are cut off and theres blank space to be filled on each slide), i want numbers/key data points to stand out, and look polished like a consultign deck
+
+**Follow-up prompt** (sent while the slides were being reworked):
+
+> make sure these changes are seamless across the deck not just those slides?
