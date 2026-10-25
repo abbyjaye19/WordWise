@@ -421,7 +421,7 @@ def slide_landscape() -> str:
     <div class="num-box"><span>2</span><p><strong>Fits each reader</strong><br>{k('4')} reader levels + a {k('profile')} of what's hard</p></div>
     <div class="num-box"><span>3</span><p><strong>One context</strong><br>Read-along, word help, and tutor share one document</p></div>
     <div class="num-box"><span>4</span><p><strong>Built-in integrity</strong><br>The tutor plans and hints; it never writes graded work</p></div>
-    <div class="num-box"><span>5</span><p><strong>Closest product</strong><br>DyslexiaBuddy: Apple-only; no level fit or tutor directory</p></div>
+    <div class="num-box"><span>5</span><p><strong>Closest product</strong><br>DyslexiaBuddy: Apple-only; lists no level fit or tutor directory</p></div>
   </div>
 </div>"""
     return frame(4, "Landscape", "No existing option combines affordability, at-home access, and comprehension support for this user",
@@ -450,7 +450,7 @@ def slide_architecture() -> str:
   <div class="panel">{svg_file(ROOT / "deliverables" / "agent_diagram.svg")}</div>
   <div class="stack">
     <div class="num-box"><span>1</span><p><strong>AI only where it adds value</strong><br>Display, read-aloud, highlights, folders: {k('$0')}</p></div>
-    <div class="num-box"><span>2</span><p><strong>Single-call, tool-less agents</strong><br>{k('1 click = 1 call')}; no loops (long readings: ≤4 chunks)</p></div>
+    <div class="num-box"><span>2</span><p><strong>Single-call, tool-less agents</strong><br>{k('1 click = 1 call')}; no loops (long readings: chunks, 4 at a time)</p></div>
     <div class="num-box"><span>3</span><p><strong>One guard layer</strong><br>Budget cap · input caps · <code>&lt;reading&gt;</code> tags · model check · cost log</p></div>
     <div class="num-box"><span>4</span><p><strong>One cached prefix</strong><br>{k(f"{cur_cached_share:.0%}")} of input billed at the 10×-cheaper cached rate</p></div>
     <div class="num-box"><span>5</span><p><strong>Student data stays local</strong><br>Only a short profile is sent; tutor suggestions checked in code</p></div>
@@ -681,6 +681,9 @@ CSS = """
 """
 
 
+REVEAL_CDN = "https://cdn.jsdelivr.net/npm/reveal.js@5.2.0/dist"  # course rule: reveal.js loaded from a CDN
+
+
 def main() -> None:
     reveal_css = (VENDOR / "reveal.css").read_text(encoding="utf-8")
     reveal_js = (VENDOR / "reveal.js").read_text(encoding="utf-8")
@@ -688,11 +691,15 @@ def main() -> None:
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WordWise · Final project presentation</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Libre+Baskerville:wght@700&display=swap">
+<link rel="stylesheet" href="{REVEAL_CDN}/reveal.css">
 <style>{reveal_css}</style>
 <style>{CSS}</style>
 </head><body>
 <div class="reveal"><div class="slides">{SLIDES}</div></div>
-<script>{reveal_js}</script>
+<script src="{REVEAL_CDN}/reveal.js"></script>
+<!-- Offline backup: the same reveal.js, used only if the CDN can't be reached, so the file still opens anywhere. -->
+<script id="reveal-offline" type="text/plain">{reveal_js}</script>
+<script>if (!window.Reveal) {{ (0, eval)(document.getElementById("reveal-offline").textContent); }}</script>
 <script>Reveal.initialize({{ hash: true, width: 1600, height: 900, margin: 0.03, center: false, display: "flex", transition: "fade", controls: true, progress: true }});</script>
 <!-- reveal.js 5.2 (c) Hakim El Hattab, MIT license: scripts/vendor/revealjs/LICENSE -->
 </body></html>"""

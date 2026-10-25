@@ -105,7 +105,7 @@ If port 8050 is already in use, pick another one: `WORDWISE_PORT=8060 python app
 
   It also has a "before you choose a tutor" checklist based on IDA guidance. WordWise doesn't list or check individual tutors. The data is in `data/tutoring_sites.json`.
 - **Reading settings** (top right on every page): text size, font, spacing, background (cream, soft green, soft blue, or dark), contrast, line length, read-aloud speed, and read-along highlight. They apply on every page right away, are remembered in the browser, and are saved to your account when signed in (so they follow you to another device). **Clear all preferences** resets everything to the defaults.
-- The other sections are placeholders for now.
+- **About** (`/about`): why I built WordWise, and what double-deficit dyslexia is.
 
 ## Test data
 

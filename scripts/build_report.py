@@ -111,7 +111,7 @@ def sec_title() -> str:
     <dt>Date</dt><dd>{date.today():%B %d, %Y}</dd>
   </dl>
   <p class="oneliner"><strong>In one sentence:</strong> WordWise lets a student bring in any reading (a PDF, lecture slides, or a Word file), make it easier to see and hear, and get AI explanations pitched at their age and at what they find hard, shown right next to the original text, with quick questions that check they understood it.</p>
-  {img("trace_0_home", "WordWise home page with pastel green hero, campus skyline, and the founder's note", 1300, "Figure 1. The WordWise home page.", cls="w90")}
+  {img("trace_0_home", "WordWise home page with pastel green hero, campus skyline, and the founder's note", 1300, "Figure 1. The WordWise home page.", cls="w80")}
 </header>"""
 
 
@@ -132,6 +132,8 @@ def sec_motivation() -> str:
 </ul>
 <h3>What it costs them</h3>
 <p>The cost is time and confidence: a slow reader spends far longer on the same assignment and may finish without understanding it. Families pay for tutoring if they can, and difficulties grow as schoolwork gets harder.<sup><a href="#s11">11</a></sup> Dyslexia is lifelong, and many adults were never diagnosed.<sup><a href="#s2">2</a></sup></p>
+<h3>Why it matters</h3>
+<p>Reading is how students learn every other subject. When the help that works is rationed by diagnosis and price, students who could succeed fall behind for reasons unrelated to ability. Support that is free, private, and available at the moment a student is stuck could reach the many who never get a tutor.</p>
 </section>"""
 
 
@@ -143,11 +145,11 @@ def sec_new() -> str:
 <table>
 <thead><tr><th>Typical alternative</th><th>What WordWise does differently</th><th>Why it matters</th></tr></thead>
 <tbody>
-<tr><td>Text-to-speech app</td><td>Read-along with sentence and word highlighting <em>inside</em> the same view as every other tool, the most natural browser voice picked automatically, and an AI Pronunciation Helper that fixes words voices get wrong in context (past-tense "read" → "red")</td><td>No switching apps; testers flagged the robotic voice and wrong words, and both were fixed</td></tr>
-<tr><td>Dictionary</td><td>The Word Coach explains the word <strong>as used in this sentence</strong>, at the student's age level, with syllables, how to say it, simpler synonyms, and an example</td><td>Dictionaries list every meaning; a struggling reader needs the one that fits</td></tr>
-<tr><td>General chatbot or summarizer</td><td>Help appears <strong>next to the original text</strong> (never replacing it), is pitched at four reader levels (5–8 to 18+), guides homework instead of doing it, and ends with "check yourself" questions whose answers stay hidden until tapped</td><td>Builds comprehension and keeps the student doing the reading</td></tr>
-<tr><td>Text-leveling tools (teacher-run, or limited to their own library)</td><td><strong>Reading Levels</strong>: the student switches their <em>own</em> whole reading between Original, Simplified wording, and Detailed explanation, labeled as AI, with the original one tap away under each paragraph</td><td>The student controls the level, and the meaning can always be checked</td></tr>
-<tr><td>One-size-fits-all dyslexia tools</td><td>The student rates what they find hard (comprehension, listening, decoding, vocabulary, spelling, speed, focus, memory); every agent adapts to it, comprehension check-ins feed an insights dashboard, and the AI Tutor suggests reading settings to try (Apply / Undo)</td><td>No two readers with dyslexia struggle the same way, and few know what spacing or speed suits them</td></tr>
+<tr><td>Text-to-speech apps (Speechify, NaturalReader)</td><td>Read-along with sentence and word highlighting <em>inside</em> the same view as every other tool, the most natural browser voice picked automatically, and an AI Pronunciation Helper that fixes words voices get wrong in context (past-tense "read" → "red")</td><td>No switching apps; testers flagged the robotic voice and wrong words, and both were fixed</td></tr>
+<tr><td>Dictionaries (Merriam-Webster, Google)</td><td>The Word Coach explains the word <strong>as used in this sentence</strong>, at the student's age level, with syllables, how to say it, simpler synonyms, and an example</td><td>Dictionaries list every meaning; a struggling reader needs the one that fits</td></tr>
+<tr><td>General chatbots (ChatGPT, Gemini)</td><td>Help appears <strong>next to the original text</strong> (never replacing it), is pitched at four reader levels (5–8 to 18+), guides homework instead of doing it, and ends with "check yourself" questions whose answers stay hidden until tapped</td><td>Builds comprehension and keeps the student doing the reading</td></tr>
+<tr><td>Text-adapting tools (Diffit: teachers only, "no student logins"; Newsela: its own 18,000+ texts, sold to districts)<sup><a href="#s15">15</a></sup></td><td><strong>Reading Levels</strong>: the student switches their <em>own</em> whole reading between Original, Simplified wording, and Detailed explanation, labeled as AI, with the original one tap away under each paragraph</td><td>The student controls the level, and the meaning can always be checked</td></tr>
+<tr><td>School reading toolbars (Read&amp;Write, Microsoft Immersive Reader)</td><td>The student rates what they find hard (comprehension, listening, decoding, vocabulary, spelling, speed, focus, memory); every agent adapts to it, comprehension check-ins feed an insights dashboard, and the AI Tutor suggests reading settings to try (Apply / Undo)</td><td>No two readers with dyslexia struggle the same way, and few know what spacing or speed suits them</td></tr>
 <tr><td>Separate resource searches</td><td>A built-in resource hub from trusted medical, government, and university sources, plus a directory of certified tutoring organizations and free programs</td><td>Help is easier to find, and the sources are trustworthy</td></tr>
 </tbody></table>
 <p>In a scan of current tools (October 2026), the closest single product, DyslexiaBuddy, imports PDFs, reads them aloud with highlighting, summarizes, and offers an AI tutor, but runs only on Apple devices, and its site describes no age-leveled explanations, struggle profile, or tutor directory.<sup><a href="#s14">14</a></sup> WordWise also keeps the student's work (readings with highlights, folders, a word bank, goals) and is cheap enough to give away: about <strong>{money(typ_cur['1'], 3)} per student per month</strong> in AI costs (Section 4).</p>
@@ -159,7 +161,7 @@ def sec_agents() -> str:
     return f"""
 <section>
 <h2>3. The agents</h2>
-<p>WordWise has six AI helpers. Each is a single, focused agent with its own instructions and a fixed answer format. None has tools or can take actions: a button press makes one model call (Reading Levels and the Pronunciation Helper split long readings into at most four parallel chunks, capped at about 2,000 words). Everything that doesn't need AI (read-aloud, highlighting, the ruler, settings, folders, exports) runs without it, which keeps costs low and the app usable when AI is unavailable.</p>
+<p>WordWise has six AI helpers. Each is a single, focused agent with its own instructions and a fixed answer format. None has tools or can take actions: a button press makes one model call (Reading Levels and the Pronunciation Helper split long readings into chunks of about 3,000 characters, run four at a time and capped at about 2,000 words per reading). Everything that doesn't need AI (read-aloud, highlighting, the ruler, settings, folders, exports) runs without it, which keeps costs low and the app usable when AI is unavailable.</p>
 <div class="diagram">{svg_inline(ROOT / "deliverables" / "agent_diagram.svg")}<p class="figcap">Figure 2. How the agents are organized. Every request passes through one guard layer and one shared, cached prompt.</p></div>
 <table>
 <thead><tr><th>Agent</th><th>Role</th><th>Input → output</th><th>Measured cost / call</th></tr></thead>
@@ -183,10 +185,10 @@ def sec_agents() -> str:
 <li><strong>Tap a word → Word Coach.</strong> Tapping "chlorophyll" sends the word, its sentence, the reader level, and the profile. The answer comes back as a fixed <code>WordHelp</code> object right under the help button, labeled as AI, with Listen and Save word buttons.</li>
 <li><strong>Select a passage → Explainer.</strong> The student drags across a paragraph and taps "Make it simpler."</li>
 <li><strong>Sum it up → Comprehension Coach.</strong> The big idea, key points, words to know, and three questions whose answers stay hidden until tapped.
-<div class="grid3">{img("trace_2_word_coach", "Word Coach answer for chlorophyll", 520, "Word Coach", crop=1050)}{img("trace_3_explainer", "Explainer answer in simpler words", 520, "Explainer")}{img("trace_4_comprehension_coach", "Summary with check-yourself questions", 520, "Comprehension Coach (top part)", crop=1050)}</div></li>
+<div class="grid3">{img("trace_2_word_coach", "Word Coach answer for chlorophyll", 520, "Word Coach", crop=1050)}{img("trace_3_explainer", "Explainer answer in simpler words", 520, "Explainer")}{img("trace_4_comprehension_coach", "Summary with check-yourself questions", 520, "Comprehension Coach (top part)", crop=900)}</div></li>
 <li><strong>Switch the reading level → Reading Levels; ask for settings help → AI Tutor.</strong> "Simplified wording" rewrites the whole reading, marked as AI, with the original under each paragraph. Told "the lines blur and the voice is too fast," the tutor suggests three settings, each applied only if the student taps Apply.
-<div class="grid2">{img("trace_10_reading_levels", "Simplified wording with the original under each paragraph", 700, "Reading Levels", crop=1150)}{img("trace_11_tutor_settings", "AI Tutor suggesting spacing, line length, and speed", 700, "Tutor setting suggestions")}</div></li>
-<li><strong>Progress is saved and fed back.</strong> Reading sessions, tool use, saved words, and comprehension check-ins appear on the dashboard.{img("trace_12_insights", "Reading insights dashboard", 1300, cls="w70", crop=1100)}</li>
+<div class="grid2">{img("trace_10_reading_levels", "Simplified wording with the original under each paragraph", 700, "Reading Levels", crop=950)}{img("trace_11_tutor_settings", "AI Tutor suggesting spacing, line length, and speed", 700, "Tutor setting suggestions")}</div></li>
+<li><strong>Progress is saved and fed back.</strong> Reading sessions, tool use, saved words, and comprehension check-ins appear on the dashboard.{img("trace_12_insights", "Reading insights dashboard", 1300, cls="w60", crop=900)}</li>
 </ol>
 </section>"""
 
@@ -267,7 +269,7 @@ def sec_safety() -> str:
 {img("safety_7_password_lockout", "Sign-in locked after repeated wrong passwords", 600, "Password guessing is paused after 5 misses.")}
 {img("safety_8_spending_cap", "Daily AI limit message", 600, "At the daily spending cap, AI help pauses; reading tools keep working.")}
 </div>
-{img("safety_6_other_account_blocked", "Another account cannot open a saved reading", 1300, "Another student cannot open someone else's saved reading, even with its link. Every library query is filtered by the signed-in user.", cls="w60", crop=420)}
+{img("safety_6_other_account_blocked", "Another account cannot open a saved reading", 1300, "Another student cannot open someone else's saved reading, even with its link. Every library query is filtered by the signed-in user.", cls="w50", crop=420)}
 <p>New agents were added to the test set: the planted-instruction attack against Reading Levels, and a request for settings that don't exist (the tutor offered real alternatives, "Large" text and a soft green background, each only on Apply). Other protections: passwords are stored only as salted scrypt hashes; the login cookie is signed and not readable by page scripts; accounts and saved work stay in a local database the AI never sees; students under 13 are asked to create an account with a parent; AI help is always labeled and shown beside the original; and WordWise never claims to diagnose dyslexia.</p>
 
 </section>"""
@@ -353,8 +355,7 @@ def sec_limits() -> str:
 <li><strong>Scanned PDFs can't be read</strong>: there is no text recognition (OCR) yet.</li>
 <li><strong>Read-aloud quality depends on the browser's voices</strong> (most natural in Edge), and word highlighting needs voices that report word boundaries. The course's one-model rule rules out a separate AI voice.</li>
 <li><strong>Local only.</strong> Accounts live in a local database; hosting would need a managed database, backups, and a privacy review, especially for students under 13.</li>
-<li><strong>Safety checks use simple text rules</strong> plus human review of the saved replies; a larger attack set and an automated grader would be stronger.</li>
-<li><strong>The daily spending cap is global</strong>, not per student.</li>
+<li><strong>Safety checks use simple text rules</strong> plus human review of saved replies, and <strong>the daily spending cap is global</strong>, not per student.</li>
 <li><strong>Not a diagnosis or a tutor.</strong> WordWise supports reading; it doesn't replace evaluation or specialized instruction.</li>
 </ul>
 <h3>Next steps</h3>
@@ -383,6 +384,7 @@ SOURCES = [
     ("International Dyslexia Association, “Dyslexia basics”", "https://dyslexiaida.org/dyslexia-basics/"),
     ("Norton et al., “Functional neuroanatomical evidence for the double-deficit hypothesis of developmental dyslexia,” Neuropsychologia 61 (2014)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4339699/"),
     ("DyslexiaBuddy, product site (features and platforms, checked October 2026)", "https://dyslexiabuddy.com/"),
+    ("Diffit (web.diffit.me) and Newsela (newsela.com) product sites, checked October 2026", "https://web.diffit.me/"),
 ]
 
 
@@ -429,12 +431,12 @@ figure.w90 { max-width:90%; } figure.w80 { max-width:80%; } figure.w70 { max-wid
 .chart { width:100%; max-width:6.6in; height:auto; margin:6px 0 12px; }
 .chart .cl { font-size:12px; fill:var(--navy); } .chart .cv { font-size:12px; fill:var(--navy); font-weight:700; }
 .pending { border:2px dashed var(--brass); background:var(--cream1); padding:12px 14px; border-radius:8px; }
-.sources li { font-size:9.5pt; word-break:break-word; }
+.sources ol { columns:2; column-gap:22px; margin-top:4px; } .sources li { font-size:8pt; line-height:1.3; word-break:break-word; break-inside:avoid; margin-bottom:3px; }
 sup a { text-decoration:none; }
 @page { size:letter; margin:0.55in; }
 @media print {
   body { background:#fff; } main { padding:0; max-width:none; background:#fff; }
-  h2 { break-after:avoid; } figure, table, .diagram { break-inside:avoid; }
+  h2, h3 { break-after:avoid; } figure, .diagram { break-inside:avoid; } tr { break-inside:avoid; } thead { display:table-header-group; }
   .title-page { break-after:page; }
   * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 }

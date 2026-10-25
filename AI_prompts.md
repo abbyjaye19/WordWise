@@ -349,3 +349,19 @@ The first prompt only covered colors; the follow-up came from friend testing and
 **Follow-up prompt** (sent while the slides were being reworked):
 
 > make sure these changes are seamless across the deck not just those slides?
+
+**Prompt 2:**
+
+> slides look great - now please open the report for me to view
+
+**Prompt 3:**
+
+> that looks great - can you open the website in my browser again to be checked?
+
+---
+
+## Phase 28: Final Requirements Audit
+
+**Prompt 1:**
+
+> everything looks great to me - check to make sure all areas of the assignment for the report, slides and website are met, then we can move forward
