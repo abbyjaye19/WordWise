@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 150" role="presentation" fill="none" stroke="#0F1F3D" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+  <!-- AI Tutor: two speech bubbles, a question and an answer -->
+  <path d="M14 26 Q14 14 26 14 L104 14 Q116 14 116 26 L116 66 Q116 78 104 78 L46 78 L28 94 L32 78 L26 78 Q14 78 14 66 Z" fill="#F4EEE1"/>
+  <text x="54" y="62" font-family="Georgia, serif" font-size="42" font-weight="700" fill="#1B3366" stroke="none">?</text>
+  <path d="M60 70 Q60 58 72 58 L144 58 Q156 58 156 70 L156 112 Q156 124 144 124 L140 124 L144 140 L124 124 L72 124 Q60 124 60 112 Z" fill="#2F5A43"/>
+  <path d="M76 78 L140 78 M76 92 L132 92 M76 106 L116 106" stroke="#FBF8F1" stroke-width="3.5"/>
+  <circle cx="146" cy="40" r="6" fill="#B08D57" stroke-width="2"/>
+  <path d="M146 26 L146 30 M146 50 L146 54 M132 40 L136 40 M156 40 L160 40" stroke="#B08D57" stroke-width="2.5"/>
+</svg>

@@ -607,7 +607,18 @@
     const ra = document.getElementById("tts-readalong");
     if (ra) ra.textContent = "Highlight: " + (READALONG_LABELS[document.documentElement.dataset.readalong] || READALONG_LABELS.both);
   }
-  WW.refreshTools = function () { updateButtons(); syncViewButtons(); fillVoiceSelect(); };
+  // Quick guide above the tools: open on a student's first visit, then remember that they've seen it.
+  function initGuide() {
+    const g = document.getElementById("tool-guide");
+    if (!g || g.dataset.ready) return;
+    g.dataset.ready = "1";
+    if (!localStorage.getItem("ww-guide-seen")) {
+      g.open = true;
+      localStorage.setItem("ww-guide-seen", "1");
+    }
+  }
+
+  WW.refreshTools = function () { updateButtons(); syncViewButtons(); fillVoiceSelect(); initGuide(); };
 
   /* ---------- word actions ---------- */
   function lookup(w) {

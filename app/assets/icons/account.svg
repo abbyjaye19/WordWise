@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 150" role="presentation" fill="none" stroke="#0F1F3D" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+  <!-- Account: library card -->
+  <rect x="16" y="28" width="138" height="96" rx="10" fill="#F4EEE1"/>
+  <rect x="16" y="28" width="138" height="24" rx="10" fill="#2F5A43"/>
+  <path d="M16 44 L154 44" stroke="#2F5A43" stroke-width="10"/>
+  <text x="28" y="46" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#FBF8F1" stroke="none">LIBRARY CARD</text>
+  <rect x="28" y="62" width="38" height="46" rx="5" fill="#E1F0DC"/>
+  <circle cx="47" cy="78" r="8" fill="#B08D57" stroke-width="2"/>
+  <path d="M34 106 Q47 88 60 106" fill="#B08D57" stroke-width="2"/>
+  <path d="M78 70 L140 70 M78 84 L128 84 M78 98 L116 98" stroke-width="3"/>
+  <path d="M118 112 L144 112" stroke="#A2463A" stroke-width="3"/>
+</svg>

@@ -7,10 +7,10 @@ from dash import dcc, html
 # One place to rename or reorder the main sections.
 NAV_ITEMS = [
     {"label": "Reading Assistant", "href": "/reading-assistant"},
-    {"label": "Learning Tools", "href": "/learning-tools"},
     {"label": "Tutor Directory", "href": "/tutors"},
     {"label": "Resources", "href": "/resources"},
     {"label": "My Dashboard", "href": "/dashboard"},
+    {"label": "Tool Guide", "href": "/learning-tools"},  # last: the same guide also opens inside the Reading Studio
 ]
 
 
@@ -82,17 +82,18 @@ def footer() -> html.Footer:
     )
 
 
-def page_header(title: str, intro: str, eyebrow: str | None = None) -> html.Section:
-    """Top band used on every inner page."""
+def page_header(title: str, intro: str, eyebrow: str | None = None, theme: str = "reading") -> html.Section:
+    """Top band used on every inner page. `theme` picks the page's own icon (assets/icons/<theme>.svg) and a
+    slightly different header color, so each page is easy to recognize at a glance while the layout stays the same."""
     return html.Section(
-        className="page-header dots",
+        className=f"page-header dots ph-{theme}",
         children=html.Div(
             className="container page-header-inner",
             children=[
                 html.P(eyebrow, className="eyebrow") if eyebrow else None,
                 html.H1(title),
                 html.P(intro, className="lead"),
-                html.Img(src="/assets/book-stack.svg", alt="", className="header-books"),
+                html.Img(src=f"/assets/icons/{theme}.svg", alt="", className="header-books"),
             ],
         ),
     )

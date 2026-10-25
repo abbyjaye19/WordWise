@@ -45,3 +45,7 @@
   .bookshelf { height:90px; background-size:auto 90px; }
 }
 @media print { .bookshelf, .header-books { display:none !important; } }
+
+/* ---------- Each page has its own icon + header tint (same layout everywhere) ---------- */
+.studio-head.ph-reading .container-wide::after { background-image:url("/assets/icons/reading.svg"); }
+.studio-head.ph-ai-tutor .container-wide::after { background-image:url("/assets/icons/ai-tutor.svg"); }

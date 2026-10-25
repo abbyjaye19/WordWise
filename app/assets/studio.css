@@ -153,3 +153,19 @@ html[data-theme="dark"][data-readalong="sentence"] .w-speaking:not(.hl-gold):not
 .level-bar { display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; margin:0 0 14px; padding:10px 14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); font-size:15px; letter-spacing:0; word-spacing:0; line-height:1.3; }
 .speed-ctl { display:inline-flex; align-items:center; gap:2px; margin-left:6px; }
 .voice-select { max-width:210px; }
+
+/* ---------- Quick guide (Reading Studio) + Tool Guide page ---------- */
+.tool-guide { background:var(--surface); border:1px solid var(--border); border-left:5px solid var(--brass-500); border-radius:var(--radius); margin-bottom:12px; font-size:15px; line-height:1.4; letter-spacing:0; word-spacing:0; }
+.tool-guide > summary { cursor:pointer; padding:10px 14px; font-weight:700; color:var(--heading); display:flex; align-items:center; gap:10px; min-height:44px; }
+.guide-q { display:inline-grid; place-items:center; width:26px; height:26px; border-radius:50%; background:var(--green-800); color:var(--cream-50); font-size:14px; }
+.guide-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:14px 22px; padding:4px 16px 8px; }
+.guide-group h3 { font-size:1rem; margin:0 0 2px; }
+.guide-where { font-size:.78rem; font-weight:700; color:var(--accent); margin:0 0 6px; }
+.guide-group dl, .guide-card dl { margin:0; }
+.guide-group dt, .guide-card dt { font-weight:700; margin-top:6px; }
+.guide-group dd, .guide-card dd { margin:0; color:var(--text); }
+.guide-foot { padding:0 16px 12px; margin:0; }
+.guide-cards { margin-top:20px; }
+.guide-card h2 { font-size:1.3rem; margin-bottom:6px; }
+.guide-card dd { margin-bottom:4px; line-height:1.45; }
+.guide-more { margin-top:20px; }

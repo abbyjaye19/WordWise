@@ -24,7 +24,7 @@ def layout(**_query):
     if user:
         return html.Div(
             [
-                page_header("Your account", "You're signed in. Your readings and folders are saved to your account.", eyebrow="Account"),
+                page_header("Your account", "You're signed in. Your readings and folders are saved to your account.", eyebrow="Account", theme="account"),
                 html.Section(
                     className="section container narrow",
                     children=html.Div(
@@ -54,6 +54,7 @@ def layout(**_query):
                 "Sign in or create an account",
                 "An account keeps your readings, highlights, and folders safe, so they are still here next time.",
                 eyebrow="Account",
+                theme="account",
             ),
             html.Section(
                 className="section container auth-grid",

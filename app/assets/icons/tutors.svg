@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 150" role="presentation" fill="none" stroke="#0F1F3D" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+  <!-- Tutor Directory: chalkboard with an apple for the teacher -->
+  <rect x="12" y="14" width="124" height="88" rx="6" fill="#B08D57"/>
+  <rect x="21" y="23" width="106" height="70" rx="3" fill="#2F5A43"/>
+  <text x="34" y="56" font-family="Georgia, serif" font-size="24" font-weight="700" fill="#FBF8F1" stroke="none">A b c</text>
+  <path d="M34 72 Q60 66 86 74 Q100 78 112 70" stroke="#FBF8F1" stroke-width="2"/>
+  <path d="M40 102 L32 136 M108 102 L116 136" stroke-width="3"/>
+  <rect x="44" y="96" width="30" height="6" rx="2" fill="#F4EEE1" stroke-width="1.5"/>
+  <path d="M140 92 Q124 84 118 100 Q114 120 130 134 Q138 138 142 134 Q148 138 154 134 Q170 120 164 100 Q158 84 142 92 Z" fill="#A2463A"/>
+  <path d="M142 92 Q142 84 146 78"/>
+  <path d="M146 82 Q156 74 162 82 Q154 88 146 82 Z" fill="#4F7A5A" stroke-width="2"/>
+  <path d="M128 102 Q126 110 130 116" stroke="#F4EEE1" stroke-width="2.5"/>
+</svg>

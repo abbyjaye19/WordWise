@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 150" role="presentation" fill="none" stroke="#0F1F3D" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+  <!-- Reading Studio: open book with reading glasses -->
+  <path d="M14 126 Q50 112 85 126 Q120 112 156 126 L156 132 Q120 120 85 134 Q50 120 14 132 Z" fill="#1B3366"/>
+  <path d="M18 120 L18 56 Q52 44 85 58 L85 126 Q52 112 18 120 Z" fill="#F4EEE1"/>
+  <path d="M152 120 L152 56 Q118 44 85 58 L85 126 Q118 112 152 120 Z" fill="#F4EEE1"/>
+  <path d="M30 68 Q50 62 74 70 M30 80 Q50 74 74 82 M30 92 Q50 86 74 94 M30 104 Q48 99 64 104" stroke-width="2"/>
+  <path d="M96 70 Q120 62 140 68 M96 82 Q120 74 140 80 M96 94 Q120 86 140 92" stroke-width="2"/>
+  <path d="M96 104 Q112 99 126 102" stroke="#B08D57" stroke-width="5"/>
+  <circle cx="62" cy="34" r="15" fill="#E1F0DC"/>
+  <circle cx="104" cy="34" r="15" fill="#E1F0DC"/>
+  <path d="M77 32 Q83 26 89 32"/>
+  <path d="M47 30 L34 24 M119 30 L132 24"/>
+</svg>

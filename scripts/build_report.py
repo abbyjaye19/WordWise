@@ -274,33 +274,39 @@ def mmss(seconds: float) -> str:
 
 
 def user_testing_html(ut: dict) -> str:
-    """Results table, with-vs-without averages, survey averages, tools, and quotes."""
+    """Observed sessions (who, what they did, feedback, what changed) plus, if any tester did the timed
+    protocol, the with-vs-without table and survey averages. Nothing is shown that wasn't measured."""
     ts = ut["testers"]
     n = len(ts)
-    avg = lambda key: sum(t[key] for t in ts) / n  # noqa: E731
-    tw, tn, sw, sn = avg("time_with_s"), avg("time_without_s"), avg("score_with"), avg("score_without")
+    timed = [t for t in ts if t.get("time_with_s") is not None]
+    out = [f"<h3>Real users ({n} tester{'s' if n != 1 else ''}, {E(ut.get('dates', ''))})</h3>",
+           f"<p>{E(ut.get('method', ''))}</p>"]
     rows = "".join(
-        f"<tr><td>{E(t['id'])}</td><td>{E(t['who'])}</td><td>{mmss(t['time_without_s'])} ({t['passage_without']})</td>"
-        f"<td>{mmss(t['time_with_s'])} ({t['passage_with']})</td><td>{t['score_without']:g} / 3</td><td>{t['score_with']:g} / 3</td></tr>"
+        f"<tr><td>{E(t['id'])}</td><td>{E(t['who'])}</td><td>{E(t.get('what_they_did', ''))}</td>"
+        f"<td><ul>{''.join(f'<li>{E(p)}</li>' for p in t.get('problems', []))}</ul></td>"
+        f"<td><ul>{''.join(f'<li>{E(c)}</li>' for c in t.get('changes', []))}</ul></td></tr>"
         for t in ts)
-    survey = "".join(
-        f"<tr><td>{E(label)}</td><td>{sum(t['survey'][key] for t in ts) / n:.1f} / 5</td></tr>" for key, label in SURVEY_ITEMS)
-    tools: dict[str, int] = {}
-    for t in ts:
-        for tool in t.get("tools_used", []):
-            tools[tool] = tools.get(tool, 0) + 1
-    tool_list = ", ".join(f"{E(k)} ({v} of {n})" for k, v in sorted(tools.items(), key=lambda kv: -kv[1]))
+    out.append("<table class=\"ut-table\"><thead><tr><th>Tester</th><th>Who</th><th>What they did</th><th>Problems found</th>"
+               f"<th>What we changed</th></tr></thead><tbody>{rows}</tbody></table>")
     quotes = "".join(f"<li>“{E(q)}” ({E(t['id'])})</li>" for t in ts for q in t.get("quotes", []))
-    problems = "".join(f"<li>{E(p)} ({E(t['id'])})</li>" for t in ts for p in t.get("problems", []))
-    time_change = (tw - tn) / tn
-    return f"""<h3>Real users ({n} tester{'s' if n != 1 else ''}, {E(ut.get('dates', ''))})</h3>
-<p>Each tester read one short passage the way they normally would, then a similar passage in WordWise, and answered 3 comprehension questions after each (scored 0, ½, or 1). The passage order was swapped between testers. Full protocol: <code>deliverables/user_testing/testing_kit.html</code>.</p>
-<table><thead><tr><th>Tester</th><th>Who</th><th>Time without</th><th>Time with</th><th>Score without</th><th>Score with</th></tr></thead><tbody>{rows}
-<tr><td colspan="2"><strong>Average</strong></td><td><strong>{mmss(tn)}</strong></td><td><strong>{mmss(tw)}</strong></td><td><strong>{sn:.1f} / 3</strong></td><td><strong>{sw:.1f} / 3</strong></td></tr></tbody></table>
-<p>With WordWise, reading time changed by <strong>{time_change:+.0%}</strong> and comprehension scores changed by <strong>{sw - sn:+.1f} points</strong> out of 3 on average. Tools used: {tool_list or "not recorded"}.</p>
-<table><thead><tr><th>Survey statement</th><th>Average (1–5)</th></tr></thead><tbody>{survey}</tbody></table>
-{f"<h3>In their words</h3><ul>{quotes}</ul>" if quotes else ""}
-{f"<h3>Problems testers hit</h3><ul>{problems}</ul>" if problems else ""}"""
+    if quotes:
+        out.append(f"<h3>In their words</h3><ul>{quotes}</ul><p class=\"note\">Quotes lightly edited for spelling.</p>")
+    if timed:
+        m = len(timed)
+        avg = lambda key: sum(t[key] for t in timed) / m  # noqa: E731
+        tw, tn, sw, sn = avg("time_with_s"), avg("time_without_s"), avg("score_with"), avg("score_without")
+        trows = "".join(
+            f"<tr><td>{E(t['id'])}</td><td>{mmss(t['time_without_s'])} ({t['passage_without']})</td><td>{mmss(t['time_with_s'])} ({t['passage_with']})</td>"
+            f"<td>{t['score_without']:g} / 3</td><td>{t['score_with']:g} / 3</td></tr>" for t in timed)
+        survey = "".join(f"<tr><td>{E(label)}</td><td>{sum(t['survey'][key] for t in timed) / m:.1f} / 5</td></tr>" for key, label in SURVEY_ITEMS)
+        out.append(f"""<h3>Timed comparison ({m} tester{'s' if m != 1 else ''})</h3>
+<table><thead><tr><th>Tester</th><th>Time without</th><th>Time with</th><th>Score without</th><th>Score with</th></tr></thead><tbody>{trows}
+<tr><td><strong>Average</strong></td><td><strong>{mmss(tn)}</strong></td><td><strong>{mmss(tw)}</strong></td><td><strong>{sn:.1f} / 3</strong></td><td><strong>{sw:.1f} / 3</strong></td></tr></tbody></table>
+<p>With WordWise, reading time changed by <strong>{(tw - tn) / tn:+.0%}</strong> and comprehension by <strong>{sw - sn:+.1f}</strong> points out of 3.</p>
+<table><thead><tr><th>Survey statement</th><th>Average (1–5)</th></tr></thead><tbody>{survey}</tbody></table>""")
+    else:
+        out.append("<p><strong>What this evidence does and doesn't show.</strong> These sessions show that new users could use WordWise without instructions and they found real usability problems, each of which was fixed. They do not measure reading time or comprehension gains: neither tester did the timed with/without protocol, both know the author, and neither is currently a struggling student reader. A timed pilot with students in the target group is the next step (protocol ready in <code>deliverables/user_testing/testing_kit.html</code>).</p>")
+    return "\n".join(out)
 
 
 def sec_impact() -> str:
@@ -319,7 +325,7 @@ def sec_impact() -> str:
 <p>Measured in the app: an answer arrives in about {wl['avg_seconds']} seconds for a word and {after['per_feature']['summarize']['avg_seconds']} seconds for a full summary with questions. The student never leaves the page, and the answer matches their sentence and age level. Read-aloud with word highlighting starts instantly and is free.</p>
 {testing}
 <h3>Honest limits on these claims</h3>
-<p>{"The user test is a small pilot: with so few people, the differences above could be chance, and a short passage can't show long-term reading gains." if user_testing else "Time savings for real students are not yet measured, and reading gains would need a much longer study."} The reach estimate depends on prevalence figures that experts disagree on.</p>
+<p>{"The user tests are a small pilot of observed sessions, not a controlled study: they show usability, not reading gains, and long-term gains would need a much longer study." if user_testing else "Time savings for real students are not yet measured, and reading gains would need a much longer study."} The reach estimate depends on prevalence figures that experts disagree on.</p>
 </section>"""
 
 
@@ -391,6 +397,8 @@ em { font-style:normal; font-weight:700; }
 table { width:100%; border-collapse:collapse; margin:10px 0 14px; font-size:9.8pt; line-height:1.4; }
 th { background:var(--navy7); color:var(--cream); text-align:left; padding:6px 8px; }
 td { border-bottom:1px solid var(--cream3); padding:6px 8px; vertical-align:top; }
+table.ut-table { font-size:8.8pt; line-height:1.3; } table.ut-table td { padding:4px 6px; } table.ut-table ul { margin:0; padding-left:14px; } table.ut-table li { margin:0 0 2px; }
+table.ut-table th:nth-child(2) { width:17%; } table.ut-table th:nth-child(3) { width:16%; } table.ut-table th:nth-child(1) { width:7%; }
 tr:nth-child(even) td { background:var(--cream1); }
 table.small { font-size:8.8pt; }
 figure { margin:10px 0 14px; }

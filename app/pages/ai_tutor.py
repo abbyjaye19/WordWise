@@ -28,7 +28,7 @@ def layout(**_query):
             dcc.Store(id="doc-store", storage_type="session"),  # same key as the Reading Studio, read-only here
             html.Div(id="chat-scroll-sink", hidden=True),
             html.Section(
-                className="studio-head",
+                className="studio-head ph-ai-tutor",
                 children=html.Div(
                     className="container-wide",
                     children=[

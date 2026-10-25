@@ -12,6 +12,7 @@ from datetime import date
 import dash
 from dash import ALL, Input, Output, State, callback, ctx, dcc, html, no_update
 
+from components.tool_guide import quick_guide
 from services import accounts, ai, documents, export, library, preferences, progress
 
 dash.register_page(__name__, path="/reading-assistant", name="Reading Assistant", order=1)
@@ -373,7 +374,7 @@ def _layout(user, store_kwargs, bad_link: bool):
         if bad_link
         else None,
         html.Section(
-            className="studio-head",
+            className="studio-head ph-reading",
             children=html.Div(
                 className="container-wide",
                 children=[
@@ -394,6 +395,7 @@ def _layout(user, store_kwargs, bad_link: bool):
                 html.Div(
                     className="reader-col",
                     children=[
+                        quick_guide(),
                         _toolbar(),
                         html.Div(id="doc-title", className="doc-title"),
                         _doc_actions(user),

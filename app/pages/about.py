@@ -100,7 +100,7 @@ PRINCIPLES = [
 def layout(**_query):
     return html.Div(
         [
-            page_header("Why I built WordWise", "A tool for the reader I used to be, and for anyone who reads the way I do.", eyebrow="About"),
+            page_header("Why I built WordWise", "A tool for the reader I used to be, and for anyone who reads the way I do.", eyebrow="About", theme="about"),
             html.Section(
                 className="section container about-top",
                 children=[_portrait(), _story()],

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 150" role="presentation" fill="none" stroke="#0F1F3D" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+  <!-- About: graduation cap on a diploma -->
+  <rect x="22" y="108" width="126" height="26" rx="13" fill="#F4EEE1"/>
+  <circle cx="148" cy="121" r="13" fill="#F4EEE1"/>
+  <circle cx="22" cy="121" r="13" fill="#E9D3A6"/>
+  <path d="M60 108 L60 134 M70 108 L70 134" stroke="#A2463A" stroke-width="3"/>
+  <path d="M85 20 L156 46 L85 72 L14 46 Z" fill="#1B3366"/>
+  <path d="M46 58 L46 84 Q85 104 124 84 L124 58" fill="#1B3366"/>
+  <path d="M46 58 L85 72 L124 58" stroke-width="2"/>
+  <path d="M85 46 L140 56 L140 86" stroke="#B08D57" stroke-width="3"/>
+  <path d="M134 86 L146 86 L144 102 L136 102 Z" fill="#B08D57" stroke-width="2"/>
+  <circle cx="85" cy="46" r="4" fill="#B08D57" stroke-width="2"/>
+</svg>

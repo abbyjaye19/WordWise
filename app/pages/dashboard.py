@@ -31,7 +31,7 @@ def _settings_card() -> html.Div:
 def _signed_out() -> html.Div:
     return html.Div(
         [
-            page_header("My Dashboard", "Your library, saved readings, and settings in one place.", eyebrow="You"),
+            page_header("My Dashboard", "Your library, saved readings, and settings in one place.", eyebrow="You", theme="dashboard"),
             html.Section(
                 className="section container",
                 children=[
@@ -62,7 +62,7 @@ def layout(**_query):
     return html.Div(
         [
             dcc.Store(id="lib-refresh", data=0),
-            page_header("My Dashboard", f"Welcome back, {user['username']}. Here is your library and how your reading is going.", eyebrow="You"),
+            page_header("My Dashboard", f"Welcome back, {user['username']}. Here is your library and how your reading is going.", eyebrow="You", theme="dashboard"),
             html.Nav(
                 className="container-wide dash-jump",
                 **{"aria-label": "Jump to a section"},

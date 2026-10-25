@@ -1,0 +1,48 @@
+{
+  "_how_to_use": "One object per tester. Timed A/B sessions fill time_*/score_*/survey; observed sessions leave them out. Then run: python scripts/build_report.py and python scripts/build_slides.py",
+  "dates": "October 19 and 25, 2026",
+  "method": "Observed sessions on the author's laptop: the tester used WordWise on their own, the author watched and took notes, then asked for feedback. No timed with/without comparison was run.",
+  "testers": [
+    {
+      "id": "Tester 1",
+      "who": "Friend of the author (adult)",
+      "date": "2026-10-19",
+      "kind": "observed",
+      "what_they_did": "Uploaded test PDFs (a course email and readings), used read-aloud and selected passages for “Make it simpler”.",
+      "tools_used": ["Read aloud", "Understand a part"],
+      "liked": "",
+      "quotes": [],
+      "problems": [
+        "Read-aloud sounded robotic (the browser's default voice was used before its natural voices loaded).",
+        "Read-aloud mispronounced words such as past-tense “read”.",
+        "Selecting a sentence clipped the first letter (“he exam” instead of “The exam”)."
+      ],
+      "changes": [
+        "Read-aloud now waits for and ranks the browser's natural voices, with a voice picker.",
+        "New Pronunciation Helper agent respells heteronyms for the voice only (“read” → “red”).",
+        "Selections now always expand to whole words."
+      ]
+    },
+    {
+      "id": "Tester 2",
+      "who": "Olivia, 23, the author's sister; had reading tutoring in grades 1–5, now a strong reader (chemistry graduate, starting medical school)",
+      "date": "2026-10-25",
+      "kind": "observed",
+      "what_they_did": "Created her own account and explored the Reading Studio and the AI Tutor.",
+      "tools_used": ["Reading Studio tools", "AI Tutor"],
+      "liked": "The AI Tutor, as a natural way in for children used to asking Google or AI.",
+      "quotes": [
+        "I thought this was very easy to use for younger kids. I would have used this to practice reading strategies later (and mom would have made/helped me).",
+        "Kids nowadays are so used to asking Google or AI things, this would be an easy application to use for them."
+      ],
+      "problems": [
+        "All pages looked the same (same book icon and colors), so it was hard to tell at a glance which page she was on.",
+        "Observed: she skipped the Learning Tools page that explains each tool and went straight to using the tools."
+      ],
+      "changes": [
+        "Each page now has its own school-themed icon and header color, with the same layout.",
+        "The tool explanations moved into the Reading Studio as a Quick guide (opens on a first visit); the Tool Guide page moved to the end of the menu."
+      ]
+    }
+  ]
+}

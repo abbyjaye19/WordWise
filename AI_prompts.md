@@ -293,3 +293,23 @@ The first prompt only covered colors; the follow-up came from friend testing and
 **Prompt 2** (with a photo of me attached):
 
 > instead of the AJ in the about us section, put this photo of me in, crop it so it is more of a headshot though.
+
+---
+
+## Phase 23: Final Gap Check
+
+**Prompt 1:**
+
+> what am i missing for this project?
+
+**Prompt 2:**
+
+> do i need a certain number of test users?
+
+---
+
+## Phase 24: User Test with Olivia, Distinct Page Looks, Tool Guide in the Studio
+
+**Prompt 1:**
+
+> my sister "olivia jaye" created an account on my computer and used it - shes had a bunch of reeading tutoring when she was younger (grades 1-5) and so i was curious her thoughts on this since she wa s avery strong reader in highschool and college through now - Olivia is 23, she graduated college in May 2026, chem major and is heading to medical school next fall - overall her thoughts: "I thought this eas very easy to use for younger kids, I wouild have used this to practice reading strategies later (and mom wouild have made/helped me)" she really liked the AI tutor and how that works since "kids nowadays are so used to asking google or AI things, this would be an easily application to use for them" which is good to hear because that was my though as well - kids use technology from a very young age now, and AI is being implemented in as a young age too into school.  her feedback was that all the pages look the same, the same book logo at the top, exact color scheme and it makes it hard to tell from a glance what page you are on - so if we could make this change, keep theme across pages similar, but maybe chnage colros slightly between oages , or change the books at the top to other school-like symbols - i wacthed her use ti and some things i notcies were that she did not really use the learnign tools page (that explains each tool), and instead was just using the tool immediately - maybe put this page to the end or somehow implkent this into the reading assistant page - make it more integrated

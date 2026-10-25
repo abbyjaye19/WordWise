@@ -265,3 +265,18 @@ html[data-theme="dark"] .about-wish { color:var(--mint-300); }
   .founder-card { flex-direction:column; align-items:flex-start; }
 }
 .founder-photo { width:96px; height:96px; flex:none; object-fit:cover; border-radius:50%; border:3px solid var(--mint-300); }
+
+/* Page header colors: one soft tint per page so you can tell pages apart at a glance. */
+.ph-reading   { --ph-bg:#F0F7EC; --ph-line:#BFDDB7; --ph-dot:rgba(36,80,58,.10); }   /* green */
+.ph-ai-tutor  { --ph-bg:#EAF4EF; --ph-line:#AFD3C1; --ph-dot:rgba(36,90,70,.10); }   /* sea green */
+.ph-tools     { --ph-bg:#FAF3E0; --ph-line:#E9D3A6; --ph-dot:rgba(138,102,48,.12); } /* butter */
+.ph-tutors    { --ph-bg:#FBEDE7; --ph-line:#EBC3B3; --ph-dot:rgba(162,70,58,.10); }  /* peach */
+.ph-resources { --ph-bg:#EDF4E4; --ph-line:#C8DDAE; --ph-dot:rgba(79,122,90,.12); }  /* sage */
+.ph-dashboard { --ph-bg:#F2EEF7; --ph-line:#D6CBE6; --ph-dot:rgba(107,78,138,.10); } /* lavender */
+.ph-about     { --ph-bg:#F8F1E4; --ph-line:#E6D3AE; --ph-dot:rgba(176,141,87,.14); } /* warm cream */
+.ph-account   { --ph-bg:#EFF2EC; --ph-line:#CDD6C6; --ph-dot:rgba(36,80,58,.08); }   /* stone */
+.page-header[class*="ph-"], .studio-head[class*="ph-"] {
+  background-color:var(--ph-bg); background-image:radial-gradient(var(--ph-dot) 1.6px, transparent 1.6px); border-bottom:3px solid var(--ph-line);
+}
+.page-header[class*="ph-"] .page-header-inner > * { background:var(--ph-bg); }
+.page-header[class*="ph-"] .page-header-inner > .header-books { background:transparent; }

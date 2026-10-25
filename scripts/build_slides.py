@@ -61,11 +61,17 @@ effort_time = 100 * (wm["avg_seconds"] / wl["avg_seconds"] - 1)
 UT = ROOT / "deliverables" / "user_testing.json"
 if UT.exists():
     _ts = json.loads(UT.read_text(encoding="utf-8"))["testers"]
-    _n = len(_ts)
-    _tw, _tn = sum(t["time_with_s"] for t in _ts) / _n, sum(t["time_without_s"] for t in _ts) / _n
-    _sw, _sn = sum(t["score_with"] for t in _ts) / _n, sum(t["score_without"] for t in _ts) / _n
-    EVAL_STATUS = (f"<strong>Pilot results ({_n}):</strong> comprehension {_sn:.1f} → {_sw:.1f} / 3; "
-                   f"reading time {(_tw - _tn) / _tn:+.0%} with WordWise")
+    _timed = [t for t in _ts if t.get("time_with_s") is not None]
+    _fixes = sum(len(t.get("changes", [])) for t in _ts)
+    if _timed:
+        _n = len(_timed)
+        _tw, _tn = sum(t["time_with_s"] for t in _timed) / _n, sum(t["time_without_s"] for t in _timed) / _n
+        _sw, _sn = sum(t["score_with"] for t in _timed) / _n, sum(t["score_without"] for t in _timed) / _n
+        EVAL_STATUS = (f"<strong>Pilot results ({_n}):</strong> comprehension {_sn:.1f} → {_sw:.1f} / 3; "
+                       f"reading time {(_tw - _tn) / _tn:+.0%} with WordWise")
+    else:
+        EVAL_STATUS = (f"<strong>Pilot:</strong> {len(_ts)} observed user sessions; feedback led to {_fixes} shipped fixes. "
+                       "Timed comprehension study with target students is next")
 else:
     EVAL_STATUS = "<strong>Status:</strong> pilot protocol and materials complete; sessions in progress"
 

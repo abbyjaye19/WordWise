@@ -84,6 +84,7 @@ def layout(**_query):
                 "Tutor Directory",
                 "Trusted places to find a reading tutor or specialist. Explore the sites, then reach out to the people who fit you best.",
                 eyebrow="Find support",
+                theme="tutors",
             ),
             html.Section(
                 className="section container",

@@ -102,6 +102,7 @@ def layout(**_query):
                 "Resources",
                 "Trusted, plain-language information about dyslexia and reading differences, for students, families, and adults.",
                 eyebrow="Learn",
+                theme="resources",
             ),
             html.Section(
                 className="section container",
