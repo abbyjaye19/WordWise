@@ -377,3 +377,33 @@ The first prompt only covered colors; the follow-up came from friend testing and
 **Prompt 1:**
 
 > could you make an AI demo walk through video?
+
+**Prompt 2:**
+
+> open the video again on my browser
+
+**Prompt 3:**
+
+> close the video
+
+**Follow-up prompt:**
+
+> no its playing in claude
+
+The video was playing in Claude's side panel, not in the browser.
+
+---
+
+## Phase 30: Ready to Submit
+
+**Prompt 1:**
+
+> i watched and checked video - no comments, anything else needed to be done before i submit these?
+
+**Prompt 2** (with a screenshot of the Canvas instructions: "Remember to submit on Canvas your GitHub repo (if it is private, add zlisto to it so we can clone it) and also submit the HTML of your final report and the HTML of your slide deck."):
+
+> is it ready to submit? for all things, what are the links/things i need to submit on canvas?
+
+**Prompt 3:**
+
+> push
